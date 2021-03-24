@@ -33,6 +33,9 @@ run `python main.py` then `run_test()`
 
 * web ui (and hosting) -- fill in your own stats, can compare multiple
 * recommended gearset submission + display
+
+### maybe one day (send help please)
+
 * import set from etro (feasible or not?)
 * raid buff planning -- click and drag to move buff windows around, see effect on gearset
 * rotation planning -- visual rotation builder when default isn't enough. useful for fight phasing etc.
