@@ -40,3 +40,5 @@ run `python main.py` then `run_test()`
 * raid buff planning -- click and drag to move buff windows around, see effect on gearset
 * rotation planning -- visual rotation builder when default isn't enough. useful for fight phasing etc.
     * export/import rotations and raid buffs because i want to throw up at the thought of gcd mapping an entire fight and closing the tab and having to do it over
+    * export rotation as html with images
+        * stretch goal: export rotation as html with js or something to display tooltips when skills are hovered over
