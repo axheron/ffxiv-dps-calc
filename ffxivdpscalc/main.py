@@ -2,7 +2,7 @@
 # todo: break this out into files properly
 
 from enum import Enum, auto
-from collections import namedtuple
+import itertools
 import math
 
 
@@ -170,24 +170,23 @@ class Buffs(Enum):
 
 class Jobs(Enum):
     # job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
-    Modifiers = namedtuple("Modifiers", "mainstat role buffs")
-    SCH = Modifiers(115, Roles.HEALER, [Buffs.CHAIN])
-    AST = Modifiers(115, Roles.HEALER, [Buffs.DIV])
-    WHM = Modifiers(115, Roles.HEALER, [])
-    PLD = Modifiers(110, Roles.TANK, [])
-    WAR = Modifiers(110, Roles.TANK, [])
-    DRK = Modifiers(110, Roles.TANK, [])
-    GNB = Modifiers(110, Roles.TANK, [])
-    NIN = Modifiers(110, Roles.MELEE, [Buffs.TRICK])
-    DRG = Modifiers(115, Roles.MELEE, [Buffs.LITANY])
-    MNK = Modifiers(110, Roles.MELEE, [Buffs.BROTHERHOOD])
-    SAM = Modifiers(112, Roles.MELEE, [])
-    MCH = Modifiers(115, Roles.RANGED, [])
-    DNC = Modifiers(115, Roles.RANGED, [Buffs.TECH])
-    BRD = Modifiers(115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH])
-    SMN = Modifiers(115, Roles.CASTER, [Buffs.DEVOTION])
-    BLM = Modifiers(115, Roles.CASTER, [])
-    RDM = Modifiers(115, Roles.CASTER, [Buffs.EMBOLDEN])
+    SCH = (115, Roles.HEALER, [Buffs.CHAIN])
+    AST = (115, Roles.HEALER, [Buffs.DIV])
+    WHM = (115, Roles.HEALER, [])
+    PLD = (110, Roles.TANK, [])
+    WAR = (110, Roles.TANK, [])
+    DRK = (110, Roles.TANK, [])
+    GNB = (110, Roles.TANK, [])
+    NIN = (110, Roles.MELEE, [Buffs.TRICK])
+    DRG = (115, Roles.MELEE, [Buffs.LITANY])
+    MNK = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
+    SAM = (112, Roles.MELEE, [])
+    MCH = (115, Roles.RANGED, [])
+    DNC = (115, Roles.RANGED, [Buffs.TECH])
+    BRD = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH])
+    SMN = (115, Roles.CASTER, [Buffs.DEVOTION])
+    BLM = (115, Roles.CASTER, [])
+    RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
 
     def __init__(self, job_mod, role, raidbuff):
         self.job_mod = job_mod
@@ -199,5 +198,5 @@ class Comp:
 
     def __init__(self, jobs):
         self.jobs = jobs
-        self.raidbuffs = set([job.raidbuff for job in jobs])
+        self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
         self.n_roles = len(set([job.role for job in jobs]))
