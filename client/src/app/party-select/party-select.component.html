@@ -12,4 +12,11 @@
 	<img class="buff-icon" src="./assets/battlelitany.png"/>
 	<img class="buff-icon" src="./assets/brotherhood.png"/>
 </div>
-
+<nz-modal #jobPickerModal [(nzVisible)]="jobPickerVisible" [nzFooter]="null"
+          (nzOnCancel)="closeJobPicker()">
+  <ng-container *nzModalContent>
+    <nz-avatar class="party-member-icon" *ngFor="let job of jobs.values();"
+	    [nzSize]="64" nzSrc="{{job.path}}" (click)="pickJob(job.name)">
+	</nz-avatar>
+  </ng-container>
+</nz-modal>
