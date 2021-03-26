@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { take } from 'rxjs/operators';
 
+import {buffs} from '../data/buff';
 import {jobs} from '../data/job';
 
 
@@ -12,6 +13,7 @@ import {jobs} from '../data/job';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PartySelectComponent implements OnInit {
+  buffs = buffs;
   jobs = jobs;
 
   @ViewChild('jobPickerModal') jobPickerModalRef!: NzModalRef;
