@@ -193,27 +193,9 @@ class Jobs(Enum):
         self.raidbuff = raidbuff
 
 
-class Comp():
+class Comp:
+
     def __init__(self, jobs):
         self.jobs = jobs
-
-        self.raidbuffs = set()
-        has_tank = 0
-        has_healer = 0
-        has_melee = 0
-        has_ranged = 0
-        has_caster = 0
-        for job in jobs:
-            for buff in job.raidbuff: self.raidbuffs.add(buff)
-
-            if job.role == Roles.TANK:
-                has_tank = 1
-            elif job.role == Roles.HEALER:
-                has_healer = 1
-            elif job.role == Roles.MELEE:
-                has_melee = 1
-            elif job.role == Roles.RANGED:
-                has_ranged = 1
-            elif job.role == Roles.CASTER:
-                has_caster = 1
-        self.n_roles = has_tank + has_healer + has_melee + has_ranged + has_caster
+        self.raidbuffs = set([job.raidbuff for job in jobs])
+        self.n_roles = len(set([job.role for job in jobs]))
