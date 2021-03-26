@@ -1,0 +1,35 @@
+<nz-table #basicTable class="gearset-table" [nzData]="dataSet" nzShowPagination=false>
+  <thead>
+    <tr>
+      <th rowspan="2">Set name</th>
+      <th colspan="7">Stats</th>
+      <th rowspan="2">GCD</th>
+      <th rowspan="2">MP/min</th>
+      <th rowspan="2">DPS</th>
+    </tr>
+    <tr>
+      <th>WD</th>
+      <th>MND</th>
+      <th>DH</th>
+      <th>Crit</th>
+      <th>Det</th>
+      <th>SpS</th>
+      <th>Pie</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data">
+      <td>{{data.name}}</td>
+      <td>{{data.weaponDamage}}</td>
+      <td>{{data.mainStat}}</td>
+      <td>{{data.dh}}</td>
+      <td>{{data.crit}}</td>
+      <td>{{data.det}}</td>
+      <td>{{data.sps}}</td>
+      <td>{{data.pie}}</td>
+      <td>{{data.gcd}}</td>
+      <td>{{data.mp}}</td>
+      <td>{{data.dps}}</td>
+    </tr>
+  </tbody>
+</nz-table>

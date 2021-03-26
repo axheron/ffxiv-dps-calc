@@ -1,0 +1,37 @@
+.party-select-container {
+	margin: 12px 24px;
+	display: flex;
+	justify-content: center;
+}
+
+.self-icon {
+	margin-right: 48px;
+	cursor: pointer;
+}
+
+.party-member-icon {
+	margin-right: 8px;
+}
+
+.job-icon {
+	height:60px;
+	width: 60px;
+	border: solid 1px grey;
+	font-size:32px;
+}
+
+.job-icon-inner {
+	font-size: 40px;
+	padding-top: 4px;
+	margin-right: -1px;
+}
+
+.buffs-container {
+	margin: 12px 24px;
+	display: flex;
+	justify-content: center;
+}
+
+.buff-icon {
+	margin-right: 8px;
+}
