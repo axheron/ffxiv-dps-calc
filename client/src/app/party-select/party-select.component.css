@@ -11,19 +11,7 @@
 
 .party-member-icon {
 	margin-right: 8px;
-}
-
-.job-icon {
-	height:60px;
-	width: 60px;
-	border: solid 1px grey;
-	font-size:32px;
-}
-
-.job-icon-inner {
-	font-size: 40px;
-	padding-top: 4px;
-	margin-right: -1px;
+	cursor: pointer;
 }
 
 .buffs-container {
