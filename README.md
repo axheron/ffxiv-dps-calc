@@ -16,6 +16,7 @@ run `python main.py` then `run_test()`
 
 * aard appel (famfrit)
 * HI MAYBE YOUR NAME HERE? potato 3059 on discord
+* Rhiow Silrah (Gilgamesh)
 
 ## future plans: vague ramblings below
 
