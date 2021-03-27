@@ -1,18 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-interface GearSet {
-	name: string;
-	weaponDamage: number;
-	mainStat: number;
-	dh: number;
-	crit: number;
-	det: number;
-	sps: number;
-	pie: number;
-	gcd: number;
-	mp: number;
-	dps: number;
-}
+import { GearSet } from '../data/gearset';
 
 
 @Component({
@@ -23,6 +11,7 @@ interface GearSet {
 export class GearsetListComponent implements OnInit {
 	dataSet = [
 	{
+		id: '1',
 		name: '5.4 Preliminary SCH BiS',
 		weaponDamage: 180,
 		mainStat: 5577,
@@ -35,6 +24,7 @@ export class GearsetListComponent implements OnInit {
 		mp: -1191.90,
 		dps: 13535.61,
 	}, {
+		id: '2',
 		name: '5.4 Super Safe Set',
 		weaponDamage: 180,
 		mainStat: 5577,
@@ -47,6 +37,7 @@ export class GearsetListComponent implements OnInit {
 		mp: -291.03,
 		dps: 13240.73,
 	}, {
+		id: '3',
 		name: '5.45 BiS Tome Earrings',
 		weaponDamage: 180,
 		mainStat: 5510,
@@ -59,10 +50,39 @@ export class GearsetListComponent implements OnInit {
 		mp: -1491.90,
 		dps: 13621.75,
 	}];
+	editCache: { [key: string]: { edit: boolean; data: GearSet } } = {};
 
   constructor() { }
 
   ngOnInit(): void {
+  	this.updateEditCache();
+  }
+
+  startEdit(id: string): void {
+    this.editCache[id].edit = true;
+  }
+
+  cancelEdit(id: string): void {
+    const index = this.dataSet.findIndex(item => item.id === id);
+    this.editCache[id] = {
+      data: { ...this.dataSet[index] },
+      edit: false
+    };
+  }
+
+  saveEdit(id: string): void {
+    const index = this.dataSet.findIndex(item => item.id === id);
+    Object.assign(this.dataSet[index], this.editCache[id].data);
+    this.editCache[id].edit = false;
+  }
+
+  updateEditCache(): void {
+    this.dataSet.forEach(item => {
+      this.editCache[item.id] = {
+        edit: false,
+        data: { ...item }
+      };
+    });
   }
 
 }
