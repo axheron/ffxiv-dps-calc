@@ -13,7 +13,7 @@ class SchCharacterStats(CharacterStats):
         super().__init__(job, wd, mainstat, det, crit, dh, speed, ten, pie)
         
     # hard coded for a ~180 second cycle, actual length calculated by get_cycle
-    # todo: extend this for variable length, make this less...this
+    # todo: extend this for variable length
     def pps_spreadsheet_port(self, caster_tax, num_ed_per_min):
         # do as the spreadsheet do        
         short_gcd = self.get_gcd()
@@ -34,7 +34,7 @@ class SchCharacterStats(CharacterStats):
                 
         return  result
         
-    # Actual time taken by a 180s rotation, I hate this function, so much
+    # Actual time taken by a 180s rotation, is lower than 180s
     def get_cycle(self, caster_tax):
         short_gcd = self.get_gcd()
         result = 0
