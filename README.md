@@ -15,6 +15,7 @@ run `python main.py` then `run_test()`
 ## contributors
 
 * aard appel (famfrit)
+* Rhiow Silrah (Gilgamesh)
 * HI MAYBE YOUR NAME HERE? potato 3059 on discord
 
 ## future plans: vague ramblings below
