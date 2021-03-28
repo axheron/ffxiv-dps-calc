@@ -3,9 +3,9 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/calc_damage')
 def main():
-    return render_template('index.html')
+    return "over 9000"
 
 
 if __name__ == "__main__":
