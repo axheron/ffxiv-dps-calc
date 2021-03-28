@@ -3,7 +3,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { take } from 'rxjs/operators';
 
 import {buffs} from '../data/buff';
-import {jobs} from '../data/job';
+import * as jobConsts from '../data/job';
 
 
 @Component({
@@ -14,7 +14,7 @@ import {jobs} from '../data/job';
 })
 export class PartySelectComponent implements OnInit {
   buffs = buffs;
-  jobs = jobs;
+  jobConsts = jobConsts;
 
   @ViewChild('jobPickerModal') jobPickerModalRef!: NzModalRef;
 
