@@ -73,9 +73,7 @@
           <input type="text" nz-input
               [(ngModel)]="editCache[data.id].data.gcd" />
         </td>
-        <td class="num-col">
-          <input type="text" nz-input
-              [(ngModel)]="editCache[data.id].data.mp" />
+        <td class="num-col">{{editCache[data.id].data.mp}}
         </td>
         <td class="num-col">{{editCache[data.id].data.dps}}</td>
         <td class="action-col">
