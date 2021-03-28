@@ -135,3 +135,9 @@ export const MELEE_JOBS = [DRAGOON, MONK, NINJA, SAMURAI];
 export const RANGED_JOBS = [BARD, DANCER, MACHINIST];
 
 export const CASTER_JOBS = [BLACK_MAGE, RED_MAGE, SUMMONER];
+
+export const DPS_JOBS = [
+  ...MELEE_JOBS,
+  ...RANGED_JOBS,
+  ...CASTER_JOBS
+];
