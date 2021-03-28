@@ -1,6 +1,6 @@
 import unittest
 
-from ffxivdpscalc.calc import CharacterStats, Comp, Jobs
+from backend.calc import CharacterStats, Comp, Jobs
 
 
 class TestEndToEnd(unittest.TestCase):
