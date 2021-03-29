@@ -22,7 +22,7 @@ class SchPps(HealerPps):
         result = 0
         result += 12*self.ed_potency
         
-        sps_scalar = 1 + (character_stats.speed.get_multiplier() / 1000)
+        sps_scalar = character_stats.get_dot_scalar()
         # 1 bio + x B3 and 4 R2s that replace B3s
         if (((30-2*short_gcd) % (short_gcd+caster_tax)) > 1.5):
             result += 6*(math.ceil((30-2*short_gcd)/(short_gcd+caster_tax)))*self.b3_potency+2*self.b3_potency+4*self.r2_potency
