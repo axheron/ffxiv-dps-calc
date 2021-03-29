@@ -14,4 +14,3 @@ class Pps:
 class HealerPps(Pps):
     def calculate_pps(self, character_stats, caster_tax):
         raise NotImplementedError
-    
