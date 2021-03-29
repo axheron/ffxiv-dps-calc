@@ -42,8 +42,8 @@ class SchPps(HealerPps):
         short_gcd = character_stats.get_gcd()
         result = 0
         # 1 bio + x Broils and 4 R2s/3min
-        if ((30-2*short_gcd) % (short_gcd+caster_tax) > 1.5) : 
-            result += 6*(2*short_gcd+math.ceil((30-2*short_gcd)/(short_gcd+caster_tax))*(short_gcd+caster_tax))-1*caster_tax
+        if ((30 - 2 * short_gcd) % (short_gcd + caster_tax) > 1.5) : 
+            result += 6 * (2 * short_gcd + math.ceil((30 - 2 * short_gcd) / (short_gcd + caster_tax)) * (short_gcd + caster_tax)) - 1 * caster_tax
         else:  
-            result += 6*(2*short_gcd+math.floor((30-2*short_gcd)/(short_gcd+caster_tax))*(short_gcd+caster_tax))-1*caster_tax
+            result += 6 * (2 * short_gcd+math.floor((30-2*short_gcd) / (short_gcd+caster_tax)) * (short_gcd+caster_tax)) - 1 * caster_tax
         return result
