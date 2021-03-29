@@ -7,3 +7,12 @@
 	padding-top: 8px;
 	padding-bottom: 8px;
 }
+
+.num-col {
+	min-width: 100px;
+	width: 7%;
+}
+
+.action-col {
+	width: 100px;
+}

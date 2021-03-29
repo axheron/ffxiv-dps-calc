@@ -4,8 +4,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from "ng-zorro-antd/icon";
+import { NzInputModule } from "ng-zorro-antd/input";
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -37,8 +39,10 @@ registerLocaleData(en);
     NzAvatarModule,
     NzButtonModule,
     NzIconModule,
+    NzInputModule,
     NzLayoutModule,
     NzModalModule,
+    NzPopconfirmModule,
     NzTableModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
