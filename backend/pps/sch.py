@@ -10,8 +10,8 @@ class SchPps(HealerPps):
     bio_potency = 70
     ed_potency = 100
         
-    def get_pps(self, character_stats, caster_tax):
-        return self.total_potency_spreadsheet_port(character_stats, caster_tax) / self.get_cycle(caster_tax)
+    def get_pps(self, character_stats, caster_tax, num_ed_per_min, num_filler_casts):
+        return self.total_potency_spreadsheet_port(character_stats, caster_tax, num_ed_per_min, num_filler_casts) / self.get_cycle(caster_tax)
         
     # hard coded for a ~180 second cycle, actual length calculated by get_cycle
     # todo: extend this for variable length
