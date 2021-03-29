@@ -23,3 +23,15 @@
 .buff-icon {
 	margin-right: 8px;
 }
+
+.role-container {
+	padding-top: 8px;
+}
+
+.role-container:last-child {
+	padding-bottom: 8px;
+}
+
+.role-name {
+	font-weight: bold;
+}
