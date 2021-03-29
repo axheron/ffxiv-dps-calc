@@ -34,3 +34,4 @@ class TestCalcVars(unittest.TestCase):
         self.assertEqual(me.get_gcd(), 2.32)
         
         #todo: Add testing for raid dmg buffs (tech, div, etc) once implemented
+        

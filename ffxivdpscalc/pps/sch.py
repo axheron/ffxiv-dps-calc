@@ -1,27 +1,28 @@
 import math
 
 from ffxivdpscalc.calc import CharacterStats
+from ffxivdpscalc.pps.pps import HealerPps
 
 
-class SchCharacterStats(CharacterStats):
+class SchPps(HealerPps):
     r2_potency = 200
     b3_potency = 290
     bio_potency = 70
     ed_potency = 100
-
-    def __init__(self, job, wd, mainstat, det, crit, dh, speed, ten, pie):
-        super().__init__(job, wd, mainstat, det, crit, dh, speed, ten, pie)
+        
+    def get_pps(self, character_stats, caster_tax):
+        return self.total_potency_spreadsheet_port(character_stats, caster_tax) / self.get_cycle(caster_tax)
         
     # hard coded for a ~180 second cycle, actual length calculated by get_cycle
     # todo: extend this for variable length
-    def pps_spreadsheet_port(self, caster_tax, num_ed_per_min):
+    def total_potency_spreadsheet_port(self, character_stats, caster_tax):
         # do as the spreadsheet do        
-        short_gcd = self.get_gcd()
+        short_gcd = character_stats.get_gcd()
         
         result = 0
-        result += 3*self.ed_potency*num_ed_per_min
+        result += 12*self.ed_potency
         
-        sps_scalar = ((1000+math.floor(130*(self.speed.value-380)/3300))/1000)
+        sps_scalar = 1 + (character_stats.speed.get_multiplier() / 1000)
         # 1 bio + x B3 and 4 R2s that replace B3s
         if (((30-2*short_gcd) % (short_gcd+caster_tax)) > 1.5):
             result += 6*(math.ceil((30-2*short_gcd)/(short_gcd+caster_tax)))*self.b3_potency+2*self.b3_potency+4*self.r2_potency
@@ -32,11 +33,11 @@ class SchCharacterStats(CharacterStats):
             result += 6*9*sps_scalar*self.bio_potency
             result += 6*((3-((30-2*short_gcd) % (short_gcd+caster_tax)))/3)*sps_scalar*self.bio_potency
                 
-        return  result
+        return result
         
     # Actual time taken by a 180s rotation, is lower than 180s
-    def get_cycle(self, caster_tax):
-        short_gcd = self.get_gcd()
+    def get_cycle(self, character_stats, caster_tax):
+        short_gcd = character_stats.get_gcd()
         result = 0
         # 1 bio + x Broils and 4 R2s/3min
         if ((30-2*short_gcd) % (short_gcd+caster_tax) > 1.5) : 

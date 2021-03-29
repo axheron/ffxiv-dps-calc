@@ -80,7 +80,7 @@ class CharacterStats:
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
     
     def get_gcd(self):
-        return math.floor(0.25 * (1000 - (130 * (self.speed.value - 380) // 3300))) /100
+        return math.floor(0.25 * (1000 - self.speed.get_multiplier())) / 100
 
     # comp is a Comp() object
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):
