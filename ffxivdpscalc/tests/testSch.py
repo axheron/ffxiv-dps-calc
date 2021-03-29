@@ -15,4 +15,3 @@ class TestSchCalc(unittest.TestCase):
         me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
         mypps = SchPps()
         self.assertEqual(mypps.get_cycle(me, 0.12), 174.12)
-        

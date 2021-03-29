@@ -45,4 +45,3 @@ class SchPps(HealerPps):
         else:  
             result += 6*(2*short_gcd+math.floor((30-2*short_gcd)/(short_gcd+caster_tax))*(short_gcd+caster_tax))-1*caster_tax
         return result
-    
