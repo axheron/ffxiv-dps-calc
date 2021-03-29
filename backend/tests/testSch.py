@@ -1,7 +1,7 @@
 import unittest, math
 
-from ffxivdpscalc.pps.sch import SchPps
-from ffxivdpscalc.calc import Jobs, CharacterStats
+from backend.pps.sch import SchPps
+from backend.calc import Jobs, CharacterStats
 
 
 class TestSchCalc(unittest.TestCase):

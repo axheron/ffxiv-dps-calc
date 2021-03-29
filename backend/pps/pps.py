@@ -1,6 +1,6 @@
 import math
 
-from ffxivdpscalc.calc import CharacterStats
+from backend.calc import CharacterStats
 
 
 class Pps:

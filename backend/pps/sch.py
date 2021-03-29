@@ -1,7 +1,7 @@
 import math
 
-from ffxivdpscalc.calc import CharacterStats
-from ffxivdpscalc.pps.pps import HealerPps
+from backend.calc import CharacterStats
+from backend.pps.pps import HealerPps
 
 
 class SchPps(HealerPps):
