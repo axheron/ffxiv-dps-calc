@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, abort
+import requests
 
-from backend.calc import CharacterStats, Comp, Jobs
+from backend.calc import CharacterStats, Comp, CharacterStatFactory
 from backend.pps.sch import SchPps
 
 app = Flask(__name__)
@@ -26,30 +27,13 @@ def main():
     if not data:
         return "abort", abort(400)
 
-    # Convert job strings to enum
-    job_string_to_enum = {
-        "SCH": Jobs.SCH,
-        "AST": Jobs.AST,
-        "WHM": Jobs.WHM,
-        "PLD": Jobs.PLD,
-        "WAR": Jobs.WAR,
-        "DRK": Jobs.DRK,
-        "GNB": Jobs.GNB,
-        "NIN": Jobs.NIN,
-        "DRG": Jobs.DRG,
-        "MNK": Jobs.MNK,
-        "SAM": Jobs.SAM,
-        "MCH": Jobs.MCH,
-        "DNC": Jobs.DNC,
-        "BRD": Jobs.BRD,
-        "SMN": Jobs.SMN,
-        "BLM": Jobs.BLM,
-        "RDM": Jobs.RDM,
-    }
-    
     player_data = data['player']
 
-    my_job = job_string_to_enum[player_data["job"]]
+    try:
+        my_job = CharacterStatFactory.create_job(player_data['job'])[0]
+    except KeyError:
+        return f"Currently {player_data['job']} is not supported."
+
     player = CharacterStats(
         my_job,
         player_data['wd'],
@@ -63,8 +47,74 @@ def main():
     )
     my_sch_pps = SchPps()
     potency = my_sch_pps.get_pps(player)
-    comp_jobs = [job_string_to_enum[comp_job] for comp_job in data['comp']]
+    try:
+        comp_jobs = [CharacterStatFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+    except KeyError:
+        return "A job was not supported in that team comp."
+
     my_comp = Comp(comp_jobs)
+
+    dps = player.calc_damage(potency, my_comp)
+    return jsonify({"dps": dps})
+
+
+@app.route('/calc_damage/etro', methods=["POST"])
+def etro_main():
+    """Calculates damage, given a gearsetID from Etro. Should check database to see if gearset exist first.
+    JSON format:
+    'job': String,
+    'comp': Array,
+    'etro_id': String,
+    """
+
+    data = request.get_json()
+
+    # Check comp first before making request
+    if not data:
+        return "abort", abort(400)
+    try:
+        comp_jobs = [CharacterStatFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+    except KeyError:
+        return "An unsupported job was found in the team composition."
+
+    my_comp = Comp(comp_jobs)
+
+    player_job_data = CharacterStatFactory.create_job(data['job'])
+
+    # TODO: Check internal database to see if cached before request
+
+    try:
+        etro_data = requests.get("/".join(["https://etro.gg/api/gearsets", data["etro_id"]])).json()
+    except requests.exceptions.RequestException:
+        return "There was an error making the etro request"
+
+    etro_stats = etro_data["totalParams"]
+    eq_stats = {stat["name"]: stat["value"] for stat in etro_stats}
+
+    # For Etro sets that are non-tanks
+    if "TEN" not in eq_stats:
+        eq_stats["TEN"] = 0
+
+    # Making speed job-agnostic
+    if "SPS" in eq_stats:
+        eq_stats["SPEED"] = eq_stats["SPS"]
+    else:
+        eq_stats["SPEED"] = eq_stats["SKS"]
+
+    player = CharacterStats(
+        player_job_data[0],
+        eq_stats["Weapon Damage"],
+        eq_stats[player_job_data[1]],
+        eq_stats["DET"],
+        eq_stats["CRT"],
+        eq_stats["DH"],
+        eq_stats["SPEED"],
+        eq_stats["TEN"],
+        eq_stats["PIE"],
+    )
+
+    my_sch_pps = SchPps()
+    potency = my_sch_pps.get_pps(player)
 
     dps = player.calc_damage(potency, my_comp)
     return jsonify({"dps": dps})

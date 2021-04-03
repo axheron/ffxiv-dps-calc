@@ -200,3 +200,32 @@ class Comp:
         self.jobs = jobs
         self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
         self.n_roles = len(set([job.role for job in jobs]))
+
+
+class CharacterStatFactory:
+    """
+    Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError.
+    """
+    @staticmethod
+    def create_job(name: str):
+        job_string_to_enum = {
+            "SCH": (Jobs.SCH, "MND"),
+            "AST": (Jobs.AST,),
+            "WHM": (Jobs.WHM,),
+            "PLD": (Jobs.PLD,),
+            "WAR": (Jobs.WAR,),
+            "DRK": (Jobs.DRK,),
+            "GNB": (Jobs.GNB,),
+            "NIN": (Jobs.NIN,),
+            "DRG": (Jobs.DRG,),
+            "MNK": (Jobs.MNK,),
+            "SAM": (Jobs.SAM,),
+            "MCH": (Jobs.MCH,),
+            "DNC": (Jobs.DNC,),
+            "BRD": (Jobs.BRD,),
+            "SMN": (Jobs.SMN,),
+            "BLM": (Jobs.BLM,),
+            "RDM": (Jobs.RDM,),
+        }
+
+        return job_string_to_enum[name]
