@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
 
 import { GearSet } from '../data/gearset';
+import { DpsService } from '../service/dps.service';
 
 
 @Component({
@@ -52,7 +54,7 @@ export class GearsetListComponent implements OnInit {
 	}];
 	editCache: { [key: string]: { edit: boolean; data: GearSet } } = {};
 
-  constructor() { }
+  constructor(private dpsService: DpsService) { }
 
   ngOnInit(): void {
   	this.updateEditCache();
@@ -74,6 +76,7 @@ export class GearsetListComponent implements OnInit {
     const index = this.dataSet.findIndex(item => item.id === id);
     Object.assign(this.dataSet[index], this.editCache[id].data);
     this.editCache[id].edit = false;
+    this.calculateDps(index);
   }
 
   updateEditCache(): void {
@@ -83,6 +86,12 @@ export class GearsetListComponent implements OnInit {
         data: { ...item }
       };
     });
+  }
+
+  private calculateDps(index: number): void {
+    this.dpsService.calculateDps(this.dataSet[index]).pipe(take(1)).subscribe((dps: number) => {
+      this.dataSet[index].dps = dps;
+    })
   }
 
 }
