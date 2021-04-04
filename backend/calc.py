@@ -78,6 +78,12 @@ class CharacterStats:
     @classmethod
     def apply_stat(cls, damage, stat):
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
+    
+    def get_gcd(self):
+        return math.floor(0.25 * (1000 - self.speed.get_multiplier())) / 100
+    
+    def get_dot_scalar(self):
+        return  1 + (self.speed.get_multiplier() / 1000)
 
     # comp is a Comp() object
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):

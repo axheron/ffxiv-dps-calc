@@ -28,4 +28,12 @@ class TestCalcVars(unittest.TestCase):
         # have to manually provide pps for testing for now
         self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20608.705123055555)
         
+    def test_gcd(self):
+        me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
+        self.assertEqual(me.get_gcd(), 2.32)
+        
+    def test_dot_scalar(self):
+        me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
+        self.assertEqual(me.get_dot_scalar(), 1.069)
+        
         #todo: Add testing for raid dmg buffs (tech, div, etc) once implemented
