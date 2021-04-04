@@ -1,7 +1,7 @@
 import math
 
-from backend.calc import CharacterStats
-from backend.pps.pps import HealerPps
+from calc import CharacterStats
+from pps.pps import HealerPps
 
 
 class SchPps(HealerPps):

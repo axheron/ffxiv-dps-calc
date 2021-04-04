@@ -1,6 +1,6 @@
 import math
 
-from backend.calc import CharacterStats
+from calc import CharacterStats
 
 
 class Pps:

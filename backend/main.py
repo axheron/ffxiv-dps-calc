@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request, abort
 import requests
 
-from backend.calc import CharacterStats, Comp, CharacterStatFactory
-from backend.pps.sch import SchPps
+from calc import CharacterStats, Comp, CharacterStatFactory
+from pps.sch import SchPps
 
 app = Flask(__name__)
 
