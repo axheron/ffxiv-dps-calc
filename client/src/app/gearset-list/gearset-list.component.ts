@@ -59,6 +59,7 @@ export class GearsetListComponent implements OnInit {
   constructor(private httpClient: HttpClient) { }
 
   ngOnInit(): void {
+    this.getAllDamage();
   	this.updateEditCache();
   }
 
@@ -88,6 +89,12 @@ export class GearsetListComponent implements OnInit {
         data: { ...item }
       };
     });
+  }
+
+  getAllDamage(): void {
+  	for (let index : number = 0; index < this.dataSet.length; index++) {
+  	  this.getDamage(index);
+  	}
   }
 
   getDamage(index: number): void {
