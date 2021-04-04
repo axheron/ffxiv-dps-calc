@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { GearSet } from '../data/gearset';
+import { GearSet, GearSetResponse } from '../data/gearset';
 
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
 
 @Component({
   selector: 'app-gearset-list',
@@ -18,7 +19,8 @@ export class GearsetListComponent implements OnInit {
 		dh: 1100,
 		crit: 3802,
 		det: 2272,
-		sps: 2139,
+		speed: 2139,
+		ten: 380,
 		pie: 682,
 		gcd: 2.32,
 		mp: -1191.90,
@@ -31,7 +33,8 @@ export class GearsetListComponent implements OnInit {
 		dh: 1460,
 		crit: 4033,
 		det: 1995,
-		sps: 1223,
+		speed: 1223,
+		ten: 380,
 		pie: 1284,
 		gcd: 2.41,
 		mp: -291.03,
@@ -44,7 +47,8 @@ export class GearsetListComponent implements OnInit {
 		dh: 1400,
 		crit: 3781,
 		det: 2478,
-		sps: 2141,
+		speed: 2141,
+		ten: 380,
 		pie: 340,
 		gcd: 2.32,
 		mp: -1491.90,
@@ -52,7 +56,7 @@ export class GearsetListComponent implements OnInit {
 	}];
 	editCache: { [key: string]: { edit: boolean; data: GearSet } } = {};
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   ngOnInit(): void {
   	this.updateEditCache();
@@ -74,6 +78,7 @@ export class GearsetListComponent implements OnInit {
     const index = this.dataSet.findIndex(item => item.id === id);
     Object.assign(this.dataSet[index], this.editCache[id].data);
     this.editCache[id].edit = false;
+    this.getDamage(index);
   }
 
   updateEditCache(): void {
@@ -83,6 +88,22 @@ export class GearsetListComponent implements OnInit {
         data: { ...item }
       };
     });
+  }
+
+  getDamage(index: number): void {
+  	const damageUrl = 'https://ffxiv-dps-calc-backend.uc.r.appspot.com/calc_damage';
+  	const headers = new HttpHeaders({
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+            })
+  	const player = this.dataSet[index];
+  	/* TODO: stop hardcoding comp */
+  	const comp = ['SCH', 'PLD', 'GNB', 'AST', 'MCH', 'DRG', 'MNK', 'BLM'];
+  	const response = this.httpClient.post<GearSetResponse>(damageUrl, JSON.stringify({player: player, comp: comp, job: 'SCH'}), {headers: headers}).subscribe(res => this.dataSet[index].dps = res.dps);
+  	
   }
 
 }
