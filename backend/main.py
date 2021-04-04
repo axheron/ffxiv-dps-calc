@@ -55,7 +55,7 @@ def main():
 
     my_comp = Comp(comp_jobs)
 
-    dps = player.calc_damage(potency, my_comp)
+    dps = round(player.calc_damage(potency, my_comp), 2)
     return jsonify({"dps": dps})
 
 
