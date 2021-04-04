@@ -78,6 +78,12 @@ class CharacterStats:
     @classmethod
     def apply_stat(cls, damage, stat):
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
+    
+    def get_gcd(self):
+        return math.floor(0.25 * (1000 - self.speed.get_multiplier())) / 100
+    
+    def get_dot_scalar(self):
+        return  1 + (self.speed.get_multiplier() / 1000)
 
     # comp is a Comp() object
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):
@@ -200,3 +206,32 @@ class Comp:
         self.jobs = jobs
         self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
         self.n_roles = len(set([job.role for job in jobs]))
+
+
+class CharacterStatFactory:
+    """
+    Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError.
+    """
+    @staticmethod
+    def create_job(name: str):
+        job_string_to_enum = {
+            "SCH": (Jobs.SCH, "MND"),
+            "AST": (Jobs.AST,),
+            "WHM": (Jobs.WHM,),
+            "PLD": (Jobs.PLD,),
+            "WAR": (Jobs.WAR,),
+            "DRK": (Jobs.DRK,),
+            "GNB": (Jobs.GNB,),
+            "NIN": (Jobs.NIN,),
+            "DRG": (Jobs.DRG,),
+            "MNK": (Jobs.MNK,),
+            "SAM": (Jobs.SAM,),
+            "MCH": (Jobs.MCH,),
+            "DNC": (Jobs.DNC,),
+            "BRD": (Jobs.BRD,),
+            "SMN": (Jobs.SMN,),
+            "BLM": (Jobs.BLM,),
+            "RDM": (Jobs.RDM,),
+        }
+
+        return job_string_to_enum[name]
