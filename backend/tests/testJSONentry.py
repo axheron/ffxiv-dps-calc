@@ -7,7 +7,6 @@ def test_json_calc():
         '/calc_damage',
         data=json.dumps({
             'player': {
-                'job': 'SCH',
                 'wd': 180,
                 'mainstat': 5577,
                 'det': 2272,
@@ -17,7 +16,8 @@ def test_json_calc():
                 'ten': 380,
                 'pie': 340,
             },
-            'comp': ['PLD', 'WAR', 'SCH', 'AST', 'SAM', 'NIN', 'MCH', 'SMN']
+            'comp': ['PLD', 'WAR', 'SCH', 'AST', 'SAM', 'NIN', 'MCH', 'SMN'],
+            'job': 'SCH',
         }),
         content_type='application/json',
     )

@@ -27,7 +27,7 @@
         <td class="num-col">{{data.dh}}</td>
   	    <td class="num-col">{{data.crit}}</td>
   	    <td class="num-col">{{data.det}}</td>
-	    <td class="num-col">{{data.sps}}</td>
+	    <td class="num-col">{{data.speed}}</td>
         <td class="num-col">{{data.pie}}</td>
         <td class="num-col">{{data.gcd}}</td>
         <td class="num-col">{{data.mp}}</td>
@@ -42,35 +42,35 @@
         	  [(ngModel)]="editCache[data.id].data.name" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.weaponDamage" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.mainStat" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.dh" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.crit" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.det" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
-              [(ngModel)]="editCache[data.id].data.sps" />
+          <input type="number" nz-input
+              [(ngModel)]="editCache[data.id].data.speed" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.pie" />
         </td>
         <td class="num-col">
-          <input type="text" nz-input
+          <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.gcd" />
         </td>
         <td class="num-col">{{editCache[data.id].data.mp}}

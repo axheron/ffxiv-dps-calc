@@ -6,9 +6,14 @@ export interface GearSet {
 	dh: number;
 	crit: number;
 	det: number;
-	sps: number;
+	speed: number;
+	ten: number;
 	pie: number;
 	gcd: number;
 	mp: number;
+	dps: number;
+}
+
+export interface GearSetResponse {
 	dps: number;
 }

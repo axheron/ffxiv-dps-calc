@@ -1,25 +1,26 @@
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
 import requests
 
 from calc import CharacterStats, Comp, CharacterStatFactory
 from pps.sch import SchPps
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/calc_damage', methods=["POST"])
 def main():
     """Calculates damage based on input. Accepts and returns JSON. JSON format is as follows:
     'player': Object
-        'job': string
-        'wd': int
-        'mainstat': int
+        'weaponDamage': int
+        'mainStat': int
         'det': int
         'crit': int
         'dh': int
         'speed': int
         'ten': int
         'pie': int
+    'job': string
     'comp': Array
     """
     data = request.get_json()
@@ -30,14 +31,14 @@ def main():
     player_data = data['player']
 
     try:
-        my_job = CharacterStatFactory.create_job(player_data['job'])[0]
+        my_job = CharacterStatFactory.create_job(data['job'])[0]
     except KeyError:
-        return f"Currently {player_data['job']} is not supported."
+        return f"Currently {data['job']} is not supported."
 
     player = CharacterStats(
         my_job,
-        player_data['wd'],
-        player_data['mainstat'],
+        player_data['weaponDamage'],
+        player_data['mainStat'],
         player_data['det'],
         player_data['crit'],
         player_data['dh'],
@@ -54,7 +55,7 @@ def main():
 
     my_comp = Comp(comp_jobs)
 
-    dps = player.calc_damage(potency, my_comp)
+    dps = round(player.calc_damage(potency, my_comp), 2)
     return jsonify({"dps": dps})
 
 
