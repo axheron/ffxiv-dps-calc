@@ -1,16 +1,19 @@
 <div class="party-select-container">
   <nz-avatar class="self-icon" [nzSize]="64"
-      nzSrc="{{jobConsts.JOBS.get(selfJob)!.path}}" (click)="changeSelf()">
+      nzSrc="{{jobConsts.JOBS.get(dpsService.selfJob)!.path}}"
+      (click)="changeSelf()">
   </nz-avatar>
-  <nz-avatar class="party-member-icon" *ngFor="let member of party; index as i;"
+  <nz-avatar class="party-member-icon"
+      *ngFor="let member of dpsService.party; index as i;"
       [nzSize]="64" nzSrc="{{jobConsts.JOBS.get(member)!.path}}"
       (click)="changeParty(i)">
   </nz-avatar>
 </div>
 <div class="buffs-container">
-  <img class="buff-icon" *ngFor="let buff of jobConsts.JOBS.get(selfJob)!.buffs;"
+  <img class="buff-icon"
+      *ngFor="let buff of jobConsts.JOBS.get(dpsService.selfJob)!.buffs;"
       src="{{buffs.get(buff)!.path}}"/>
-  <ng-container *ngFor="let member of party;">
+  <ng-container *ngFor="let member of dpsService.party;">
     <img class="buff-icon"
 	    *ngFor="let buff of jobConsts.JOBS.get(member)!.buffs;"
 		src="{{buffs.get(buff)!.path}}"/>

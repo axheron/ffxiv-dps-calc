@@ -4,6 +4,7 @@ import { take } from 'rxjs/operators';
 
 import {buffs} from '../data/buff';
 import * as jobConsts from '../data/job';
+import { DpsService } from '../service/dps.service';
 
 
 @Component({
@@ -18,11 +19,9 @@ export class PartySelectComponent implements OnInit {
 
   @ViewChild('jobPickerModal') jobPickerModalRef!: NzModalRef;
 
-  selfJob = 'SCH';
-  party = ['PLD', 'GNB', 'AST', 'MCH', 'DRG', 'MNK', 'BLM'];
   jobPickerVisible = false;
 
-  constructor() { }
+  constructor(public dpsService: DpsService) { }
 
   ngOnInit(): void {
   }
@@ -33,7 +32,8 @@ export class PartySelectComponent implements OnInit {
     this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
         (jobChosen: string) => {
           if (jobChosen) {
-            this.selfJob = jobChosen;
+            this.dpsService.selfJob = jobChosen;
+            this.dpsService.getAllDamage();
           }
         });
   }
@@ -43,7 +43,8 @@ export class PartySelectComponent implements OnInit {
         this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
           (jobChosen: string) => {
             if (jobChosen) {
-              this.party[index] = jobChosen;
+              this.dpsService.party[index] = jobChosen;
+              this.dpsService.getAllDamage();
             }
           });
   }

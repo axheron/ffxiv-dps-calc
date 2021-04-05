@@ -1,0 +1,6 @@
+{
+  "/calc_damage": {
+    "target": "http://localhost:5000",
+    "secure": false
+  }
+}
