@@ -56,6 +56,56 @@ def main():
     my_comp = Comp(comp_jobs)
 
     dps = round(player.calc_damage(potency, my_comp), 2)
+    return jsonify({"dps": dps})
+
+@app.route('/update_stats', methods=["POST"])
+def update_stats():
+    """Calculates damage based on input. Accepts and returns JSON. JSON format is as follows:
+    'player': Object
+        'weaponDamage': int
+        'mainStat': int
+        'det': int
+        'crit': int
+        'dh': int
+        'speed': int
+        'ten': int
+        'pie': int
+    'job': string
+    'comp': Array
+    """
+    data = request.get_json()
+
+    if not data:
+        return "abort", abort(400)
+
+    player_data = data['player']
+
+    try:
+        my_job = CharacterStatFactory.create_job(data['job'])[0]
+    except KeyError:
+        return f"Currently {data['job']} is not supported."
+
+    player = CharacterStats(
+        my_job,
+        player_data['weaponDamage'],
+        player_data['mainStat'],
+        player_data['det'],
+        player_data['crit'],
+        player_data['dh'],
+        player_data['speed'],
+        player_data['ten'],
+        player_data['pie']
+    )
+    my_sch_pps = SchPps()
+    potency = my_sch_pps.get_pps(player)
+    try:
+        comp_jobs = [CharacterStatFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+    except KeyError:
+        return "A job was not supported in that team comp."
+
+    my_comp = Comp(comp_jobs)
+
+    dps = round(player.calc_damage(potency, my_comp), 2)
     gcd = player.get_gcd()
     mp = round(my_sch_pps.get_mppm(player), 2)
     return jsonify({"dps": dps,
