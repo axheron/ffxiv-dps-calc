@@ -15,4 +15,4 @@ jobs:
         with:
           credentials: ${{ secrets.be_gcp_credentials }}
           project_id: ${{ secrets.be_project_id }}
-          working-directory: ./backend
+          working_directory: ./backend
