@@ -76,6 +76,8 @@ export class DpsService {
     });
     this.http.post<GearSetResponse>(damageUrl, request, {headers: headers}).subscribe((res: GearSetResponse) => {
       this.dataSet[index].dps = res.dps;
+      this.dataSet[index].gcd = res.gcd;
+      this.dataSet[index].mp = res.mp;
     });
   }
 }

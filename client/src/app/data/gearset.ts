@@ -16,4 +16,6 @@ export interface GearSet {
 
 export interface GearSetResponse {
 	dps: number;
+	mp: number;
+	gcd: number;
 }

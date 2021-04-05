@@ -56,7 +56,11 @@ def main():
     my_comp = Comp(comp_jobs)
 
     dps = round(player.calc_damage(potency, my_comp), 2)
-    return jsonify({"dps": dps})
+    gcd = player.get_gcd()
+    mp = round(my_sch_pps.get_mppm(player), 2)
+    return jsonify({"dps": dps,
+                    "gcd": gcd,
+                    "mp": mp})
 
 
 @app.route('/calc_damage/etro', methods=["POST"])
@@ -117,8 +121,12 @@ def etro_main():
     my_sch_pps = SchPps()
     potency = my_sch_pps.get_pps(player)
 
-    dps = player.calc_damage(potency, my_comp)
-    return jsonify({"dps": dps})
+    dps = round(player.calc_damage(potency, my_comp), 2)
+    gcd = player.get_gcd()
+    mp = round(my_sch_pps.get_mppm(player), 2)
+    return jsonify({"dps": dps,
+                    "gcd": gcd,
+                    "mp": mp})
 
 
 if __name__ == "__main__":
