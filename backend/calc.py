@@ -183,7 +183,7 @@ class Buffs(Enum):
                 decay_interval = 4
                 decay_rate = 0.2
                 for i in range(self.duration / decay_interval):
-                    total += (self.multiplier - decay_rate * i) * decay_interval / self.cd
+                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cd
                 return total
             return 0 # Sucks to not have Embolden apply, I guess
         return self.multiplier * self.duration / self.cd
