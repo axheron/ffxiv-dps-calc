@@ -1,4 +1,4 @@
-<nz-table #basicTable class="gearset-table" [nzData]="dataSet" nzShowPagination=false>
+<nz-table #basicTable class="gearset-table" [nzData]="dpsService.dataSet" nzShowPagination=false>
   <thead>
     <tr>
       <th rowspan="2">Set name</th>
@@ -27,7 +27,7 @@
         <td class="num-col">{{data.dh}}</td>
   	    <td class="num-col">{{data.crit}}</td>
   	    <td class="num-col">{{data.det}}</td>
-	    <td class="num-col">{{data.speed}}</td>
+	      <td class="num-col">{{data.speed}}</td>
         <td class="num-col">{{data.pie}}</td>
         <td class="num-col">{{data.gcd}}</td>
         <td class="num-col">{{data.mp}}</td>
@@ -73,9 +73,9 @@
           <input type="number" nz-input
               [(ngModel)]="editCache[data.id].data.gcd" />
         </td>
-        <td class="num-col">{{editCache[data.id].data.mp}}
+        <td class="num-col">{{data.mp}}
         </td>
-        <td class="num-col">{{editCache[data.id].data.dps}}</td>
+        <td class="num-col">{{data.dps}}</td>
         <td class="action-col">
           <a (click)="saveEdit(data.id)" class="save">Save</a>
           <br>
