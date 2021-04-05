@@ -1,7 +1,7 @@
 import unittest, math
 
-from backend.pps.sch import SchPps
-from backend.calc import Jobs, CharacterStats
+from pps.sch import SchPps
+from calc import Jobs, CharacterStats
 
 
 class TestSchCalc(unittest.TestCase):

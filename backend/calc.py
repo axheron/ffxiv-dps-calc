@@ -103,8 +103,6 @@ class CharacterStats:
         # todo: pull out traits
         if self.job.role == Roles.HEALER: damage = math.floor(damage * 1.3)  # magic and mend
 
-        # todo: effect of raid buffs
-
         # damage effect of probabalistic stats
         crit_damage = self.apply_stat(damage, self.crit)
         dh_damage = damage * self.dh.stat.m_factor // 1000
@@ -117,15 +115,20 @@ class CharacterStats:
         # apply party crit/dh buffs
         for buff in comp.raidbuffs:
             if buff in Buffs.crit_buffs():
-                crit_rate += buff.avg_buff_effect()
+                crit_rate += buff.avg_buff_effect(self.job)
             elif buff in Buffs.dh_buffs():
-                dh_rate += buff.avg_buff_effect()
+                dh_rate += buff.avg_buff_effect(self.job)
 
         cdh_rate = crit_rate * dh_rate
         normal_rate = 1 - crit_rate - dh_rate + cdh_rate
-        return damage * normal_rate + crit_damage * (crit_rate - cdh_rate) + dh_damage * (
+        expected_damage = damage * normal_rate + crit_damage * (crit_rate - cdh_rate) + dh_damage * (
                     dh_rate - cdh_rate) + cdh_damage * cdh_rate
 
+        for buff in comp.raidbuffs:
+            if buff in Buffs.raid_buffs():
+                expected_damage *= (1 + buff.avg_buff_effect(self.job))
+
+        return expected_damage
 
 class Roles(Enum):
     TANK = auto()
@@ -170,9 +173,20 @@ class Buffs(Enum):
     def dh_buffs(cls):
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
-    def avg_buff_effect(self):
-        return self.multiplier * self.duration / self.cd
+    @classmethod
+    def raid_buffs(cls):
+        return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
+    def avg_buff_effect(self, job):
+        if self.name == 'EMBOLDEN':
+            if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
+                decay_interval = 4
+                decay_rate = 0.2
+                for i in range(self.duration / decay_interval):
+                    total += (self.multiplier - decay_rate * i) * decay_interval / self.cd
+                return total
+            return 0 # Sucks to not have Embolden apply, I guess
+        return self.multiplier * self.duration / self.cd
 
 class Jobs(Enum):
     # job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
