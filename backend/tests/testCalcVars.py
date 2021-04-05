@@ -1,6 +1,6 @@
 import unittest
 
-from backend.calc import CharacterStats, Comp, Jobs
+from calc import CharacterStats, Comp, Jobs
 
 
 class TestCalcVars(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestCalcVars(unittest.TestCase):
     def test_baseline(self):
         # Baseline test: 5 roles, no raid buffs
         me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
-        the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.AST, Jobs.SAM, Jobs.NIN, Jobs.MCH, Jobs.BLM})
+        the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.WHM, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.BLM})
         # have to manually provide pps for testing for now
         self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20381.368540000003)
     
@@ -36,4 +36,20 @@ class TestCalcVars(unittest.TestCase):
         me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
         self.assertEqual(me.get_dot_scalar(), 1.069)
         
-        #todo: Add testing for raid dmg buffs (tech, div, etc) once implemented
+    def test_single_raidbuff(self):
+        me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
+        the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.AST, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.BLM})
+        # have to manually provide pps for testing for now
+        self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20534.228804050006)
+
+    def test_multiple_raidbuff(self):
+        me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
+        the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.AST, Jobs.NIN, Jobs.SAM, Jobs.MCH, Jobs.BLM})
+        # have to manually provide pps for testing for now
+        self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20790.906664100632)
+
+    def test_embolden_has_no_effect(self):
+        me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
+        the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.WHM, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.RDM})
+        # have to manually provide pps for testing for now
+        self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20381.368540000003)
