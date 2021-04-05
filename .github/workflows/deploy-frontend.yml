@@ -14,30 +14,22 @@ defaults:
     
 jobs:
   build:
-    name: Build Angular FE
+    name: Deploy Angular FE
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - run: npm ci
       - run: npm run build --prod
-      - name: Archive build
-        if: success()
-        uses: actions/upload-artifact@v1
-        with:
-          name: deploy_dist
-          path: dist
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v1
-      - name: Download build
-        uses: actions/download-artifact@v1
-        with:
-          name: deploy_dist
       - uses: google-github-actions/deploy-appengine@main
         with:
           credentials: ${{ secrets.fe_gcp_credentials }}
