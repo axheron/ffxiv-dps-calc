@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: scripts
+    working-directory: client
     
 jobs:
   build:
