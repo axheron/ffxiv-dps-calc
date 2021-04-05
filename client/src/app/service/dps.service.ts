@@ -68,10 +68,6 @@ export class DpsService {
     const damageUrl = 'https://ffxiv-dps-calc-backend.uc.r.appspot.com/calc_damage';
     const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
     });
     const request = JSON.stringify({
         player: this.dataSet[index],
