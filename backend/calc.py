@@ -1,12 +1,23 @@
-# shitty proof of concept. run the run_test() method to try it (and maybe change some values).
-# todo: break this out into files properly
-
+"""
+calc.py
+Contains mathematical breakdowns of the stats used to calculate damage, and also contains a function
+(CharacterStats: calc_damage) to estimate the DPS of a character given the party composition and gear stats.
+"""
+from __future__ import annotations
 from enum import Enum, auto
 import itertools
 import math
+from typing import ClassVar
 
 
 class Stats(Enum):
+    """
+    Contains math factors for each individual stat.
+
+    base: the base value for each stat
+    m_factor: ???
+    m_scalar: ???
+    """
     MAINSTAT = (340, 165, 0)
     DET = (340, 130, 0)
     CRIT = (380, 200, 400)
@@ -17,18 +28,29 @@ class Stats(Enum):
     GCD = (2500, 1, 0)  # in milliseconds
     PRECISION = (1000, 1, 0)  # defaulting to 3 digits of precision
 
-    def __init__(self, base, m_factor, m_scalar):
+    def __init__(self, base: int, m_factor: int, m_scalar: int):
         self.base = base
         self.m_factor = m_factor
         self.m_scalar = m_scalar
 
 
-class Stat():
-    def __init__(self, stat, value):
+class Stat:
+    """
+    For each stat, gives a multiplier. Also holds the value of each stat.
+    """
+    def __init__(self, stat: Stats, value: int):
+        """
+        :param stat: from Stats enum.
+        :param value: the current value of the stat.
+        """
         self.stat = stat
         self.value = value
 
-    def get_multiplier(self):
+    def get_multiplier(self) -> float:
+        """
+        Calculates the multiplier based on the stat.
+        :return: A floating point number representing the multiplier.
+        """
         if self.stat == Stats.DH:
             return 1.25
 
@@ -40,23 +62,47 @@ class Stat():
 
 
 class ProbabalisticStat(Stat):
-    def __init__(self, stat, value):
-        super().__init__(stat, value)
-        self.p_factor = 1
-        self.p_scalar = 0
-        if stat == Stats.CRIT:
-            self.p_factor = 200
-            self.p_scalar = 50
-        elif stat == Stats.DH:
-            self.p_factor = 550
+    """
+    Derived from Stat class, used for stats that increase the chance of something happening such as critical hit and
+    direct hit.
 
-    def get_p(self):
+    p_factor: something
+    p_scalar: something else
+    """
+
+    # Class variable to convert stats
+    crit_convert: ClassVar[dict[Stats, tuple[int, int]]] = {
+        Stats.CRIT: (200, 50),
+        Stats.DH: (550, 0),
+    }
+    DEFAULT_PSTATS: ClassVar[tuple[int, int]] = (1, 0)
+
+    def __init__(self, stat: Stats, value: int):
+        """
+        :param stat: from Stats enum.
+        :param value: the current value of the stat.
+        :param p_factor: ???
+        :param p_scalar: ???
+        """
+        super().__init__(stat, value)
+        self.p_factor, self.p_scalar = ProbabalisticStat.crit_convert.get(stat, ProbabalisticStat.DEFAULT_PSTATS)
+
+    def get_p(self) -> float:
+        """
+        calculates p?
+        :return: returns p?
+        """
         delta = self.value - self.stat.base
         return (self.p_factor * delta // 3300 + self.p_scalar) / Stats.PRECISION.base
 
 
 class CharacterStats:
-    def __init__(self, job, wd, mainstat, det, crit, dh, speed, ten, pie):
+    """
+    The main class where damage is calculated. Initialized by providing the character's stats.
+    """
+
+    # TODO: Consider breaking out a lot of these parameters into a dict since that's a lot of params
+    def __init__(self, job: Jobs, wd: int, mainstat: int, det: int, crit: int, dh: int, speed: int, ten: int, pie: int):
         self.job = job
         self.wd = wd
         self.mainstat = Stat(Stats.MAINSTAT, mainstat)
@@ -68,7 +114,7 @@ class CharacterStats:
         self.pie = Stat(Stats.PIE, pie)
 
     @classmethod
-    def truncate(cls, val, precision=1000):
+    def truncate(cls, val: int, precision=1000) -> float:
         return (precision + val) / precision
 
     @classmethod
@@ -79,23 +125,34 @@ class CharacterStats:
     def apply_stat(cls, damage, stat):
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
 
-    # comp is a Comp() object
-    def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):
+    def calc_damage(self, potency: int, comp: Comp, is_dot=False, crit_rate=None, dh_rate=None) -> float:
+        """
+        Calculates the estimated DPS based on the team composition and current character stats
+        :param potency: Potency calculated on expected rotation
+        :param comp: Team composition.
+        :param is_dot: ???
+        :param crit_rate: ???
+        :param dh_rate: ???
+        :return: the DPS number
+        """
+
         # modify mainstat according to number of roles
         modified_mainstat = Stat(Stats.MAINSTAT, math.floor(self.mainstat.value * (1 + 0.01 * comp.n_roles)))
 
         # damage effect of non-probabalistic stats
         damage = potency * (self.wd + (340 * self.job.job_mod // 1000)) * (
-                    100 + modified_mainstat.get_multiplier()) // 100;  # cursed tbh
+                    100 + modified_mainstat.get_multiplier()) // 100  # cursed tbh
         damage = self.apply_stat(damage, self.det)
         damage = self.apply_stat(damage, self.ten)
-        if is_dot: damage = self.apply_stat(damage, self.speed)
+        if is_dot:
+            damage = self.apply_stat(damage, self.speed)
 
         damage //= 100  # why? i do not know. cargo culted
 
         # damage effect of job traits / stance
         # todo: pull out traits
-        if self.job.role == Roles.HEALER: damage = math.floor(damage * 1.3)  # magic and mend
+        if self.job.role == Roles.HEALER:
+            damage = math.floor(damage * 1.3)  # magic and mend
 
         # todo: effect of raid buffs
 
@@ -105,8 +162,10 @@ class CharacterStats:
         cdh_damage = crit_damage * self.dh.stat.m_factor // 1000
 
         # use expected crit rate based on stats if none is supplied
-        if not crit_rate: crit_rate = self.crit.get_p()
-        if not dh_rate: dh_rate = self.dh.get_p()
+        if not crit_rate:
+            crit_rate = self.crit.get_p()
+        if not dh_rate:
+            dh_rate = self.dh.get_p()
 
         # apply party crit/dh buffs
         for buff in comp.raidbuffs:
@@ -122,6 +181,9 @@ class CharacterStats:
 
 
 class Roles(Enum):
+    """
+    An enum used to calculate the stat bonuses for having one of each role.
+    """
     TANK = auto()
     HEALER = auto()
     MELEE = auto()
@@ -130,6 +192,14 @@ class Roles(Enum):
 
 
 class Buffs(Enum):
+    """
+    List of all buffs in the game. Each buff has three parameters:
+
+    multiplier: The amount that the damage of the ability is increased
+    duration_sec: How long the buff lasts, in seconds.
+    cooldown_sec: How long until the buff may be used again, in seconds.
+
+    """
     # aoe
     CHAIN = (0.1, 15, 120)
     DIV = (0.06, 15, 120)  # 3 seal div
@@ -151,10 +221,10 @@ class Buffs(Enum):
 
     # todo: should probably add standard, personal tank buffs
 
-    def __init__(self, multiplier, duration, cd):
+    def __init__(self, multiplier: float, duration_sec: int, cooldown_sec: int):
         self.multiplier = multiplier
-        self.duration = duration
-        self.cd = cd
+        self.duration_sec = duration_sec
+        self.cooldown_sec = cooldown_sec
 
     @classmethod
     def crit_buffs(cls):
@@ -164,12 +234,21 @@ class Buffs(Enum):
     def dh_buffs(cls):
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
-    def avg_buff_effect(self):
-        return self.multiplier * self.duration / self.cd
+    def avg_buff_effect(self) -> float:
+        """Gives the dps expected from a buff"""
+        return self.multiplier * self.duration_sec / self.cooldown_sec
 
 
 class Jobs(Enum):
-    # job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
+    """
+    Contains job related info.
+
+    job_mod: The bonus given to the main stat.
+    role: The Role of the job
+    raidbuff: A list of all raidbuffs that the job has
+
+    job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
+    """
     SCH = (115, Roles.HEALER, [Buffs.CHAIN])
     AST = (115, Roles.HEALER, [Buffs.DIV])
     WHM = (115, Roles.HEALER, [])
@@ -188,15 +267,22 @@ class Jobs(Enum):
     BLM = (115, Roles.CASTER, [])
     RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
 
-    def __init__(self, job_mod, role, raidbuff):
+    def __init__(self, job_mod: int, role: Roles, raidbuff: list[Buffs]):
         self.job_mod = job_mod
         self.role = role
         self.raidbuff = raidbuff
 
 
 class Comp:
+    """
+    The party composition.
 
-    def __init__(self, jobs):
+    jobs: A list of all jobs in the party (can contain duplicates).
+    raidbuffs: All unique raidbuffs in the party.
+    n_roles: All unique roles in the party.
+    """
+
+    def __init__(self, jobs: list[Jobs]):
         self.jobs = jobs
         self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
         self.n_roles = len(set([job.role for job in jobs]))
