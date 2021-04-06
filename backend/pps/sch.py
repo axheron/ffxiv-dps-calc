@@ -30,12 +30,8 @@ class SchPps(HealerPps):
         else:
             result += 6 * math.floor((30 - 2 * short_gcd) / (short_gcd + caster_tax)) * self.b3_potency + 2 * self.b3_potency + 4 * self.r2_potency
             
-            total_bio = 6 * 9 * sps_scalar * self.bio_potency
-            result += total_bio
-            weird_fractional_bio_tick =  6 * ((3 - ((30 - 2 * short_gcd) % (short_gcd + caster_tax))) / 3) * sps_scalar * self.bio_potency
-            print(total_bio)
-            print(weird_fractional_bio_tick)
-            result += weird_fractional_bio_tick
+            result += 6 * 9 * sps_scalar * self.bio_potency
+            result += 6 * ((3 - ((30 - 2 * short_gcd) % (short_gcd + caster_tax))) / 3) * sps_scalar * self.bio_potency
             
         result -= 3 * num_filler_casts * self.b3_potency
                 
@@ -82,9 +78,9 @@ class SchPps(HealerPps):
         b3_time_budget = (num_seconds - character.get_gcd() * (num_r2 + num_swift_b3 + num_bio))
         num_b3 = math.floor(b3_time_budget / (character.get_gcd() + caster_tax))
         
-        
+        # The number of bio ticks is modeled as:
+        # 1 tick every 3 seconds, starting on the third second
+        #     No partial credit because that's not a thing
         num_bio_ticks = math.floor(num_seconds / 3)
-        
-        print(self.bio_potency * character.get_dot_scalar() * num_bio_ticks)
         
         return self.b3_potency * num_b3 + num_r2 * (self.r2_potency) + num_swift_b3 * (self.b3_potency) + self.bio_potency * character.get_dot_scalar() * num_bio_ticks + self.ed_potency * num_af
