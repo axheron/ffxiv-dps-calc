@@ -1,7 +1,7 @@
 import math
 
-from calc import CharacterStats
-from pps.pps import HealerPps
+from backend.calc import CharacterStats
+from backend.pps.pps import HealerPps
 
 
 class SchPps(HealerPps):
@@ -47,3 +47,37 @@ class SchPps(HealerPps):
         else:  
             result += 6 * (2 * short_gcd+math.floor((30-2*short_gcd) / (short_gcd+caster_tax)) * (short_gcd+caster_tax)) - 1 * caster_tax
         return result
+
+
+    
+    def get_total_potency_flexible_time(self, character, num_seconds, caster_tax):        
+        # At a high level, we take the full window, figure out how many EDs we expect to be able to cast
+        #    3 every 60s
+        #    3 more every 180s
+        #    As long as the final minute is over 9 seconds (or 18 in a dissipation minute), we have no reason to believe any would be wasted
+        #        Because I am lazy, I just write off all of the EDs in the last minute as a loss if you don't have time to burn all of them
+        #        todo: model partial spending if the last minute is sub 20 seconds
+        num_af = 3 * math.ceil((num_seconds - 10) / 60) + 3 * math.ceil((num_seconds - 20) / 180) 
+        
+        # The number of r2s is modeled as:
+        #    1 every 120s for chain stratagem unless:
+        #    3 every 180s for dissipation (overlaps with chain stratagem r2)
+        num_r2 = math.ceil(num_seconds / 120) + 3 * math.ceil(num_seconds / 180) - math.ceil(num_seconds / 360)
+        
+        # The number of bios is modeled as:
+        #    2 every 60s
+        num_bio = math.ceil(num_seconds / 30)
+        
+        # The number of swifted b3s is modeled as:
+        #    1 every 60s
+        #    unless the last minute is under 30 seconds (losing the second bio)
+        #        in which case you lose one (assuming swift is used at the second bio of every minute)
+        num_swift_b3 = 1 if num_seconds <= 30 else math.floor(num_bio / 2)
+        
+        b3_time_budget = (num_seconds - character.get_gcd() * (num_r2 + num_swift_b3 + num_bio))
+        num_b3 = math.floor(b3_time_budget / (character.get_gcd() + caster_tax))
+        
+        
+        num_bio_ticks = math.floor(num_seconds / 3)
+        
+        return self.b3_potency * num_b3 + num_r2 * (self.r2_potency) + num_swift_b3 * (self.b3_potency) + self.bio_potency * character.get_dot_scalar() * num_bio_ticks + self.ed_potency * num_af
