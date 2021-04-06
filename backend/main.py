@@ -2,8 +2,9 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import requests
 
-from calc import CharacterStats, Comp, CharacterStatFactory
-from pps.sch import SchPps
+from backend.character.character import Character
+from backend.character.jobs import Comp, JobFactory
+from backend.pps.sch import SchPps
 
 app = Flask(__name__)
 CORS(app)
@@ -31,11 +32,11 @@ def main():
     player_data = data['player']
 
     try:
-        my_job = CharacterStatFactory.create_job(data['job'])[0]
+        my_job = JobFactory.create_job(data['job'])[0]
     except KeyError:
         return f"Currently {data['job']} is not supported."
 
-    player = CharacterStats(
+    player = Character(
         my_job,
         player_data['weaponDamage'],
         player_data['mainStat'],
@@ -49,7 +50,7 @@ def main():
     my_sch_pps = SchPps()
     potency = my_sch_pps.get_pps(player)
     try:
-        comp_jobs = [CharacterStatFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+        comp_jobs = [JobFactory.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
         return "A job was not supported in that team comp."
 
@@ -74,13 +75,13 @@ def etro_main():
     if not data:
         return "abort", abort(400)
     try:
-        comp_jobs = [CharacterStatFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+        comp_jobs = [JobFactory.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
         return "An unsupported job was found in the team composition."
 
     my_comp = Comp(comp_jobs)
 
-    player_job_data = CharacterStatFactory.create_job(data['job'])
+    player_job_data = JobFactory.create_job(data['job'])
 
     # TODO: Check internal database to see if cached before request
 
@@ -102,7 +103,7 @@ def etro_main():
     else:
         eq_stats["SPEED"] = eq_stats["SKS"]
 
-    player = CharacterStats(
+    player = Character(
         player_job_data[0],
         eq_stats["Weapon Damage"],
         eq_stats[player_job_data[1]],

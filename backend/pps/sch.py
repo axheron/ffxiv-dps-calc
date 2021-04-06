@@ -1,7 +1,9 @@
+# Sch specific implementation of pps calculation
+
 import math
 
-from calc import CharacterStats
-from pps.pps import HealerPps
+from backend.character.character import Character
+from backend.pps.pps import HealerPps
 
 
 class SchPps(HealerPps):
@@ -24,8 +26,12 @@ class SchPps(HealerPps):
         
         sps_scalar = character_stats.get_dot_scalar()
         # 1 bio + x B3 and 4 R2s that replace B3s
+        # First evaluate if our gcd is short enough to cause the shortened window (see get_cycle) to make gcd counts weird
         if (((30 - 2 * short_gcd) % (short_gcd + caster_tax)) > 1.5):
+            # split the 180s window into 6 30 second windows, calculate the number of b3s (minus one bio and one r2 or swift b3 per window)
+            # Adds the potencies of 2 swift broils plus 4 r2s to this
             result += 6 * math.ceil((30 - 2 * short_gcd) / (short_gcd + caster_tax)) * self.b3_potency + 2 * self.b3_potency + 4 * self.r2_potency
+            # apply bio potency
             result += 6 * 10 * sps_scalar * self.bio_potency
         else:
             result += 6 * math.floor((30 - 2 * short_gcd) / (short_gcd + caster_tax)) * self.b3_potency + 2 * self.b3_potency + 4 * self.r2_potency

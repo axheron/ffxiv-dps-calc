@@ -1,7 +1,4 @@
-import math
-
-from calc import CharacterStats
-
+# General PPS calculation interfaces
 
 class Pps:
         
