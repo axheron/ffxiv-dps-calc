@@ -114,15 +114,15 @@ class CharacterStats:
         self.pie = Stat(Stats.PIE, pie)
 
     @classmethod
-    def truncate(cls, val: int, precision=1000) -> float:
+    def truncate(cls, val: float, precision=1000) -> float:
         return (precision + val) / precision
 
     @classmethod
-    def multiply_and_truncate(cls, val, factor, precision=1000):
+    def multiply_and_truncate(cls, val: float, factor: float, precision=1000):
         return math.floor(val * cls.truncate(factor, precision))
 
     @classmethod
-    def apply_stat(cls, damage, stat):
+    def apply_stat(cls, damage: float, stat: Stat):
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
 
     def calc_damage(self, potency: int, comp: Comp, is_dot=False, crit_rate=None, dh_rate=None) -> float:
