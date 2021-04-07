@@ -5,7 +5,7 @@ from backend.character.character import Character, CharacterStatSpread
 from backend.character.jobs import Comp, Jobs
 
 
-class TestEndToEnd(unittest.TestCase): #pylint: disable=trailing-whitespace
+class TestEndToEnd(unittest.TestCase):  #pylint: disable=missing-class-docstring
     def test_scholar(self):
         ''' E2E scholar damage calc test '''
         my_stat_spread = CharacterStatSpread(

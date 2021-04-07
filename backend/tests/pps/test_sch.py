@@ -1,12 +1,13 @@
-import unittest, math
+''' Tests for the scholar pps and mp generation calculators '''
+
+import unittest
 
 from backend.pps.sch import SchPps
 from backend.character.jobs import Jobs
 from backend.character.character import Character, CharacterStatSpread
 
 
-class TestSchCalc(unittest.TestCase):
-
+class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
     def test_total_potency(self):
         ''' Test the spreadsheet port for total potency '''
         my_stat_spread = CharacterStatSpread(

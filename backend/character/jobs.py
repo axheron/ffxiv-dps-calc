@@ -2,8 +2,6 @@
 
 from enum import Enum, auto
 import itertools
-import math
-
 
 class Roles(Enum):
     ''' Roles enum '''
@@ -60,7 +58,7 @@ class Buffs(Enum):
     def avg_buff_effect(self, job):
         ''' Calculates the average impact of buffs considering its uptime and magnitude '''
         total = 0
-        if self.name == 'EMBOLDEN':
+        if self.name == 'EMBOLDEN':  #pylint: disable=comparison-with-callable
             if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
                 decay_interval = 4
                 decay_rate = 0.2
@@ -98,7 +96,7 @@ class Jobs(Enum):
     @staticmethod
     def create_job(name: str):
         '''
-        Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). 
+        Takes a String and outputs Job Enum, Mainstat (and Potency calc when available).
         Raises KeyError
         '''
         job_string_to_enum = {
