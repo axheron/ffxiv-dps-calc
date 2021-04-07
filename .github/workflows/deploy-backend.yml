@@ -1,0 +1,20 @@
+name: Deploy backend to Google App Engine
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    name: GAE Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: google-github-actions/deploy-appengine@main
+        with:
+          credentials: ${{ secrets.be_gcp_credentials }}
+          project_id: ${{ secrets.be_project_id }}
+          working_directory: ./backend

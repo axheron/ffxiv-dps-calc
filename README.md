@@ -16,6 +16,7 @@ run `python main.py` then `run_test()`
 
 * aard appel (famfrit)
 * Rhiow Silrah (Gilgamesh)
+* Accel Allen (Famfrit)
 * HI MAYBE YOUR NAME HERE? potato 3059 on discord
 
 ## future plans: vague ramblings below

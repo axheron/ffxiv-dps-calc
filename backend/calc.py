@@ -13,7 +13,7 @@ class Stats(Enum):
     DH = (380, 1250, 0)
     SPEED = (380, 130, 0)
     TEN = (380, 100, 0)
-    PIE = (340, 1, 0)
+    PIE = (340, 150, 0)
     GCD = (2500, 1, 0)  # in milliseconds
     PRECISION = (1000, 1, 0)  # defaulting to 3 digits of precision
 
@@ -78,6 +78,15 @@ class CharacterStats:
     @classmethod
     def apply_stat(cls, damage, stat):
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
+    
+    def get_gcd(self):
+        return math.floor(0.25 * (1000 - self.speed.get_multiplier())) / 100
+    
+    def get_dot_scalar(self):
+        return  1 + (self.speed.get_multiplier() / 1000)
+
+    def calc_piety(self):
+        return 200 + self.pie.get_multiplier()
 
     # comp is a Comp() object
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):
@@ -97,8 +106,6 @@ class CharacterStats:
         # todo: pull out traits
         if self.job.role == Roles.HEALER: damage = math.floor(damage * 1.3)  # magic and mend
 
-        # todo: effect of raid buffs
-
         # damage effect of probabalistic stats
         crit_damage = self.apply_stat(damage, self.crit)
         dh_damage = damage * self.dh.stat.m_factor // 1000
@@ -111,15 +118,20 @@ class CharacterStats:
         # apply party crit/dh buffs
         for buff in comp.raidbuffs:
             if buff in Buffs.crit_buffs():
-                crit_rate += buff.avg_buff_effect()
+                crit_rate += buff.avg_buff_effect(self.job)
             elif buff in Buffs.dh_buffs():
-                dh_rate += buff.avg_buff_effect()
+                dh_rate += buff.avg_buff_effect(self.job)
 
         cdh_rate = crit_rate * dh_rate
         normal_rate = 1 - crit_rate - dh_rate + cdh_rate
-        return damage * normal_rate + crit_damage * (crit_rate - cdh_rate) + dh_damage * (
+        expected_damage = damage * normal_rate + crit_damage * (crit_rate - cdh_rate) + dh_damage * (
                     dh_rate - cdh_rate) + cdh_damage * cdh_rate
 
+        for buff in comp.raidbuffs:
+            if buff in Buffs.raid_buffs():
+                expected_damage *= (1 + buff.avg_buff_effect(self.job))
+
+        return expected_damage
 
 class Roles(Enum):
     TANK = auto()
@@ -164,9 +176,20 @@ class Buffs(Enum):
     def dh_buffs(cls):
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
-    def avg_buff_effect(self):
-        return self.multiplier * self.duration / self.cd
+    @classmethod
+    def raid_buffs(cls):
+        return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
+    def avg_buff_effect(self, job):
+        if self.name == 'EMBOLDEN':
+            if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
+                decay_interval = 4
+                decay_rate = 0.2
+                for i in range(self.duration / decay_interval):
+                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cd
+                return total
+            return 0 # Sucks to not have Embolden apply, I guess
+        return self.multiplier * self.duration / self.cd
 
 class Jobs(Enum):
     # job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
@@ -200,3 +223,32 @@ class Comp:
         self.jobs = jobs
         self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
         self.n_roles = len(set([job.role for job in jobs]))
+
+
+class CharacterStatFactory:
+    """
+    Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError.
+    """
+    @staticmethod
+    def create_job(name: str):
+        job_string_to_enum = {
+            "SCH": (Jobs.SCH, "MND"),
+            "AST": (Jobs.AST,),
+            "WHM": (Jobs.WHM,),
+            "PLD": (Jobs.PLD,),
+            "WAR": (Jobs.WAR,),
+            "DRK": (Jobs.DRK,),
+            "GNB": (Jobs.GNB,),
+            "NIN": (Jobs.NIN,),
+            "DRG": (Jobs.DRG,),
+            "MNK": (Jobs.MNK,),
+            "SAM": (Jobs.SAM,),
+            "MCH": (Jobs.MCH,),
+            "DNC": (Jobs.DNC,),
+            "BRD": (Jobs.BRD,),
+            "SMN": (Jobs.SMN,),
+            "BLM": (Jobs.BLM,),
+            "RDM": (Jobs.RDM,),
+        }
+
+        return job_string_to_enum[name]

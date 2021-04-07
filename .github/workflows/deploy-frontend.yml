@@ -1,0 +1,37 @@
+name: Deploy frontend to Google App Engine
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'client/**'
+
+defaults:
+  run:
+    working-directory: client
+    
+jobs:
+  build:
+    name: Deploy Angular FE
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm run build --prod
+      - uses: google-github-actions/deploy-appengine@main
+        with:
+          credentials: ${{ secrets.fe_gcp_credentials }}
+          project_id: ${{ secrets.fe_project_id }}
+          working_directory: ./client
