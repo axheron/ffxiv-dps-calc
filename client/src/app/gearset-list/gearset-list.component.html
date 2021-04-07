@@ -1,5 +1,5 @@
-<nz-table #basicTable class="gearset-table" [nzData]="dataSet"
-    nzShowPagination=false [nzScroll]=scrollSize>
+<nz-table #basicTable class="gearset-table" [nzData]="dpsService.dataSet"
+    nzShowPagination=false>
   <thead>
     <tr>
       <th rowspan="2">Set name</th>
@@ -71,7 +71,7 @@
               [(ngModel)]="editCache[data.id].data.pie" />
         </td>
         <td class="num-col">
-          <td class="num-col">{{data.gcd}}
+          {{data.gcd}}
         </td>
         <td class="num-col">{{data.mp}}
         </td>
