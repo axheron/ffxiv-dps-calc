@@ -13,9 +13,9 @@ class SchPps(HealerPps):
     def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
         return self.total_potency_spreadsheet_port(character_stats, caster_tax, num_ed_per_min, num_filler_casts) / self.get_cycle(character_stats, caster_tax)
 
-    def get_mppm(self, character_stats, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0):
+    def get_mp_per_min(self, character_stats, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0):
         cycle = self.get_cycle(character_stats, caster_tax)
-        mpps = self.get_mp(character_stats, caster_tax, succ, adlo, ed, rez, cycle) / cycle
+        mpps = self.mp_consumed_per_cycle(character_stats, caster_tax, succ, adlo, ed, rez, cycle) / cycle
         return 20 * character_stats.calc_piety() - 60 * mpps 
         
     # hard coded for a ~180 second cycle, actual length calculated by get_cycle
@@ -53,8 +53,8 @@ class SchPps(HealerPps):
             result += 6 * (2 * short_gcd+math.floor((30 - 2 * short_gcd) / (short_gcd + caster_tax)) * (short_gcd + caster_tax)) - 1 * caster_tax
         return result
 
-    # MP consumed over a 3 min cycle (positive = losing mp, negative = gaining mp)
-    def get_mp(self, character_stats, caster_tax, succ, adlo, ed, rez, cycle):
+    def mp_consumed_per_cycle(self, character_stats, caster_tax, succ, adlo, ed, rez, cycle):
+        """MP consumed over a 3 min cycle (positive = losing mp, negative = gaining mp)"""
         short_gcd = character_stats.get_gcd()
         result = 0
         if ((30 - 2 * short_gcd) % (short_gcd + caster_tax) > 1.5):

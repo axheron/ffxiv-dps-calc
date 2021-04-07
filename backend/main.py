@@ -60,18 +60,22 @@ def main():
 
 @app.route('/update_stats', methods=["POST"])
 def update_stats():
-    """Calculates damage based on input. Accepts and returns JSON. JSON format is as follows:
-    'player': Object
-        'weaponDamage': int
-        'mainStat': int
-        'det': int
-        'crit': int
-        'dh': int
-        'speed': int
-        'ten': int
-        'pie': int
-    'job': string
-    'comp': Array
+    """Calculates damage, mp consumption, and gcd based on input. 
+    Accepts and returns JSON. JSON format is as follows:
+    input: {'player': Object
+                {'weaponDamage': int
+                'mainStat': int
+                'det': int
+                'crit': int
+                'dh': int
+                'speed': int
+                'ten': int
+                'pie': int}
+            'job': string
+            'comp': Array}
+    output: {'dps': float,
+             'gcd': float,
+             'mp': float}
     """
     data = request.get_json()
 
@@ -107,7 +111,7 @@ def update_stats():
 
     dps = round(player.calc_damage(potency, my_comp), 2)
     gcd = player.get_gcd()
-    mp = round(my_sch_pps.get_mppm(player), 2)
+    mp = round(my_sch_pps.get_mp_per_min(player), 2)
     return jsonify({"dps": dps,
                     "gcd": gcd,
                     "mp": mp})
@@ -173,7 +177,7 @@ def etro_main():
 
     dps = round(player.calc_damage(potency, my_comp), 2)
     gcd = player.get_gcd()
-    mp = round(my_sch_pps.get_mppm(player), 2)
+    mp = round(my_sch_pps.get_mp_per_min(player), 2)
     return jsonify({"dps": dps,
                     "gcd": gcd,
                     "mp": mp})
