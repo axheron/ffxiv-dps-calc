@@ -50,7 +50,7 @@ class TestCalcVars(unittest.TestCase):
         me = Character(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
         the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.AST, Jobs.NIN, Jobs.SAM, Jobs.MCH, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20790.906664100632)
+        self.assertEqual(me.calc_damage(200, the_shitters_i_raid_with), 20790.90666410063)
 
     def test_embolden_has_no_effect(self):
         me = Character(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
