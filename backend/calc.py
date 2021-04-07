@@ -13,7 +13,7 @@ class Stats(Enum):
     DH = (380, 1250, 0)
     SPEED = (380, 130, 0)
     TEN = (380, 100, 0)
-    PIE = (340, 1, 0)
+    PIE = (340, 150, 0)
     GCD = (2500, 1, 0)  # in milliseconds
     PRECISION = (1000, 1, 0)  # defaulting to 3 digits of precision
 
@@ -84,6 +84,9 @@ class CharacterStats:
     
     def get_dot_scalar(self):
         return  1 + (self.speed.get_multiplier() / 1000)
+
+    def calc_piety(self):
+        return 200 + self.pie.get_multiplier()
 
     # comp is a Comp() object
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):

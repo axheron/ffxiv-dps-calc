@@ -31,6 +31,10 @@ class TestCalcVars(unittest.TestCase):
     def test_gcd(self):
         me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
         self.assertEqual(me.get_gcd(), 2.32)
+
+    def test_base_piety(self):
+        me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
+        self.assertEqual(me.calc_piety(), 200)
         
     def test_dot_scalar(self):
         me = CharacterStats(Jobs.SCH, 180, 5577, 2272, 3802, 1100, 2139, 380, 340)
