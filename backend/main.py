@@ -2,8 +2,8 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import requests
 
-from backend.character.character import Character
-from backend.character.jobs import Comp, JobFactory
+from backend.character.character import Character, CharacterStatSpread
+from backend.character.jobs import Comp, Jobs
 from backend.pps.sch import SchPps
 
 app = Flask(__name__)
@@ -32,25 +32,27 @@ def main():
     player_data = data['player']
 
     try:
-        my_job = JobFactory.create_job(data['job'])[0]
+        my_job = Jobs.create_job(data['job'])[0]
     except KeyError:
         return f"Currently {data['job']} is not supported."
 
     player = Character(
         my_job,
-        player_data['weaponDamage'],
-        player_data['mainStat'],
-        player_data['det'],
-        player_data['crit'],
-        player_data['dh'],
-        player_data['speed'],
-        player_data['ten'],
-        player_data['pie']
+        CharacterStatSpread(
+            wd = player_data['weaponDamage'],
+            mainstat = player_data['mainStat'],
+            det = player_data['det'],
+            crit = player_data['crit'],
+            dh = player_data['dh'],
+            speed = player_data['speed'],
+            ten = player_data['ten'],
+            pie = player_data['pie']
+        )
     )
     my_sch_pps = SchPps()
     potency = my_sch_pps.get_pps(player)
     try:
-        comp_jobs = [JobFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+        comp_jobs = [Jobs.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
         return "A job was not supported in that team comp."
 
@@ -86,25 +88,27 @@ def update_stats():
     player_data = data['player']
 
     try:
-        my_job = JobFactory.create_job(data['job'])[0]
+        my_job = Jobs.create_job(data['job'])[0]
     except KeyError:
         return f"Currently {data['job']} is not supported."
 
     player = Character(
         my_job,
-        player_data['weaponDamage'],
-        player_data['mainStat'],
-        player_data['det'],
-        player_data['crit'],
-        player_data['dh'],
-        player_data['speed'],
-        player_data['ten'],
-        player_data['pie']
+        CharacterStatSpread(
+            wd = player_data['weaponDamage'],
+            mainstat = player_data['mainStat'],
+            det = player_data['det'],
+            crit = player_data['crit'],
+            dh = player_data['dh'],
+            speed = player_data['speed'],
+            ten = player_data['ten'],
+            pie = player_data['pie']
+        )
     )
     my_sch_pps = SchPps()
     potency = my_sch_pps.get_pps(player)
     try:
-        comp_jobs = [JobFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+        comp_jobs = [Jobs.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
         return "A job was not supported in that team comp."
 
@@ -133,13 +137,13 @@ def etro_main():
     if not data:
         return "abort", abort(400)
     try:
-        comp_jobs = [JobFactory.create_job(comp_job)[0] for comp_job in data['comp']]
+        comp_jobs = [Jobs.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
         return "An unsupported job was found in the team composition."
 
     my_comp = Comp(comp_jobs)
 
-    player_job_data = JobFactory.create_job(data['job'])
+    player_job_data = Jobs.create_job(data['job'])
 
     # TODO: Check internal database to see if cached before request
 
@@ -163,14 +167,16 @@ def etro_main():
 
     player = Character(
         player_job_data[0],
-        eq_stats["Weapon Damage"],
-        eq_stats[player_job_data[1]],
-        eq_stats["DET"],
-        eq_stats["CRT"],
-        eq_stats["DH"],
-        eq_stats["SPEED"],
-        eq_stats["TEN"],
-        eq_stats["PIE"],
+        CharacterStatSpread(
+            wd = eq_stats["Weapon Damage"],
+            mainstat = eq_stats[player_job_data[1]],
+            det = eq_stats["DET"],
+            crit = eq_stats["CRT"],
+            dh = eq_stats["DH"],
+            speed = eq_stats["SPEED"],
+            ten = eq_stats["TEN"],
+            pie = eq_stats["PIE"]
+        )
     )
 
     my_sch_pps = SchPps()

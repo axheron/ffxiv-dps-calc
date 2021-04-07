@@ -40,7 +40,7 @@ class Buffs(Enum):
     def __init__(self, multiplier, duration, cd):
         self.multiplier = multiplier
         self.duration = duration
-        self.cd = cd
+        self.cooldown = cd
 
     @classmethod
     def crit_buffs(cls):
@@ -65,10 +65,10 @@ class Buffs(Enum):
                 decay_interval = 4
                 decay_rate = 0.2
                 for i in range(self.duration / decay_interval):
-                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cd
+                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cooldown
                 return total
             return 0 # Sucks to not have Embolden apply, I guess
-        return self.multiplier * self.duration / self.cd
+        return self.multiplier * self.duration / self.cooldown
 
 class Jobs(Enum):
     ''' Job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/ '''
@@ -95,22 +95,12 @@ class Jobs(Enum):
         self.role = role
         self.raidbuff = raidbuff
 
-
-class Comp:
-    ''' Representation of a comp, basically a collection of Jobs '''
-    def __init__(self, jobs):
-        self.jobs = jobs
-        self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
-        self.n_roles = len(set([job.role for job in jobs]))
-
-
-class JobFactory:
-    '''
-    Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError.
-    '''
     @staticmethod
     def create_job(name: str):
-        ''' Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError. '''
+        '''
+        Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). 
+        Raises KeyError
+        '''
         job_string_to_enum = {
             "SCH": (Jobs.SCH, "MND"),
             "AST": (Jobs.AST,),
@@ -132,3 +122,11 @@ class JobFactory:
         }
 
         return job_string_to_enum[name]
+
+
+class Comp:  #pylint: disable=too-few-public-methods
+    ''' Representation of a comp, basically a collection of Jobs '''
+    def __init__(self, jobs):
+        self.jobs = jobs
+        self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
+        self.n_roles = len({job.role for job in jobs})

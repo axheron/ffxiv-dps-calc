@@ -1,7 +1,6 @@
 ''' General representation of stats '''
 
-from enum import Enum, auto
-import itertools
+from enum import Enum
 import math
 
 
