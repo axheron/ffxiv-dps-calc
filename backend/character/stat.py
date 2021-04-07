@@ -12,7 +12,7 @@ class Stats(Enum):
     DH = (380, 1250, 0)
     SPEED = (380, 130, 0)
     TEN = (380, 100, 0)
-    PIE = (340, 1, 0)
+    PIE = (340, 150, 0)
     GCD = (2500, 1, 0)  # in milliseconds
     PRECISION = (1000, 1, 0)  # defaulting to 3 digits of precision
 
@@ -36,7 +36,8 @@ class Stat():
             magic_num = 340  # don't ask me why dude
         delta = self.value - self.stat.base
         return self.stat.m_factor * delta // magic_num + self.stat.m_scalar
-    
+
+
 class ProbabalisticStat(Stat):
     def __init__(self, stat, value):
         super().__init__(stat, value)

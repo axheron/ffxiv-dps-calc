@@ -36,6 +36,9 @@ class Character:
     def get_dot_scalar(self):
         return  1 + (self.speed.get_multiplier() / 1000)
 
+    def calc_piety(self):
+        return 200 + self.pie.get_multiplier()
+
     # comp is a Comp() object
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):
         # modify mainstat according to number of roles
@@ -54,8 +57,6 @@ class Character:
         # todo: pull out traits
         if self.job.role == Roles.HEALER: damage = math.floor(damage * 1.3)  # magic and mend
 
-        # todo: effect of raid buffs
-
         # damage effect of probabalistic stats
         crit_damage = self.apply_stat(damage, self.crit)
         dh_damage = damage * self.dh.stat.m_factor // 1000
@@ -68,11 +69,17 @@ class Character:
         # apply party crit/dh buffs
         for buff in comp.raidbuffs:
             if buff in Buffs.crit_buffs():
-                crit_rate += buff.avg_buff_effect()
+                crit_rate += buff.avg_buff_effect(self.job)
             elif buff in Buffs.dh_buffs():
-                dh_rate += buff.avg_buff_effect()
+                dh_rate += buff.avg_buff_effect(self.job)
 
         cdh_rate = crit_rate * dh_rate
         normal_rate = 1 - crit_rate - dh_rate + cdh_rate
-        return damage * normal_rate + crit_damage * (crit_rate - cdh_rate) + dh_damage * (
+        expected_damage = damage * normal_rate + crit_damage * (crit_rate - cdh_rate) + dh_damage * (
                     dh_rate - cdh_rate) + cdh_damage * cdh_rate
+
+        for buff in comp.raidbuffs:
+            if buff in Buffs.raid_buffs():
+                expected_damage *= (1 + buff.avg_buff_effect(self.job))
+
+        return expected_damage

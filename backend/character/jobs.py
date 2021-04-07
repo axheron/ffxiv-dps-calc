@@ -48,9 +48,21 @@ class Buffs(Enum):
     def dh_buffs(cls):
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
-    def avg_buff_effect(self):
-        return self.multiplier * self.duration / self.cd
+    @classmethod
+    def raid_buffs(cls):
+        return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
+    def avg_buff_effect(self, job):
+        total = 0
+        if self.name == 'EMBOLDEN':
+            if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
+                decay_interval = 4
+                decay_rate = 0.2
+                for i in range(self.duration / decay_interval):
+                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cd
+                return total
+            return 0 # Sucks to not have Embolden apply, I guess
+        return self.multiplier * self.duration / self.cd
 
 class Jobs(Enum):
     # job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
@@ -84,7 +96,8 @@ class Comp:
         self.jobs = jobs
         self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
         self.n_roles = len(set([job.role for job in jobs]))
-        
+
+
 class JobFactory:
     """
     Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError.
@@ -112,4 +125,3 @@ class JobFactory:
         }
 
         return job_string_to_enum[name]
-
