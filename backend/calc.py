@@ -5,6 +5,8 @@ Contains mathematical breakdowns of the stats used to calculate damage, and also
 """
 from __future__ import annotations  # this is for type hinting Comp. Remove when file is split.
 from enum import Enum, auto
+from dataclasses import dataclass
+
 import itertools
 import math
 from typing import ClassVar
@@ -35,17 +37,13 @@ class Stats(Enum):
         self.m_scalar = m_scalar
 
 
+@dataclass
 class Stat:
     """
     For each stat, gives a multiplier. Also holds the value of each stat.
     """
-    def __init__(self, stat: Stats, value: int):
-        """
-        :param stat: from Stats enum.
-        :param value: the current value of the stat.
-        """
-        self.stat = stat
-        self.value = value
+    stat: Stats
+    value: int
 
     def get_multiplier(self) -> float:
         """
@@ -69,7 +67,7 @@ class ProbabalisticStat(Stat):
     """
 
     # Class variable to convert stats
-    crit_convert: ClassVar[dict[Stats, tuple[int, int]]] = {
+    CRIT_CONVERT: ClassVar[dict[Stats, tuple[int, int]]] = {
         Stats.CRIT: (200, 50),
         Stats.DH: (550, 0),
     }
@@ -83,14 +81,14 @@ class ProbabalisticStat(Stat):
         :param p_scalar: magic value for magic math.
         """
         super().__init__(stat, value)
-        self.p_factor, self.p_scalar = ProbabalisticStat.crit_convert.get(stat, ProbabalisticStat.DEFAULT_PSTATS)
+        self.p_factor, self.p_scalar = ProbabalisticStat.CRIT_CONVERT.get(stat, ProbabalisticStat.DEFAULT_PSTATS)
 
     def get_p(self) -> float:
         """
         :return: returns probablistic value.
         """
         delta = self.value - self.stat.base
-        return (self.p_factor * delta // 3300 + self.p_scalar) / Stats.PRECISION.base
+        return (self.p_factor * delta // 3300 + self.p_scalar) / Stats.PRECISION.base  # pylint: disable=no-member
 
 
 class CharacterStats:
@@ -112,29 +110,35 @@ class CharacterStats:
 
     @classmethod
     def truncate(cls, val: float, precision=1000) -> float:
+        """Truncates a value."""
         return (precision + val) / precision
 
     @classmethod
     def multiply_and_truncate(cls, val: float, factor: float, precision=1000):
+        """Multiplies and truncates a value."""
         return math.floor(val * cls.truncate(factor, precision))
 
     @classmethod
     def apply_stat(cls, damage: float, stat: Stat):
+        """Applies stat by multiplying and truncating the value."""
         return cls.multiply_and_truncate(damage, stat.get_multiplier())
 
     def get_gcd(self):
+        """Returns GCD"""
         return math.floor(0.25 * (1000 - self.speed.get_multiplier())) / 100
 
     def get_dot_scalar(self):
+        """Returns dot scalar"""
         return 1 + (self.speed.get_multiplier() / 1000)
 
     def calc_piety(self):
+        """Calculates piety"""
         return 200 + self.pie.get_multiplier()
 
-    def calc_damage(self, potency: int, comp: Comp, is_dot=False, crit_rate=None, dh_rate=None) -> float:
+    def calc_damage(self, potency_per_sec: float, comp: Comp, is_dot=False, crit_rate=None, dh_rate=None) -> float:
         """
         Calculates the estimated DPS based on the team composition and current character stats
-        :param potency: Potency calculated on expected rotation
+        :param potency_per_sec: Potency calculated on expected rotation
         :param comp: Team composition.
         :param is_dot: Whether damage is dot damage.
         :param crit_rate: manual setting for crit rate for calculating a specific proc rate.
@@ -145,7 +149,7 @@ class CharacterStats:
         modified_mainstat = Stat(Stats.MAINSTAT, math.floor(self.mainstat.value * (1 + 0.01 * comp.n_roles)))
 
         # damage effect of non-probabalistic stats
-        damage = potency * (self.wd + (340 * self.job.job_mod // 1000)) * (
+        damage = potency_per_sec * (self.wd + (340 * self.job.job_mod // 1000)) * (
                     100 + modified_mainstat.get_multiplier()) // 100  # cursed tbh
         damage = self.apply_stat(damage, self.det)
         damage = self.apply_stat(damage, self.ten)
@@ -204,9 +208,6 @@ class Buffs(Enum):
     """
     List of all buffs in the game. Each buff has three parameters:
 
-    multiplier: The amount that the damage of the ability is increased.
-    duration_sec: How long the buff lasts, in seconds.
-    cooldown_sec: How long until the buff may be used again, in seconds.
     """
     # aoe
     CHAIN = (0.1, 15, 120)
@@ -230,20 +231,28 @@ class Buffs(Enum):
     # todo: should probably add standard, personal tank buffs
 
     def __init__(self, multiplier: float, duration_sec: int, cooldown_sec: int):
+        """
+        :param multiplier: The amount that the damage of the ability is increased.
+        :param duration_sec: How long the buff lasts, in seconds.
+        :param cooldown_sec: How long until the buff may be used again, in seconds.
+        """
         self.multiplier = multiplier
         self.duration_sec = duration_sec
         self.cooldown_sec = cooldown_sec
 
     @classmethod
     def crit_buffs(cls):
+        """returns all critbuffs"""
         return {cls.CHAIN, cls.LITANY, cls.DEVILMENT, cls.BARD_CRIT}
 
     @classmethod
     def dh_buffs(cls):
+        """returns all dhbuffs"""
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
     @classmethod
     def raid_buffs(cls):
+        """returns all raid buffs"""
         return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
     def avg_buff_effect(self, job: Jobs) -> float:
@@ -254,7 +263,7 @@ class Buffs(Enum):
         :param job: The job for which the buff is being applied to.
         :return: A multiplier to apply for the whole fight that acts as the buff boost
         """
-        if self.name == 'EMBOLDEN':
+        if self.name == 'EMBOLDEN':  # pylint: disable=comparison-with-callable
             if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
                 decay_interval = 4
                 decay_rate = 0.2
@@ -263,7 +272,7 @@ class Buffs(Enum):
                              for tick in range(decay_ticks))
                 return sum(intervals)
             return 0  # Sucks to not have Embolden apply, I guess
-        return self.multiplier * self.duration / self.cooldown_sec
+        return self.multiplier * self.duration_sec / self.cooldown_sec
 
 
 class Jobs(Enum):
@@ -301,9 +310,14 @@ class Jobs(Enum):
         self.raidbuff = raidbuff
 
 
+@dataclass(init=False)
 class Comp:
     """
     The party composition.
+
+    jobs: A list of all jobs in the party (may contain duplicates).
+    raidbuffs: A set of unique raidbuffs in the party.
+    n_roles: A number (1-5) indicating how many unique roles are in the party.
     """
 
     def __init__(self, jobs: list[Jobs]):
@@ -317,15 +331,19 @@ class Comp:
 
         self.jobs: list[Jobs] = jobs
         self.raidbuffs: set[Buffs] = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
-        self.n_roles: int = len(set([job.role for job in jobs]))
+        self.n_roles: int = len({job.role for job in jobs})
 
 
-class CharacterStatFactory:
+class CharacterStatFactory:  # pylint: disable=too-few-public-methods
     """
     Takes a String and outputs Job Enum, Mainstat (and Potency calc when available). Raises KeyError.
     """
     @staticmethod
-    def create_job(name: str):
+    def create_job(name: str) -> tuple[Jobs, str, ]:
+        """
+        :param name: The three letter abbreviation of the job in all uppercase as a string.
+        :return: A tuple containing the job enum, a string identifying the primary stat, and potency_per_sec calc
+        """
         job_string_to_enum = {
             "SCH": (Jobs.SCH, "MND"),
             "AST": (Jobs.AST,),
