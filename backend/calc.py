@@ -67,7 +67,9 @@ class ProbabalisticStat(Stat):
     """
 
     # Class variable to convert stats
-    CRIT_CONVERT: ClassVar[dict[Stats, tuple[int, int]]] = {
+    P_scalars = tuple[int, int]  # for less ugly
+
+    CRIT_CONVERT: ClassVar[dict[Stats, P_scalars]] = {
         Stats.CRIT: (200, 50),
         Stats.DH: (550, 0),
     }
