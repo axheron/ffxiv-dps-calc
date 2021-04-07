@@ -1,4 +1,4 @@
-from backend.main import app
+from main import app
 from flask import json
 
 
