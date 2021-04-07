@@ -3,7 +3,7 @@ calc.py
 Contains mathematical breakdowns of the stats used to calculate damage, and also contains a function
 (CharacterStats: calc_damage) to estimate the DPS of a character given the party composition and gear stats.
 """
-from __future__ import annotations
+from __future__ import annotations  # this is for type hinting Comp. Remove when file is split.
 from enum import Enum, auto
 import itertools
 import math
@@ -13,10 +13,6 @@ from typing import ClassVar
 class Stats(Enum):
     """
     Contains math factors for each individual stat.
-
-    base: the base value for each stat
-    m_factor: ???
-    m_scalar: ???
     """
     MAINSTAT = (340, 165, 0)
     DET = (340, 130, 0)
@@ -29,6 +25,11 @@ class Stats(Enum):
     PRECISION = (1000, 1, 0)  # defaulting to 3 digits of precision
 
     def __init__(self, base: int, m_factor: int, m_scalar: int):
+        """
+        :param base: the base value for each stat.
+        :param m_factor: magic value for magic math.
+        :param m_scalar: magic value for magic math.
+        """
         self.base = base
         self.m_factor = m_factor
         self.m_scalar = m_scalar
@@ -65,9 +66,6 @@ class ProbabalisticStat(Stat):
     """
     Derived from Stat class, used for stats that increase the chance of something happening such as critical hit and
     direct hit.
-
-    p_factor: something
-    p_scalar: something else
     """
 
     # Class variable to convert stats
@@ -81,16 +79,15 @@ class ProbabalisticStat(Stat):
         """
         :param stat: from Stats enum.
         :param value: the current value of the stat.
-        :param p_factor: ???
-        :param p_scalar: ???
+        :param p_factor: magic value for magic math.
+        :param p_scalar: magic value for magic math.
         """
         super().__init__(stat, value)
         self.p_factor, self.p_scalar = ProbabalisticStat.crit_convert.get(stat, ProbabalisticStat.DEFAULT_PSTATS)
 
     def get_p(self) -> float:
         """
-        calculates p?
-        :return: returns p?
+        :return: returns probablistic value.
         """
         delta = self.value - self.stat.base
         return (self.p_factor * delta // 3300 + self.p_scalar) / Stats.PRECISION.base
@@ -129,7 +126,7 @@ class CharacterStats:
         return math.floor(0.25 * (1000 - self.speed.get_multiplier())) / 100
 
     def get_dot_scalar(self):
-        return  1 + (self.speed.get_multiplier() / 1000)
+        return 1 + (self.speed.get_multiplier() / 1000)
 
     def calc_piety(self):
         return 200 + self.pie.get_multiplier()
@@ -139,13 +136,11 @@ class CharacterStats:
         Calculates the estimated DPS based on the team composition and current character stats
         :param potency: Potency calculated on expected rotation
         :param comp: Team composition.
-        :param is_dot: ???
-        :param crit_rate: ???
-        :param dh_rate: ???
+        :param is_dot: Whether damage is dot damage.
+        :param crit_rate: manual setting for crit rate for calculating a specific proc rate.
+        :param dh_rate: manual setting for DH rate for calculating a specific proc rate.
         :return: the DPS number
         """
-    # comp is a Comp() object
-    def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):
         # modify mainstat according to number of roles
         modified_mainstat = Stat(Stats.MAINSTAT, math.floor(self.mainstat.value * (1 + 0.01 * comp.n_roles)))
 
@@ -193,6 +188,7 @@ class CharacterStats:
 
         return expected_damage
 
+
 class Roles(Enum):
     """
     An enum used to calculate the stat bonuses for having one of each role.
@@ -208,10 +204,9 @@ class Buffs(Enum):
     """
     List of all buffs in the game. Each buff has three parameters:
 
-    multiplier: The amount that the damage of the ability is increased
+    multiplier: The amount that the damage of the ability is increased.
     duration_sec: How long the buff lasts, in seconds.
     cooldown_sec: How long until the buff may be used again, in seconds.
-
     """
     # aoe
     CHAIN = (0.1, 15, 120)
@@ -251,16 +246,25 @@ class Buffs(Enum):
     def raid_buffs(cls):
         return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
-    def avg_buff_effect(self, job):
+    def avg_buff_effect(self, job: Jobs) -> float:
+        """
+        Calculates effective multiplier that a raid buff contributes to DPS.
+        This treats a raid buff as having its effect averaged over the course of a fight and applies that
+        average effect to all damage.
+        :param job: The job for which the buff is being applied to.
+        :return: A multiplier to apply for the whole fight that acts as the buff boost
+        """
         if self.name == 'EMBOLDEN':
             if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
                 decay_interval = 4
                 decay_rate = 0.2
-                for i in range(self.duration / decay_interval):
-                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cd
-                return total
-            return 0 # Sucks to not have Embolden apply, I guess
-        return self.multiplier * self.duration / self.cd
+                decay_ticks = self.duration_sec // decay_interval
+                intervals = (self.multiplier * (1 - decay_rate * tick) * decay_interval / self.cooldown_sec
+                             for tick in range(decay_ticks))
+                return sum(intervals)
+            return 0  # Sucks to not have Embolden apply, I guess
+        return self.multiplier * self.duration / self.cooldown_sec
+
 
 class Jobs(Enum):
     """
@@ -271,14 +275,15 @@ class Jobs(Enum):
     raidbuff: A list of all raidbuffs that the job has
 
     job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
+    note: tanks use STR for damage
     """
     SCH = (115, Roles.HEALER, [Buffs.CHAIN])
     AST = (115, Roles.HEALER, [Buffs.DIV])
     WHM = (115, Roles.HEALER, [])
-    PLD = (110, Roles.TANK, [])
-    WAR = (110, Roles.TANK, [])
-    DRK = (110, Roles.TANK, [])
-    GNB = (110, Roles.TANK, [])
+    PLD = (100, Roles.TANK, [])
+    WAR = (105, Roles.TANK, [])
+    DRK = (105, Roles.TANK, [])
+    GNB = (100, Roles.TANK, [])
     NIN = (110, Roles.MELEE, [Buffs.TRICK])
     DRG = (115, Roles.MELEE, [Buffs.LITANY])
     MNK = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
@@ -299,16 +304,20 @@ class Jobs(Enum):
 class Comp:
     """
     The party composition.
-
-    jobs: A list of all jobs in the party (can contain duplicates).
-    raidbuffs: All unique raidbuffs in the party.
-    n_roles: All unique roles in the party.
     """
 
     def __init__(self, jobs: list[Jobs]):
-        self.jobs = jobs
-        self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
-        self.n_roles = len(set([job.role for job in jobs]))
+        """
+        :param jobs: A list of Jobs in the party composition
+
+        jobs: A list of all jobs in the party (may contain duplicates).
+        raidbuffs: A set of unique raidbuffs in the party.
+        n_roles: A number (1-5) indicating how many unique roles are in the party.
+        """
+
+        self.jobs: list[Jobs] = jobs
+        self.raidbuffs: set[Buffs] = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
+        self.n_roles: int = len(set([job.role for job in jobs]))
 
 
 class CharacterStatFactory:
