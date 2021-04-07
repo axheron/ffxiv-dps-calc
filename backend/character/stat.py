@@ -11,7 +11,6 @@ class Stats(Enum):
     m_factor: ???
     m_scalar: ???
     """
-    # todo: have a better docstring
     MAINSTAT = (340, 165, 0)
     DET = (340, 130, 0)
     CRIT = (380, 200, 400)
@@ -20,7 +19,6 @@ class Stats(Enum):
     TEN = (380, 100, 0)
     PIE = (340, 150, 0)
     GCD = (2500, 1, 0)  # in milliseconds
-    PRECISION = (1000, 1, 0)  # defaulting to 3 digits of precision
 
     def __init__(self, base, m_factor, m_scalar):
         self.base = base
@@ -83,7 +81,7 @@ class ProbabalisticStat(Stat):
     p_factor: something
     p_scalar: something else
     """
-    def __init__(self, stat, value):
+    def __init__(self, stat, value, precision = 1000):
         """
         :param stat: from Stats enum.
         :param value: the current value of the stat.
@@ -98,6 +96,7 @@ class ProbabalisticStat(Stat):
             self.p_scalar = 50
         elif stat == Stats.DH:
             self.p_factor = 550
+        self.precision = precision
 
     def get_p(self):
         """
@@ -105,4 +104,4 @@ class ProbabalisticStat(Stat):
         :return: returns p?
         """
         delta = self.value - self.stat.base
-        return (self.p_factor * delta // 3300 + self.p_scalar) / Stats.PRECISION.base
+        return (self.p_factor * delta // 3300 + self.p_scalar) / self.precision

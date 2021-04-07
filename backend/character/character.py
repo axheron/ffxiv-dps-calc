@@ -3,10 +3,10 @@
 import math
 from dataclasses import dataclass
 from backend.character.stat import Stat, Stats, ProbabalisticStat
-from backend.character.jobs import Roles, Buffs, Jobs
+from backend.character.jobs import Roles, Buffs
 
-@dataclass  #pylint: disable=too-many-instance-attributes
-class CharacterStatSpread:
+@dataclass
+class CharacterStatSpread: #pylint: disable=too-many-instance-attributes
     """
     Value class representation of a stat spread
     """
