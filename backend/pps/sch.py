@@ -9,13 +9,20 @@ class SchPps(HealerPps):
     b3_potency = 290
     bio_potency = 70
     ed_potency = 100
-        
-    def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
-        return self.total_potency_spreadsheet_port(character_stats, caster_tax, num_ed_per_min, num_filler_casts) / self.get_cycle(character_stats, caster_tax)
 
-    def get_mp_per_min(self, character_stats, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0):
+    def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
+        '''Ported from the sch dps spreadsheet, calculates average potency per second'''
+        return self.total_potency_spreadsheet_port(character_stats, \
+                                                   caster_tax, \
+                                                   num_ed_per_min, \
+                                                   num_filler_casts) \
+            / self.get_cycle(character_stats, caster_tax)
+
+    def get_mp_per_min(self, character_stats, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0):  #pylint: disable=too-many-arguments
+        '''Ported from the sch dps spreadsheet, calculates mp expenditure per minute'''
         cycle = self.get_cycle(character_stats, caster_tax)
-        mpps = self.mp_consumed_per_cycle(character_stats, caster_tax, succ, adlo, ed, rez, cycle) / cycle
+        mpps = self.mp_consumed_per_cycle(character_stats, caster_tax, succ, adlo, ed, rez, cycle) \
+            / cycle
         return 20 * character_stats.calc_piety() - 60 * mpps 
         
     # hard coded for a ~180 second cycle, actual length calculated by get_cycle
@@ -72,8 +79,6 @@ class SchPps(HealerPps):
         # Energy Drain
         result -= 500 * ed * cycle / 60
         return result
-
-
     
     def get_total_potency_flexible_time(self, character, num_seconds, caster_tax):        
         # At a high level, we take the full window, figure out how many EDs we expect to be able to cast
@@ -82,7 +87,7 @@ class SchPps(HealerPps):
         #    As long as the final minute is over 9 seconds (or 18 in a dissipation minute), we have no reason to believe any would be wasted
         #        Because I am lazy, I just write off all of the EDs in the last minute as a loss if you don't have time to burn all of them
         #        todo: model partial spending if the last minute is sub 20 seconds
-        #    todo: model partial ED usage (ed_per_min or non_ed_per_min or w/e)
+        #        todo: model partial ED usage (ed_per_min or non_ed_per_min or w/e)
         num_af = 3 * math.ceil((num_seconds - 10) / 60) + 3 * math.ceil((num_seconds - 20) / 180) 
         
         # The number of r2s is modeled as:
