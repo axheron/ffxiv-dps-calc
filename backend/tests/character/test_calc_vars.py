@@ -87,4 +87,3 @@ class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.WHM, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.RDM})
         # have to manually provide pps for testing for now
         self.assertEqual(test_char.calc_damage(200, the_shitters_i_raid_with), 20381.368540000003)
-        

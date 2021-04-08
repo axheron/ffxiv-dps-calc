@@ -41,7 +41,7 @@ class Stat():
     def truncate(cls, val, precision=1000):
         """
         Truncate numbers to the specified number of sigfigs
-        :return: the truncated number
+        :returns: the truncated number
         """
         return (precision + val) / precision
 
@@ -49,14 +49,14 @@ class Stat():
     def multiply_and_truncate(cls, val, factor, precision=1000):
         """
         Returns the truncated result of val * factor
-        :return: the truncated product
+        :returns: the truncated product
         """
         return math.floor(val * cls.truncate(factor, precision))
 
     def get_multiplier(self):
         """
         Calculates the multiplier based on the stat.
-        :return: A floating point number representing the multiplier.
+        :returns: A floating point number representing the multiplier.
         """
         if self.stat == Stats.DH:
             return 1.25
@@ -70,7 +70,7 @@ class Stat():
     def apply_stat(self, damage):
         """
         Applies the stat's multiplier to a damage value
-        :return: the modified damage number
+        :returns: the modified damage number
         """
         return self.multiply_and_truncate(damage, self.get_multiplier())
 
@@ -101,7 +101,7 @@ class ProbabalisticStat(Stat):
     def get_p(self):
         """
         calculates p?
-        :return: returns p?
+        :returns: returns p?
         """
         delta = self.value - self.stat.base
         return (self.p_factor * delta // 3300 + self.p_scalar) / self.precision

@@ -10,11 +10,11 @@ class CharacterStatSpread: #pylint: disable=too-many-instance-attributes
     """
     Value class representation of a stat spread
     """
-    wd: float #pylint: disable=invalid-name
+    wd: float
     mainstat: int
     det: int
     crit: int
-    dh: int #pylint: disable=invalid-name
+    dh: int
     speed: int
     ten: int
     pie: int
@@ -25,7 +25,7 @@ class Character:
     """
     def __init__(self, job, stat_spread):
         self.job = job
-        self.wd = stat_spread.wd  #pylint: disable=invalid-name
+        self.wd = stat_spread.wd
         self.stats = {}
         self.stats[Stats.MAINSTAT] = Stat(Stats.MAINSTAT, stat_spread.mainstat)
         self.stats[Stats.DET] = Stat(Stats.DET, stat_spread.det)
@@ -38,35 +38,34 @@ class Character:
     def get_gcd(self):
         """
         Returns the character's gcd given its skill or spell speed
-        :return: the gcd in seconds
+        :returns: the gcd in seconds
         """
         return math.floor(0.25 * (1000 - self.stats[Stats.SPEED].get_multiplier())) / 100
 
     def get_dot_scalar(self):
         """
         Returns the character's dot damage bonus, given its skill or spell speed
-        :return: the modified dot multiplier
+        :returns: the modified dot multiplier
         """
         return  1 + (self.stats[Stats.SPEED].get_multiplier() / 1000)
 
     def calc_piety(self):
         """
         Returns the character's mp regen resulting from the piety stat
-        :return: ??? (Is this mp per 3 seconds?  I'm not sure)
+        :returns: The character's mp regen per tick (3 seconds)
         """
         return 200 + self.stats[Stats.PIE].get_multiplier()
 
-    # comp is a Comp() object
     # todo: break this up neatly
     def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):  #pylint: disable=too-many-arguments, too-many-locals
         """
         Calculates the estimated DPS based on the team composition and current character stats
         :param potency: Potency calculated on expected rotation
-        :param comp: Team composition.
-        :param is_dot: ???
-        :param crit_rate: ???
-        :param dh_rate: ???
-        :return: the DPS number
+        :param comp: Team composition. (character.jobs.Comp object)
+        :param is_dot: The potency is applying to a DoT effect (which is additionally modified by spellspeed)
+        :param crit_rate: Overrides crit rate, but not the crit stat.  Calc uses crit stat to calculate rate if this is None
+        :param dh_rate: Overrides direct rate, but not the dh stat.  Calc uses dh stat to calculate rate if this is None
+        :returns: the DPS number
         """
         # modify mainstat according to number of roles
         modified_mainstat = Stat(Stats.MAINSTAT, math.floor(self.stats[Stats.MAINSTAT].value * (

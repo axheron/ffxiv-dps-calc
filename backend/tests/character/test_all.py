@@ -1,6 +1,7 @@
 """ End to end damage calc testing """
 
 import unittest
+
 from character.character import Character, CharacterStatSpread
 from character.jobs import Comp, Jobs
 
