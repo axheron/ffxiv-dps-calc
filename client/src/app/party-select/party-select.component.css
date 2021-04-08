@@ -1,6 +1,7 @@
 .party-select-container {
 	margin: 12px 24px;
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 }
 
