@@ -2,9 +2,9 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import requests
 
-from backend.character.character import Character, CharacterStatSpread
-from backend.character.jobs import Comp, Jobs
-from backend.pps.sch import SchPps
+from character.character import Character, CharacterStatSpread
+from character.jobs import Comp, Jobs
+from pps.sch import SchPps
 
 app = Flask(__name__)
 CORS(app)

@@ -1,9 +1,9 @@
-''' Representation of a single character and its stat spread '''
+""" Representation of a single character and its stat spread """
 
 import math
 from dataclasses import dataclass
-from backend.character.stat import Stat, Stats, ProbabalisticStat
-from backend.character.jobs import Roles, Buffs
+from character.stat import Stat, Stats, ProbabalisticStat
+from character.jobs import Roles, Buffs
 
 @dataclass
 class CharacterStatSpread: #pylint: disable=too-many-instance-attributes
@@ -36,24 +36,24 @@ class Character:
         self.stats[Stats.PIE] = Stat(Stats.PIE, stat_spread.pie)
 
     def get_gcd(self):
-        '''
+        """
         Returns the character's gcd given its skill or spell speed
         :return: the gcd in seconds
-        '''
+        """
         return math.floor(0.25 * (1000 - self.stats[Stats.SPEED].get_multiplier())) / 100
 
     def get_dot_scalar(self):
-        '''
+        """
         Returns the character's dot damage bonus, given its skill or spell speed
         :return: the modified dot multiplier
-        '''
+        """
         return  1 + (self.stats[Stats.SPEED].get_multiplier() / 1000)
 
     def calc_piety(self):
-        '''
+        """
         Returns the character's mp regen resulting from the piety stat
         :return: ??? (Is this mp per 3 seconds?  I'm not sure)
-        '''
+        """
         return 200 + self.stats[Stats.PIE].get_multiplier()
 
     # comp is a Comp() object

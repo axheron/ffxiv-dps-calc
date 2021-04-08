@@ -1,4 +1,4 @@
-''' General representation of stats '''
+""" General representation of stats """
 
 from enum import Enum
 import math
@@ -39,18 +39,18 @@ class Stat():
 
     @classmethod
     def truncate(cls, val, precision=1000):
-        '''
+        """
         Truncate numbers to the specified number of sigfigs
         :return: the truncated number
-        '''
+        """
         return (precision + val) / precision
 
     @classmethod
     def multiply_and_truncate(cls, val, factor, precision=1000):
-        '''
+        """
         Returns the truncated result of val * factor
         :return: the truncated product
-        '''
+        """
         return math.floor(val * cls.truncate(factor, precision))
 
     def get_multiplier(self):
@@ -68,10 +68,10 @@ class Stat():
         return self.stat.m_factor * delta // magic_num + self.stat.m_scalar
 
     def apply_stat(self, damage):
-        '''
+        """
         Applies the stat's multiplier to a damage value
         :return: the modified damage number
-        '''
+        """
         return self.multiply_and_truncate(damage, self.get_multiplier())
 
 class ProbabalisticStat(Stat):

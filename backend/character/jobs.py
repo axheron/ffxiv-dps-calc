@@ -1,10 +1,10 @@
-''' Representation of static information at the class level '''
+""" Representation of static information at the class level """
 
 from enum import Enum, auto
 import itertools
 
 class Roles(Enum):
-    ''' Roles enum '''
+    """ Roles enum """
     TANK = auto()
     HEALER = auto()
     MELEE = auto()
@@ -13,7 +13,7 @@ class Roles(Enum):
 
 
 class Buffs(Enum):
-    ''' Buffs enum representing (magnitude, duration, cooldown) in seconds '''
+    """ Buffs enum representing (magnitude, duration, cooldown) in seconds """
     # aoe
     CHAIN = (0.1, 15, 120)
     DIV = (0.06, 15, 120)  # 3 seal div
@@ -42,21 +42,21 @@ class Buffs(Enum):
 
     @classmethod
     def crit_buffs(cls):
-        ''' Lists crit buffs '''
+        """ Lists crit buffs """
         return {cls.CHAIN, cls.LITANY, cls.DEVILMENT, cls.BARD_CRIT}
 
     @classmethod
     def dh_buffs(cls):
-        ''' Lists direct hit buffs '''
+        """ Lists direct hit buffs """
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
     @classmethod
     def raid_buffs(cls):
-        ''' Lists damage buffs '''
+        """ Lists damage buffs """
         return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
     def avg_buff_effect(self, job):
-        ''' Calculates the average impact of buffs considering its uptime and magnitude '''
+        """ Calculates the average impact of buffs considering its uptime and magnitude """
         total = 0
         if self.name == 'EMBOLDEN':  #pylint: disable=comparison-with-callable
             if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
@@ -69,7 +69,7 @@ class Buffs(Enum):
         return self.multiplier * self.duration / self.cooldown
 
 class Jobs(Enum):
-    ''' Job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/ '''
+    """ Job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/ """
     SCH = (115, Roles.HEALER, [Buffs.CHAIN])
     AST = (115, Roles.HEALER, [Buffs.DIV])
     WHM = (115, Roles.HEALER, [])
@@ -95,10 +95,10 @@ class Jobs(Enum):
 
     @staticmethod
     def create_job(name: str):
-        '''
+        """
         Takes a String and outputs Job Enum, Mainstat (and Potency calc when available).
         Raises KeyError
-        '''
+        """
         job_string_to_enum = {
             "SCH": (Jobs.SCH, "MND"),
             "AST": (Jobs.AST,),
@@ -123,7 +123,7 @@ class Jobs(Enum):
 
 
 class Comp:  #pylint: disable=too-few-public-methods
-    ''' Representation of a comp, basically a collection of Jobs '''
+    """ Representation of a comp, basically a collection of Jobs """
     def __init__(self, jobs):
         self.jobs = jobs
         self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))

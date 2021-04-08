@@ -1,13 +1,13 @@
-''' End to end damage calc testing '''
+""" End to end damage calc testing """
 
 import unittest
-from backend.character.character import Character, CharacterStatSpread
-from backend.character.jobs import Comp, Jobs
+from character.character import Character, CharacterStatSpread
+from character.jobs import Comp, Jobs
 
 
 class TestEndToEnd(unittest.TestCase):  #pylint: disable=missing-class-docstring
     def test_scholar(self):
-        ''' E2E scholar damage calc test '''
+        """ E2E scholar damage calc test """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         my_character = Character(Jobs.SCH, my_stat_spread)

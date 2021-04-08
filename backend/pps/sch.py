@@ -1,40 +1,40 @@
-''' Sch specific implementation of pps calculation '''
+""" Sch specific implementation of pps calculation """
 
 import math
 
-from backend.pps.pps import HealerPps
+from pps.pps import HealerPps
 
 class SchPps(HealerPps):
-    ''' Sch specific implementation of pps and mpps calculations.
-    Currently only has direct ports from the spreadsheet '''
+    """ Sch specific implementation of pps and mpps calculations.
+    Currently only has direct ports from the spreadsheet """
     r2_potency = 200
     b3_potency = 290
     bio_potency = 70
     ed_potency = 100
 
     def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
-        '''
+        """
         Get the expected PPS.
         A port of the sch spreadsheet's pps function.
-        '''
+        """
         return self.total_potency_spreadsheet_port(
             character_stats, caster_tax, num_ed_per_min, num_filler_casts) / self.get_cycle(
                 character_stats, caster_tax)
 
     def get_mp_per_min(self, character_stats, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0):
-        '''
+        """
         Get the expected mp consumption in a minute.
-        '''
+        """
         cycle = self.get_cycle(character_stats, caster_tax)
         mpps = self.mp_consumed_per_cycle(
             character_stats, caster_tax, succ, adlo, ed, rez, cycle) / cycle
         return 20 * character_stats.calc_piety() - 60 * mpps
 
     def total_potency_spreadsheet_port(self, character_stats, caster_tax, ed_per_min, num_filler):
-        '''
+        """
         Get the total potency in get_cycle() seconds.
         A direct port of getP in the sch spreadsheet.
-        '''
+        """
         # do as the spreadsheet do
         short_gcd = character_stats.get_gcd()
 
@@ -69,9 +69,9 @@ class SchPps(HealerPps):
 
     @classmethod
     def get_cycle(cls, character_stats, caster_tax):
-        '''
+        """
         Actual time taken by a 180s rotation, is lower than 180s
-        '''
+        """
         short_gcd = character_stats.get_gcd()
         result = 0
         # 1 bio + x Broils and 4 R2s/3min

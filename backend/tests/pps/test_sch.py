@@ -1,15 +1,14 @@
-''' Tests for the scholar pps and mp generation calculators '''
+""" Tests for the scholar pps and mp generation calculators """
 
 import unittest
 
-from backend.pps.sch import SchPps
-from backend.character.jobs import Jobs
-from backend.character.character import Character, CharacterStatSpread
-
+from pps.sch import SchPps
+from character.jobs import Jobs
+from character.character import Character, CharacterStatSpread
 
 class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
     def test_total_potency(self):
-        ''' Test the spreadsheet port for total potency '''
+        """ Test the spreadsheet port for total potency """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
@@ -17,7 +16,7 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
         self.assertEqual(mypps.total_potency_spreadsheet_port(test_char, 0.12, 4, 0), 24326.1264)
 
     def test_cycle(self):
-        ''' Test the spreadsheet port for cycle length '''
+        """ Test the spreadsheet port for cycle length """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
@@ -25,7 +24,7 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
         self.assertEqual(mypps.get_cycle(test_char, 0.12), 174.12)
 
     def test_mp(self):
-        ''' Test the spreadsheet port for mp generation '''
+        """ Test the spreadsheet port for mp generation """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
