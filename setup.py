@@ -1,6 +1,10 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
+doc_requirements = [
+    'pdoc3',
+]
+
 with open('README.md', 'r') as f:
     long_description = f.read()
 
@@ -16,4 +20,7 @@ setup(
     packages=find_packages('backend'),
     package_dir={'': 'backend'},
     install_requires=requirements,
+    extras_require={
+        'docs': doc_requirements,
+    }
 )
