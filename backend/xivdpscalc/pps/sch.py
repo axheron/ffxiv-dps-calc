@@ -2,7 +2,8 @@
 
 import math
 
-from pps.pps import HealerPps
+from xivdpscalc.calc import CharacterStats
+from xivdpscalc.pps.pps import HealerPps
 
 class SchPps(HealerPps):
     """ Sch specific implementation of pps and mpps calculations.
