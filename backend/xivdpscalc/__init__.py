@@ -9,4 +9,4 @@ CORS(app)
 if __name__ == "__main__":
     app.run()
 
-import xivdpscalc.routing
+import xivdpscalc.routing #pylint: disable=wrong-import-position
