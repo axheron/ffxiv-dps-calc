@@ -1,0 +1,52 @@
+name: linting and tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'backend/**'
+  push:
+    paths:
+      - 'backend/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -mpip install --upgrade pip
+        pip install .[dev]
+      working-directory: ./backend
+    - name: Analysing the code with pylint
+      run: |
+        pylint xivdpscalc
+      working-directory: ./backend
+    - name: Running tests
+      run: |
+        python -munittest discover --start-directory tests
+      working-directory: ./backend
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -mpip install --upgrade pip
+        pip install .[dev]
+      working-directory: ./backend
+    - name: Running tests
+      run: |
+        python -munittest discover --start-directory tests
+      working-directory: ./backend

@@ -7,6 +7,10 @@ with open('README.md', 'r') as f:
 CWD = Path.cwd()
 requirements = open(CWD / 'requirements.txt').read().split('\n')
 
+dev_requirements = [
+    'pylint==2.7.4'
+]
+
 setup(
     name='ffxiv_dps_calc',
     version='0.0.1',
@@ -15,4 +19,7 @@ setup(
     python_requies='>=3.9',
     packages=find_packages(),
     install_requires=requirements,
+    extras_require={
+        'dev': dev_requirements,
+    },
 )

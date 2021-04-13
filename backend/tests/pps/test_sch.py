@@ -2,9 +2,9 @@
 
 import unittest
 
-from pps.sch import SchPps
-from character.jobs import Jobs
-from character.character import Character, CharacterStatSpread
+from xivdpscalc.pps.sch import SchPps
+from xivdpscalc.character.jobs import Jobs
+from xivdpscalc.character.character import Character, CharacterStatSpread
 
 class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
     def test_total_potency(self):
