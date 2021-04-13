@@ -8,7 +8,8 @@ CWD = Path.cwd()
 requirements = open(CWD / 'requirements.txt').read().split('\n')
 
 dev_requirements = [
-    'pylint==2.7.4'
+    'pylint==2.7.4',
+    'mypy==0.812'
 ]
 
 setup(
