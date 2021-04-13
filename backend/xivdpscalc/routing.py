@@ -4,7 +4,7 @@ from flask import jsonify, request, abort
 import requests
 
 from xivdpscalc import app # pylint: disable=cyclic-import
-from xivdpscalc.character.character import Character, CharacterStatSpread
+from xivdpscalc.character import Character, CharacterStatSpread
 from xivdpscalc.character.jobs import Comp, Jobs
 from xivdpscalc.pps.sch import SchPps
 
