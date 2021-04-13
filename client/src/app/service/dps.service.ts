@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { GearSet, GearSetResponse, UpdateStatsResponse } from '../data/gearset';
+import { GearSet, UpdateStatsResponse } from '../data/gearset';
 
 @Injectable({
   providedIn: 'root'
@@ -58,32 +58,10 @@ export class DpsService {
 
   constructor(private http: HttpClient) { }
 
-  getAllDamage(): void {
-    for (let index : number = 0; index < this.dataSet.length; index++) {
-      this.getDamage(index);
-    }
-  }
-
   updateAllStats(): void {
     for (let index : number = 0; index < this.dataSet.length; index++) {
       this.updateStats(index);
     }
-  }
-
-  getDamage(index: number): void {
-    const damageUrl = 'https://ffxiv-dps-calc-backend.uc.r.appspot.com/calc_damage';
-    const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-    });
-    const request = JSON.stringify({
-        player: this.dataSet[index],
-        comp: this.party,
-        job: this.selfJob
-    });
-    this.http.post<GearSetResponse>(damageUrl, request, {headers: headers}).subscribe((res: GearSetResponse) => {
-      this.dataSet[index].dps = res.dps;
-    });
   }
 
   updateStats(index: number): void {

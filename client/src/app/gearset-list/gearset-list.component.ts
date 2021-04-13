@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
 
-import { GearSet, GearSetResponse } from '../data/gearset';
+import { GearSet } from '../data/gearset';
 import { DpsService } from '../service/dps.service';
 
 @Component({
