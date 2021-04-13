@@ -105,13 +105,3 @@ class SchPps(HealerPps):
         # Energy Drain
         result -= 500 * ed * cycle / 60
         return result
-
-    # TODO: it wasn't implement in Pps or HealerPps, so clearly it needs to be implemented at
-    # some level of inheritance
-    def calculate_pps(self, character_stats, caster_tax):
-        """
-        # hard coded for a ~180 second cycle, actual length calculated by get_cycle
-        # character_stats is a backend.character.Character object
-        # todo: extend this for variable length
-        """
-        ...
