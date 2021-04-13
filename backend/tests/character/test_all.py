@@ -2,7 +2,7 @@
 
 import unittest
 
-from xivdpscalc.character.character import Character, CharacterStatSpread
+from xivdpscalc.character import Character, CharacterStatSpread
 from xivdpscalc.character.jobs import Comp, Jobs
 
 
