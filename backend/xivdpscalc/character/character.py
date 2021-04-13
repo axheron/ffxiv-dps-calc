@@ -2,8 +2,8 @@
 
 import math
 from dataclasses import dataclass
-from character.stat import Stat, Stats, ProbabalisticStat
-from character.jobs import Roles, Buffs
+from xivdpscalc.character.stat import Stat, Stats, ProbabalisticStat
+from xivdpscalc.character.jobs import Roles, Buffs
 
 @dataclass
 class CharacterStatSpread: #pylint: disable=too-many-instance-attributes

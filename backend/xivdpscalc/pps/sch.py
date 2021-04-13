@@ -2,7 +2,6 @@
 
 import math
 
-from xivdpscalc.calc import CharacterStats
 from xivdpscalc.pps.pps import HealerPps
 
 class SchPps(HealerPps):
