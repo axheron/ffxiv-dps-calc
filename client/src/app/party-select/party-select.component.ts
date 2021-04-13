@@ -33,7 +33,7 @@ export class PartySelectComponent implements OnInit {
         (jobChosen: string) => {
           if (jobChosen) {
             this.dpsService.selfJob = jobChosen;
-            this.dpsService.getAllDamage();
+            this.dpsService.updateAllStats();
           }
         });
   }
@@ -44,7 +44,7 @@ export class PartySelectComponent implements OnInit {
           (jobChosen: string) => {
             if (jobChosen) {
               this.dpsService.party[index] = jobChosen;
-              this.dpsService.getAllDamage();
+              this.dpsService.updateAllStats();
             }
           });
   }

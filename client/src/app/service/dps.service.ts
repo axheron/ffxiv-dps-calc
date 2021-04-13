@@ -64,10 +64,17 @@ export class DpsService {
     }
   }
 
+  updateAllStats(): void {
+    for (let index : number = 0; index < this.dataSet.length; index++) {
+      this.updateStats(index);
+    }
+  }
+
   getDamage(index: number): void {
     const damageUrl = 'https://ffxiv-dps-calc-backend.uc.r.appspot.com/calc_damage';
     const headers = new HttpHeaders({
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
     });
     const request = JSON.stringify({
         player: this.dataSet[index],
@@ -83,6 +90,7 @@ export class DpsService {
     const statsUrl = 'https://ffxiv-dps-calc-backend.uc.r.appspot.com/update_stats';
     const headers = new HttpHeaders({
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
     });
     const request = JSON.stringify({
         player: this.dataSet[index],

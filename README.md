@@ -18,7 +18,7 @@ in the meantime, check your job's resources channel for the google sheets.
 
 ## getting started
 
-Download repo. In the repo's root directory, run `python setup.py develop`
+Download repo.
 
 Frontend stuff is in `client/` and uses Angular. Backend is in `backend/` and uses Flask.
-See individual repos for more instructions including setup for Angular.
+See READMEs in those directories for instructions on setting up dependencies.
