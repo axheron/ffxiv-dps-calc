@@ -21,11 +21,12 @@ class Buffs(Enum):
     LITANY = (0.1, 20, 180)
     BROTHERHOOD = (0.05, 15, 90)
     BV = (0.2, 20, 180)
-    BARD_CRIT = (0.02, 30, 80)
-    BARD_DH = (0.03, 20, 80)
+    BARD_CRIT = (0.02, 30, 80) # Wanderer's Minuet
+    BARD_DH = (0.03, 20, 80) # Army's Paeon
+    BARD_DMG = (0.01, 30, 80) # Mage's Ballad
     TECH = (0.05, 20, 120)
     DEVOTION = (0.05, 15, 180)
-    EMBOLDEN = (0.1, 20, 120)  # need to handle buff decay
+    EMBOLDEN = (0.1, 20, 120)
     # single target
     CARD = (0.06, 15, 30)
     LORD_LADY = (0.08, 15, 30)
@@ -53,7 +54,7 @@ class Buffs(Enum):
     @classmethod
     def raid_buffs(cls):
         """ Lists damage buffs """
-        return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
+        return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.BARD_DMG, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
     def avg_buff_effect(self, job):
         """ Calculates the average impact of buffs considering its uptime and magnitude """
@@ -83,7 +84,7 @@ class Jobs(Enum):
     SAM = (112, Roles.MELEE, [])
     MCH = (115, Roles.RANGED, [])
     DNC = (115, Roles.RANGED, [Buffs.TECH])
-    BRD = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH])
+    BRD = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH, Buffs.BARD_DMG])
     SMN = (115, Roles.CASTER, [Buffs.DEVOTION])
     BLM = (115, Roles.CASTER, [])
     RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
