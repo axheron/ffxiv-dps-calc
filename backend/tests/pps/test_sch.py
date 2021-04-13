@@ -30,4 +30,4 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
         test_char = Character(Jobs.SCH, my_stat_spread)
         mypps = SchPps()
         self.assertEqual(mypps.get_mp_per_min(
-            test_char, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0), 508.0952931652587)
+            test_char, caster_tax=0.1, succ=0, adlo=0, energy_drain=4, rez=0), 508.0952931652587)
