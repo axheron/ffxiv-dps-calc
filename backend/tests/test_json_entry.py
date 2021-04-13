@@ -1,6 +1,6 @@
 ''' Tests for the json parsing and etro import '''
 
-from xivdpscalc.main import app
+from xivdpscalc import app
 from flask import json
 
 
