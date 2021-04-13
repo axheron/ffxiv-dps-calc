@@ -50,3 +50,21 @@ jobs:
       run: |
         python -munittest discover --start-directory tests
       working-directory: ./backend
+  types:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -mpip install --upgrade pip
+        pip install .[dev]
+      working-directory: ./backend
+    - name: Running tests
+      run: |
+        mypy xivdpscalc
+      working-directory: ./backend
