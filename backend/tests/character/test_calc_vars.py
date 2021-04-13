@@ -2,8 +2,8 @@
 
 import unittest
 
-from character.character import Character, CharacterStatSpread
-from character.jobs import Comp, Jobs
+from xivdpscalc.character.character import Character, CharacterStatSpread
+from xivdpscalc.character.jobs import Comp, Jobs
 
 class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
     def test_baseline(self):
