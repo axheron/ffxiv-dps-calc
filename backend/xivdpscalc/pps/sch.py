@@ -21,13 +21,13 @@ class SchPps(HealerPps):
             character_stats, caster_tax, num_ed_per_min, num_filler_casts) / self.get_cycle(
                 character_stats, caster_tax)
 
-    def get_mp_per_min(self, character_stats, caster_tax=0.1, succ=0, adlo=0, ed=4, rez=0):
+    def get_mp_per_min(self, character_stats, caster_tax=0.1, succ=0, adlo=0, energy_drain=4, rez=0): # pylint: disable=too-many-arguments
         """
         Get the expected mp consumption in a minute.
         """
         cycle = self.get_cycle(character_stats, caster_tax)
         mpps = self.mp_consumed_per_cycle(
-            character_stats, caster_tax, succ, adlo, ed, rez, cycle) / cycle
+            character_stats, caster_tax, succ, adlo, energy_drain, rez, cycle) / cycle
         return 20 * character_stats.calc_piety() - 60 * mpps
 
     def total_potency_spreadsheet_port(self, character_stats, caster_tax, ed_per_min, num_filler):
@@ -86,7 +86,7 @@ class SchPps(HealerPps):
         return result
 
     @classmethod
-    def mp_consumed_per_cycle(cls, character_stats, caster_tax, succ, adlo, ed, rez, cycle):
+    def mp_consumed_per_cycle(cls, character_stats, caster_tax, succ, adlo, energy_drain, rez, cycle): # pylint: disable=too-many-arguments
         """MP consumed over a 3 min cycle (positive = losing mp, negative = gaining mp)"""
         short_gcd = character_stats.get_gcd()
         result = 0
@@ -103,5 +103,5 @@ class SchPps(HealerPps):
         # Lucid
         result -= 3500 * cycle / 60
         # Energy Drain
-        result -= 500 * ed * cycle / 60
+        result -= 500 * energy_drain * cycle / 60
         return result

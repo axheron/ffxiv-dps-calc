@@ -1,7 +1,7 @@
 """ General PPS calculation interfaces """
 from abc import ABCMeta, abstractmethod
 
-class Pps(metaclass=ABCMeta):
+class Pps(metaclass=ABCMeta): # pylint: disable=too-few-public-methods
     """ Top level PPS calculation interface. """
 
     @abstractmethod
@@ -13,7 +13,7 @@ class Pps(metaclass=ABCMeta):
         """
         ...
 
-class HealerPps(Pps):
+class HealerPps(Pps): # pylint: disable=too-few-public-methods
     """ PPS interface geared specifically for healers """
 
     def calculate_pps(self, character_stats, caster_tax):
