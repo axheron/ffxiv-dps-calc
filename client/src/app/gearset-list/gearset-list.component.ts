@@ -16,7 +16,7 @@ export class GearsetListComponent implements OnInit {
   constructor(public dpsService: DpsService) { }
 
   ngOnInit(): void {
-    this.dpsService.getAllDamage();
+    this.dpsService.updateAllStats();
   	this.updateEditCache();
   }
 
@@ -36,7 +36,7 @@ export class GearsetListComponent implements OnInit {
     const index = this.dpsService.dataSet.findIndex(item => item.id === id);
     Object.assign(this.dpsService.dataSet[index], this.editCache[id].data);
     this.editCache[id].edit = false;
-    this.dpsService.getDamage(index);
+    this.dpsService.updateStats(index);
   }
 
   updateEditCache(): void {

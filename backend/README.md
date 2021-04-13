@@ -4,7 +4,9 @@
 
 ### Install dependencies
 
-From inside this directory, run `pip install -r requirements.txt`
+From this directory, run: `python setup.py develop; FLASK_APP=xivdpscalc/main.py flask run`
+
+(If on Windows, set the environment variable using `$Env:FLASK_APP = "xivdpscalc/main.py"`)
 
 ### Run local server
 
