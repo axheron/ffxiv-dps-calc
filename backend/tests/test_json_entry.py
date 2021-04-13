@@ -1,4 +1,4 @@
-''' Tests for the json parsing and etro import '''
+"""Tests for the json parsing and etro import"""
 
 from xivdpscalc import app
 from flask import json
