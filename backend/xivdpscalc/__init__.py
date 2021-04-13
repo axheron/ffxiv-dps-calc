@@ -1,3 +1,5 @@
+"""ffxiv-dps-calc – dps calculations for the smart masses"""
+
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import requests
@@ -63,7 +65,7 @@ def main():
 
 @app.route('/update_stats', methods=["POST"])
 def update_stats():
-    """Calculates damage, mp consumption, and gcd based on input. 
+    """Calculates damage, mp consumption, and gcd based on input.
     Accepts and returns JSON. JSON format is as follows:
     input: {'player': Object
                 {'weaponDamage': int
