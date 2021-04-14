@@ -35,7 +35,7 @@ class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
         the_shitters_i_raid_with = Comp(
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.SAM, Jobs.BRD, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertEqual(20608.705123055555, test_char.calc_damage(200, the_shitters_i_raid_with))
+        self.assertEqual(20685.98776726701, test_char.calc_damage(200, the_shitters_i_raid_with))
 
     def test_gcd(self):
         """ Test gcd is applying speed correctly """
