@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { NtkmeButtonModule } from '@ctrl/ngx-github-buttons';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from "ng-zorro-antd/icon";
@@ -36,6 +37,7 @@ registerLocaleData(en);
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    NtkmeButtonModule,
     NzAvatarModule,
     NzButtonModule,
     NzIconModule,
