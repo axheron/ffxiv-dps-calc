@@ -3,7 +3,7 @@
 import math
 from dataclasses import dataclass
 from xivdpscalc.character.stat import Stat, Stats, ProbabalisticStat
-from xivdpscalc.character.jobs import Roles, Buffs
+from xivdpscalc.character.jobs import Roles, Buffs, Comp
 
 @dataclass
 class CharacterStatSpread: #pylint: disable=too-many-instance-attributes
@@ -35,7 +35,7 @@ class Character:
         self.stats[Stats.TEN] = Stat(Stats.TEN, stat_spread.ten)
         self.stats[Stats.PIE] = Stat(Stats.PIE, stat_spread.pie)
 
-    def get_gcd(self):
+    def get_gcd(self) -> float:
         """
         Returns the character's gcd given its skill or spell speed
         :returns: the gcd in seconds
@@ -57,7 +57,7 @@ class Character:
         return 200 + self.stats[Stats.PIE].get_multiplier()
 
     # todo: break this up neatly
-    def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):  #pylint: disable=too-many-arguments, too-many-locals
+    def calc_damage(self, potency: float, comp: Comp, is_dot: bool = False, crit_rate: float = None, dh_rate: float = None):  #pylint: disable=too-many-arguments, too-many-locals
         """
         Calculates the estimated DPS based on the team composition and current character stats
         :param potency: Potency calculated on expected rotation

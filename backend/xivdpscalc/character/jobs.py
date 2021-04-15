@@ -36,10 +36,10 @@ class Buffs(Enum):
 
     # todo: should probably add standard, personal tank buffs
 
-    def __init__(self, multiplier, duration, cd):
+    def __init__(self, multiplier: float, duration: int, cooldown: int):
         self.multiplier = multiplier
         self.duration = duration
-        self.cooldown = cd
+        self.cooldown = cooldown
 
     @classmethod
     def crit_buffs(cls):
@@ -70,26 +70,39 @@ class Buffs(Enum):
         return self.multiplier * self.duration / self.cooldown
 
 class Jobs(Enum):
-    """ Job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/ """
-    SCH = (115, Roles.HEALER, [Buffs.CHAIN])
-    AST = (115, Roles.HEALER, [Buffs.DIV])
-    WHM = (115, Roles.HEALER, [])
-    PLD = (110, Roles.TANK, [])
-    WAR = (110, Roles.TANK, [])
-    DRK = (110, Roles.TANK, [])
-    GNB = (110, Roles.TANK, [])
-    NIN = (110, Roles.MELEE, [Buffs.TRICK])
-    DRG = (115, Roles.MELEE, [Buffs.LITANY])
-    MNK = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
-    SAM = (112, Roles.MELEE, [])
-    MCH = (115, Roles.RANGED, [])
-    DNC = (115, Roles.RANGED, [Buffs.TECH])
-    BRD = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH, Buffs.BARD_DMG])
-    SMN = (115, Roles.CASTER, [Buffs.DEVOTION])
-    BLM = (115, Roles.CASTER, [])
-    RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
+    """
+    Contains job related info.
 
-    def __init__(self, job_mod, role, raidbuff):
+    job_mod: The bonus given to the main stat.
+    role: The Role of the job
+    raidbuff: A list of all raidbuffs that the job has
+
+    job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
+    note: tanks use STR for damage
+    """
+
+    JobMod = int
+    JobInfo = tuple[JobMod, Roles, list[Buffs]]
+
+    SCH: JobInfo = (115, Roles.HEALER, [Buffs.CHAIN])
+    AST: JobInfo = (115, Roles.HEALER, [Buffs.DIV])
+    WHM: JobInfo = (115, Roles.HEALER, [])
+    PLD: JobInfo = (110, Roles.TANK, [])
+    WAR: JobInfo = (110, Roles.TANK, [])
+    DRK: JobInfo = (110, Roles.TANK, [])
+    GNB: JobInfo = (110, Roles.TANK, [])
+    NIN: JobInfo = (110, Roles.MELEE, [Buffs.TRICK])
+    DRG: JobInfo = (115, Roles.MELEE, [Buffs.LITANY])
+    MNK: JobInfo = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
+    SAM: JobInfo = (112, Roles.MELEE, [])
+    MCH: JobInfo = (115, Roles.RANGED, [])
+    DNC: JobInfo = (115, Roles.RANGED, [Buffs.TECH])
+    BRD: JobInfo = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH, Buffs.BARD_DMG])
+    SMN: JobInfo = (115, Roles.CASTER, [Buffs.DEVOTION])
+    BLM: JobInfo = (115, Roles.CASTER, [])
+    RDM: JobInfo = (115, Roles.CASTER, [Buffs.EMBOLDEN])
+
+    def __init__(self, job_mod: int, role: Roles, raidbuff: list[Buffs]):
         self.job_mod = job_mod
         self.role = role
         self.raidbuff = raidbuff
@@ -125,7 +138,8 @@ class Jobs(Enum):
 
 class Comp:  #pylint: disable=too-few-public-methods
     """ Representation of a comp, basically a collection of Jobs """
-    def __init__(self, jobs):
+
+    def __init__(self, jobs: list[Jobs]):
         self.jobs = jobs
-        self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
-        self.n_roles = len({job.role for job in jobs})
+        self.raidbuffs: set[Buffs] = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
+        self.n_roles: int = len({job.role for job in jobs})
