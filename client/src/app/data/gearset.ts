@@ -1,5 +1,6 @@
 export interface GearSet {
 	id: string;
+	etroId?: string;
 	name: string;
 	weaponDamage: number;
 	mainStat: number;
