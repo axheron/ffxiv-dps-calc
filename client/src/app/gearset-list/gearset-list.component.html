@@ -22,7 +22,16 @@
   <tbody>
     <tr *ngFor="let data of basicTable.data">
       <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
-        <td>{{data.name}}</td>
+        <td class="name-col">
+          <ng-container *ngIf="!data.etroId">
+            {{data.name}}
+          </ng-container>
+          <ng-container *ngIf="data.etroId">
+            <a href="https://etro.gg/gearset/{{data.etroId}}" target="_blank">
+              {{data.name}}
+            </a>
+          </ng-container>
+        </td>
         <td class="num-col">{{data.weaponDamage}}</td>
         <td class="num-col">{{data.mainStat}}</td>
         <td class="num-col">{{data.dh}}</td>
@@ -38,9 +47,11 @@
         </td>
       </ng-container>
       <ng-template #editTemplate>
-        <td>
-          <input type="text" nz-input
+        <td class="name-col">
+          <input class="name-edit-input" type="text" nz-input
         	  [(ngModel)]="editCache[data.id].data.name" />
+          <input type="text" nz-input
+            [(ngModel)]="editCache[data.id].data.etroId" />
         </td>
         <td class="num-col">
           <input type="number" nz-input

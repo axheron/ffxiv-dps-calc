@@ -14,6 +14,7 @@ export class DpsService {
   dataSet = [
     {
       id: '1',
+      etroId: 'b3c0a4b6-e6a1-4ff6-9f2b-c7b82a8a2f02',
       name: '5.4 Preliminary SCH BiS',
       weaponDamage: 180,
       mainStat: 5577,
@@ -28,6 +29,7 @@ export class DpsService {
       dps: 13535.61,
     }, {
       id: '2',
+      etroId: '5bd09e65-4349-4b22-9322-850cae3bc6ef',
       name: '5.4 Super Safe Set',
       weaponDamage: 180,
       mainStat: 5577,

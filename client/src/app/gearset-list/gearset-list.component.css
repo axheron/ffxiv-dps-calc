@@ -18,6 +18,10 @@
 	padding-bottom: 8px;
 }
 
+.name-col {
+	min-width: 200px;
+}
+
 .num-col {
 	min-width: 100px;
 	width: 7%;
@@ -25,4 +29,8 @@
 
 .action-col {
 	width: 100px;
+}
+
+.name-edit-input {
+	margin-bottom: 8px;
 }
