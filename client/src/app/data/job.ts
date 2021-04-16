@@ -4,103 +4,103 @@ export interface Job {
   buffs: string[];
 }
 
-const ASTROLOGIAN: Job = {
+export const ASTROLOGIAN: Job = {
   name: 'AST',
   path: './assets/astrologian.png',
   buffs: ['DIVINATION'],
 };
 
-const BARD: Job = {
+export const BARD: Job = {
   name: 'BRD',
   path: './assets/bard.png',
   buffs: ['BATTLE_VOICE'],
 };
 
-const BLACK_MAGE: Job = {
+export const BLACK_MAGE: Job = {
   name: 'BLM',
   path: './assets/blackmage.png',
   buffs: [],
 };
 
-const DANCER: Job = {
+export const DANCER: Job = {
   name: 'DNC',
   path: './assets/dancer.png',
   buffs: ['TECHNICAL_FINISH'],
 };
 
-const DARK_KNIGHT: Job = {
+export const DARK_KNIGHT: Job = {
   name: 'DRK',
   path: './assets/darkknight.png',
   buffs: [],
 };
 
-const DRAGOON: Job = {
+export const DRAGOON: Job = {
   name: 'DRG',
   path: './assets/dragoon.png',
   buffs: ['BATTLE_LITANY'],
 };
 
-const GUNBREAKER: Job = {
+export const GUNBREAKER: Job = {
   name: 'GNB',
   path: './assets/gunbreaker.png',
   buffs: [],
 };
 
-const MACHINIST: Job = {
+export const MACHINIST: Job = {
   name: 'MCH',
   path: './assets/machinist.png',
   buffs: [],
 };
 
-const MONK: Job = {
+export const MONK: Job = {
   name: 'MNK',
   path: './assets/monk.png',
   buffs: ['BROTHERHOOD'],
 };
 
-const NINJA: Job = {
+export const NINJA: Job = {
   name: 'NIN',
   path: './assets/ninja.png',
   buffs: ['TRICK_ATTACK'],
 };
 
-const PALADIN: Job = {
+export const PALADIN: Job = {
   name: 'PLD',
   path: './assets/paladin.png',
   buffs: [],
 };
 
-const RED_MAGE: Job = {
+export const RED_MAGE: Job = {
   name: 'RDM',
   path: './assets/redmage.png',
   buffs: ['EMBOLDEN'],
 };
 
-const SAMURAI: Job = {
+export const SAMURAI: Job = {
   name: 'SAM',
   path: './assets/samurai.png',
   buffs: [],
 };
 
-const SCHOLAR: Job = {
+export const SCHOLAR: Job = {
   name: 'SCH',
   path: './assets/scholar.png',
   buffs: ['CHAIN_STRATAGEM'],
 };
 
-const SUMMONER: Job = {
+export const SUMMONER: Job = {
   name: 'SMN',
   path: './assets/summoner.png',
   buffs: ['DEVOTION'],
 };
 
-const WARRIOR: Job = {
+export const WARRIOR: Job = {
   name: 'WAR',
   path: './assets/warrior.png',
   buffs: [],
 };
 
-const WHITE_MAGE: Job = {
+export const WHITE_MAGE: Job = {
   name: 'WHM',
   path: './assets/whitemage.png',
   buffs: [],

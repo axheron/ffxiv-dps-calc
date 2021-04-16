@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { GearSet, UpdateStatsResponse } from '../data/gearset';
+import { defaultScholarRotation, ScholarRotation } from '../data/rotation';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { GearSet, UpdateStatsResponse } from '../data/gearset';
 export class DpsService {
   selfJob = 'SCH';
   party = ['PLD', 'GNB', 'AST', 'MCH', 'DRG', 'MNK', 'BLM'];
+  rotation = defaultScholarRotation();
   dataSet = [
     {
       id: '1',
@@ -136,7 +138,8 @@ export class DpsService {
     const request = JSON.stringify({
         player: this.dataSet[index],
         comp: this.party,
-        job: this.selfJob
+        job: this.selfJob,
+        rotation: this.rotation,
     });
     this.http.post<UpdateStatsResponse>(statsUrl, request, {headers: headers}).subscribe((res: UpdateStatsResponse) => {
       this.dataSet[index].dps = res.dps;
