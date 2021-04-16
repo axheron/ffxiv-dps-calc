@@ -25,6 +25,10 @@ class Character:
     The main class where damage is calculated. Initialized by providing a CharacterStatSpread.
     """
     def __init__(self, job: Jobs, stat_spread: CharacterStatSpread):
+        """
+        :param job: Job enum, tells the character's job
+        :param stat_spread: dataclass containing all the attributes
+        """
         self.job = job
         self.wd = stat_spread.wd
         self.character_stats = {
@@ -141,7 +145,6 @@ class Character:
         :param dh_rate: Optional parameter to override dh rate to calculate specific proc rate
         :returns: the DPS number
         """
-
         damage = self.calc_non_probablistic_damage(potency_per_second, comp, is_dot)
         damage //= 100  # why? i do not know. cargo culted
 

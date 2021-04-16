@@ -1,6 +1,7 @@
 """ General representation of stats """
 
 from enum import Enum
+from typing import ClassVar
 import math
 
 
@@ -17,7 +18,12 @@ class Stats(Enum):
     PIE = (340, 150, 0)
     GCD = (2500, 1, 0)  # in milliseconds
 
-    def __init__(self, base, m_factor, m_scalar):
+    def __init__(self, base: int, m_factor: int, m_scalar: int):
+        """
+        :param base: the base value for each stat.
+        :param m_factor: magic value for magic math, fits the reverse engineered formula.
+        :param m_scalar: magic value for magic math, fits the reverse engineer formula.
+        """
         self.base = base
         self.m_factor = m_factor
         self.m_scalar = m_scalar
@@ -75,30 +81,32 @@ class ProbabalisticStat(Stat):
     """
     Derived from Stat class, used for stats that increase the chance of something happening
     such as critical hit and direct hit.
-    p_factor: something
-    p_scalar: something else
     """
-    def __init__(self, stat: Stats, value: int, precision = 1000):
+
+    # Class variables to convert stats
+    P_factors = tuple[int, int]  # for less ugly
+
+    CRIT_CONVERT: ClassVar[dict[Stats, P_factors]] = {
+        Stats.CRIT: (200, 50),
+        Stats.DH: (550, 0),
+    }
+    DEFAULT_PSTATS: ClassVar[P_factors] = (1, 0)
+
+    def __init__(self, stat: Stats, value: int, precision=1000):
         """
         :param stat: from Stats enum.
         :param value: the current value of the stat.
-        :param p_factor: ???
-        :param p_scalar: ???
+        :param p_factor: magic value for reverse engineered damage formula.
+        :param p_scalar: magic value for reverse engineered damage formula.
         """
         super().__init__(stat, value)
-        self.p_factor = 1
-        self.p_scalar = 0
-        if stat == Stats.CRIT:
-            self.p_factor = 200
-            self.p_scalar = 50
-        elif stat == Stats.DH:
-            self.p_factor = 550
+        self.p_factor, self.p_scalar = ProbabalisticStat.CRIT_CONVERT.get(stat, ProbabalisticStat.DEFAULT_PSTATS)
         self.precision = precision
 
     def get_p(self):
         """
-        calculates p?
-        :returns: returns p?
+        Calculates probablistic factor applied to crit and dh for damage formula
+        :returns: returns p_factor
         """
         delta = self.value - self.stat.base
         return (self.p_factor * delta // 3300 + self.p_scalar) / self.precision
