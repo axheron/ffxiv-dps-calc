@@ -74,7 +74,7 @@ class Character:
         """
 
         # modify mainstat according to number of roles if with a team composition
-        if comp:
+        if comp is not None:
             affirmative_action_bonus = 1 + 0.01 * comp.n_roles
             new_mainstat_value = math.floor(self.character_stats[Stats.MAINSTAT].value * affirmative_action_bonus)
             mainstat = Stat(Stats.MAINSTAT, new_mainstat_value)
@@ -110,13 +110,13 @@ class Character:
         cdh_damage = crit_damage * self.character_stats[Stats.DH].stat.m_factor // 1000
 
         # use expected crit rate based on stats if none is supplied
-        if not crit_rate:
+        if crit_rate is None:
             crit_rate = self.character_stats[Stats.CRIT].get_p()
-        if not dh_rate:
+        if dh_rate is None:
             dh_rate = self.character_stats[Stats.DH].get_p()
 
         # apply party crit/dh buffs if applicable
-        if comp:
+        if comp is not None:
             for buff in comp.raidbuffs:
                 if buff in Buffs.crit_buffs():
                     crit_rate += buff.avg_buff_effect(self.job)
@@ -124,6 +124,8 @@ class Character:
                     dh_rate += buff.avg_buff_effect(self.job)
 
         # apply probablistic modifiers
+        assert crit_rate is not None  # for mypy
+        assert dh_rate is not None  # for mypy
         cdh_rate = crit_rate * dh_rate
         normal_rate = 1 - crit_rate - dh_rate + cdh_rate
         p_damage = np_damage * normal_rate + (
@@ -156,8 +158,9 @@ class Character:
         total_damage = self.calc_probablistic_damage(damage, comp, crit_rate, dh_rate)
 
         # apply raid buffs that boost damage
-        for buff in comp.raidbuffs:
-            if buff in Buffs.damage_buffs():
-                total_damage *= (1 + buff.avg_buff_effect(self.job))
+        if comp is not None:
+            for buff in comp.raidbuffs:
+                if buff in Buffs.damage_buffs():
+                    total_damage *= (1 + buff.avg_buff_effect(self.job))
 
         return total_damage

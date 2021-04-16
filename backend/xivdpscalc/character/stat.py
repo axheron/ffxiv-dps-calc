@@ -22,7 +22,7 @@ class Stats(Enum):
         """
         :param base: the base value for each stat.
         :param m_factor: magic value for magic math, fits the reverse engineered formula.
-        :param m_scalar: magic value for magic math, fits the reverse engineer formula.
+        :param m_scalar: magic value for magic math, fits the reverse engineered formula.
         """
         self.base = base
         self.m_factor = m_factor
