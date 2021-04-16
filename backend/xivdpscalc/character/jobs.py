@@ -52,7 +52,7 @@ class Buffs(Enum):
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
     @classmethod
-    def raid_buffs(cls):
+    def damage_buffs(cls):
         """ Lists damage buffs """
         return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.BARD_DMG, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 

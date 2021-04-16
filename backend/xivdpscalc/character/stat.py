@@ -7,9 +7,6 @@ import math
 class Stats(Enum):
     """
     Contains math factors for each individual stat.
-    base: the base value for each stat
-    m_factor: ???
-    m_scalar: ???
     """
     MAINSTAT = (340, 165, 0)
     DET = (340, 130, 0)

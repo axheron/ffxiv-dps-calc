@@ -7,7 +7,7 @@ from xivdpscalc.character.stat import Stat, Stats, ProbabalisticStat
 from xivdpscalc.character.jobs import Roles, Buffs, Comp, Jobs
 
 @dataclass
-class CharacterStatSpread: #pylint: disable=too-many-instance-attributes
+class CharacterStatSpread:  # pylint: disable=too-many-instance-attributes
     """
     Value class representation of a stat spread
     """
@@ -27,61 +27,122 @@ class Character:
     def __init__(self, job: Jobs, stat_spread: CharacterStatSpread):
         self.job = job
         self.wd = stat_spread.wd
-        self.stats = {}
-        self.stats[Stats.MAINSTAT] = Stat(Stats.MAINSTAT, stat_spread.mainstat)
-        self.stats[Stats.DET] = Stat(Stats.DET, stat_spread.det)
-        self.stats[Stats.CRIT] = ProbabalisticStat(Stats.CRIT, stat_spread.crit)
-        self.stats[Stats.DH] = ProbabalisticStat(Stats.DH, stat_spread.dh)
-        self.stats[Stats.SPEED] = Stat(Stats.SPEED, stat_spread.speed)
-        self.stats[Stats.TEN] = Stat(Stats.TEN, stat_spread.ten)
-        self.stats[Stats.PIE] = Stat(Stats.PIE, stat_spread.pie)
+        self.character_stats = {
+            Stats.MAINSTAT: Stat(Stats.MAINSTAT, stat_spread.mainstat),
+            Stats.DET: Stat(Stats.DET, stat_spread.det),
+            Stats.CRIT: ProbabalisticStat(Stats.CRIT, stat_spread.crit),
+            Stats.DH: ProbabalisticStat(Stats.DH, stat_spread.dh),
+            Stats.SPEED: Stat(Stats.SPEED, stat_spread.speed),
+            Stats.TEN: Stat(Stats.TEN, stat_spread.ten),
+            Stats.PIE: Stat(Stats.PIE, stat_spread.pie),
+        }
 
     def get_gcd(self) -> float:
         """
         Returns the character's gcd given its skill or spell speed
         :returns: the gcd in seconds
         """
-        return math.floor(0.25 * (1000 - self.stats[Stats.SPEED].get_multiplier())) / 100
+        return math.floor(0.25 * (1000 - self.character_stats[Stats.SPEED].get_multiplier())) / 100
 
     def get_dot_scalar(self) -> float:
         """
         Returns the character's dot damage bonus, given its skill or spell speed
         :returns: the modified dot multiplier
         """
-        return  1 + (self.stats[Stats.SPEED].get_multiplier() / 1000)
+        return 1 + (self.character_stats[Stats.SPEED].get_multiplier() / 1000)
 
     def calc_piety(self) -> float:
         """
         Returns the character's mp regen resulting from the piety stat
         :returns: The character's mp regen per tick (3 seconds)
         """
-        return 200 + self.stats[Stats.PIE].get_multiplier()
+        return 200 + self.character_stats[Stats.PIE].get_multiplier()
 
     # todo: break this up neatly
-    def calc_damage(self, potency: float, comp: Comp, is_dot: bool = False,
+    def calc_damage(self, potency_per_second: float, comp: Comp, is_dot: bool = False,
                     crit_rate: Optional[float] = None, dh_rate: Optional[float] = None) -> float:  #pylint: disable=too-many-arguments, too-many-locals
         """
+        Calculates the damage from non probablistic stats.
+        :param potency_per_second: From potency calculated on expected rotation
+        :param comp: Team composition, if applicable
+        :param is_dot: If potency also applies to DoT
+        :returns: DPS contribution from non-probablistic stats
+        """
+
+        # modify mainstat according to number of roles if with a team composition
+        if comp:
+            affirmative_action_bonus = 1 + 0.01 * comp.n_roles
+            new_mainstat_value = math.floor(self.character_stats[Stats.MAINSTAT].value * affirmative_action_bonus)
+            mainstat = Stat(Stats.MAINSTAT, new_mainstat_value)
+        else:
+            mainstat = self.character_stats[Stats.MAINSTAT]
+
+        # job bonus for weapon damage
+        adjusted_wd = self.wd + (340 * self.job.job_mod // 1000)
+        np_damage = potency_per_second * adjusted_wd * (100 + mainstat.get_multiplier()) // 100
+
+        # applying the damage bonus from wimpy secondary stats
+        np_damage = self.character_stats[Stats.DET].apply_stat(np_damage)
+        np_damage = self.character_stats[Stats.TEN].apply_stat(np_damage)
+        if is_dot:
+            np_damage = self.character_stats[Stats.SPEED].apply_stat(np_damage)
+
+        return np_damage
+
+    def calc_probablistic_damage(self, np_damage: float, comp: Comp = None, crit_rate: float = None,
+                                 dh_rate: float = None) -> float:
+        """
+        Calculates the damage from probablistic stats.
+        :param np_damage: from nonprobablistic damage calculation
+        :param comp: Team composition, if applicable
+        :param crit_rate: for calculating a specific crit proc rate
+        :param dh_rate: for calculating a specific dh proc rate
+        :returns: DPS contribution from probablistic stats
+        """
+
+        # damage effect of probabalistic stats
+        crit_damage = self.character_stats[Stats.CRIT].apply_stat(np_damage)
+        dh_damage = np_damage * self.character_stats[Stats.DH].stat.m_factor // 1000
+        cdh_damage = crit_damage * self.character_stats[Stats.DH].stat.m_factor // 1000
+
+        # use expected crit rate based on stats if none is supplied
+        if not crit_rate:
+            crit_rate = self.character_stats[Stats.CRIT].get_p()
+        if not dh_rate:
+            dh_rate = self.character_stats[Stats.DH].get_p()
+
+        # apply party crit/dh buffs if applicable
+        if comp:
+            for buff in comp.raidbuffs:
+                if buff in Buffs.crit_buffs():
+                    crit_rate += buff.avg_buff_effect(self.job)
+                elif buff in Buffs.dh_buffs():
+                    dh_rate += buff.avg_buff_effect(self.job)
+
+        # apply probablistic modifiers
+        cdh_rate = crit_rate * dh_rate
+        normal_rate = 1 - crit_rate - dh_rate + cdh_rate
+        p_damage = np_damage * normal_rate + (
+            crit_damage * (crit_rate - cdh_rate)) + (
+            dh_damage * (dh_rate - cdh_rate)) + (
+            cdh_damage * cdh_rate)
+
+        return p_damage
+
+    # todo: break this up neatly
+    def calc_damage(self, potency_per_second: float, comp: Comp = None,  # pylint: disable=too-many-arguments
+                    is_dot: bool = False, crit_rate: float = None, dh_rate: float = None) -> float:
+        """
         Calculates the estimated DPS based on the team composition and current character stats
-        :param potency: Potency calculated on expected rotation
-        :param comp: Team composition. (character.jobs.Comp object)
-        :param is_dot: The potency is applying to a DoT effect (which is additionally modified by spellspeed)
-        :param crit_rate: Overrides crit rate, but not the crit stat.  Calc uses crit stat to calculate rate if this is None
-        :param dh_rate: Overrides direct rate, but not the dh stat.  Calc uses dh stat to calculate rate if this is None
+        :param potency_per_second: Potency calculated on expected rotation
+        :param comp: Team composition
+        :param is_dot: The potency is applying to a DoT effect, which is additionally modified by spellspeed
+        :param crit_rate: Optional parameter to override crit rate to calculate specific proc rate
+        :param dh_rate: Optional parameter to override dh rate to calculate specific proc rate
         :returns: the DPS number
         """
-        # modify mainstat according to number of roles
-        modified_mainstat = Stat(Stats.MAINSTAT, math.floor(self.stats[Stats.MAINSTAT].value * (
-            1 + 0.01 * comp.n_roles)))
 
-        # damage effect of non-probabalistic stats
-        job_mod_scaling = (340 * self.job.job_mod // 1000)
-        damage = potency * (
-            self.wd + job_mod_scaling) * (100 + modified_mainstat.get_multiplier()) // 100
-        damage = self.stats[Stats.DET].apply_stat(damage)
-        damage = self.stats[Stats.TEN].apply_stat(damage)
-        if is_dot:
-            damage = self.stats[Stats.SPEED].apply_stat(damage)
-
+        damage = self.calc_non_probablistic_damage(potency_per_second, comp, is_dot)
         damage //= 100  # why? i do not know. cargo culted
 
         # damage effect of job traits / stance
@@ -89,33 +150,11 @@ class Character:
         if self.job.role == Roles.HEALER:
             damage = math.floor(damage * 1.3)  # magic and mend
 
-        # damage effect of probabalistic stats
-        crit_damage = self.stats[Stats.CRIT].apply_stat(damage)
-        dh_damage = damage * self.stats[Stats.DH].stat.m_factor // 1000
-        cdh_damage = crit_damage * self.stats[Stats.DH].stat.m_factor // 1000
+        total_damage = self.calc_probablistic_damage(damage, comp, crit_rate, dh_rate)
 
-        # use expected crit rate based on stats if none is supplied
-        if not crit_rate:
-            crit_rate = self.stats[Stats.CRIT].get_p()
-        if not dh_rate:
-            dh_rate = self.stats[Stats.DH].get_p()
-
-        # apply party crit/dh buffs
+        # apply raid buffs that boost damage
         for buff in comp.raidbuffs:
-            if buff in Buffs.crit_buffs():
-                crit_rate += buff.avg_buff_effect(self.job)
-            elif buff in Buffs.dh_buffs():
-                dh_rate += buff.avg_buff_effect(self.job)
+            if buff in Buffs.damage_buffs():
+                total_damage *= (1 + buff.avg_buff_effect(self.job))
 
-        cdh_rate = crit_rate * dh_rate
-        normal_rate = 1 - crit_rate - dh_rate + cdh_rate
-        expected_damage = damage * normal_rate + (
-            crit_damage * (crit_rate - cdh_rate)) + (
-            dh_damage * (dh_rate - cdh_rate)) + (
-            cdh_damage * cdh_rate)
-
-        for buff in comp.raidbuffs:
-            if buff in Buffs.raid_buffs():
-                expected_damage *= (1 + buff.avg_buff_effect(self.job))
-
-        return expected_damage
+        return total_damage
