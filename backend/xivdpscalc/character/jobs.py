@@ -81,26 +81,23 @@ class Jobs(Enum):
     note: tanks use STR for damage
     """
 
-    JobMod = int
-    JobInfo = tuple[JobMod, Roles, list[Buffs]]
-
-    SCH: JobInfo = (115, Roles.HEALER, [Buffs.CHAIN])
-    AST: JobInfo = (115, Roles.HEALER, [Buffs.DIV])
-    WHM: JobInfo = (115, Roles.HEALER, [])
-    PLD: JobInfo = (110, Roles.TANK, [])
-    WAR: JobInfo = (110, Roles.TANK, [])
-    DRK: JobInfo = (110, Roles.TANK, [])
-    GNB: JobInfo = (110, Roles.TANK, [])
-    NIN: JobInfo = (110, Roles.MELEE, [Buffs.TRICK])
-    DRG: JobInfo = (115, Roles.MELEE, [Buffs.LITANY])
-    MNK: JobInfo = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
-    SAM: JobInfo = (112, Roles.MELEE, [])
-    MCH: JobInfo = (115, Roles.RANGED, [])
-    DNC: JobInfo = (115, Roles.RANGED, [Buffs.TECH])
-    BRD: JobInfo = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH, Buffs.BARD_DMG])
-    SMN: JobInfo = (115, Roles.CASTER, [Buffs.DEVOTION])
-    BLM: JobInfo = (115, Roles.CASTER, [])
-    RDM: JobInfo = (115, Roles.CASTER, [Buffs.EMBOLDEN])
+    SCH = (115, Roles.HEALER, [Buffs.CHAIN])
+    AST = (115, Roles.HEALER, [Buffs.DIV])
+    WHM = (115, Roles.HEALER, [])
+    PLD = (110, Roles.TANK, [])
+    WAR = (110, Roles.TANK, [])
+    DRK = (110, Roles.TANK, [])
+    GNB = (110, Roles.TANK, [])
+    NIN = (110, Roles.MELEE, [Buffs.TRICK])
+    DRG = (115, Roles.MELEE, [Buffs.LITANY])
+    MNK = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
+    SAM = (112, Roles.MELEE, [])
+    MCH = (115, Roles.RANGED, [])
+    DNC = (115, Roles.RANGED, [Buffs.TECH])
+    BRD = (115, Roles.RANGED, [Buffs.BV, Buffs.BARD_CRIT, Buffs.BARD_DH, Buffs.BARD_DMG])
+    SMN = (115, Roles.CASTER, [Buffs.DEVOTION])
+    BLM = (115, Roles.CASTER, [])
+    RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
 
     def __init__(self, job_mod: int, role: Roles, raidbuff: list[Buffs]):
         self.job_mod = job_mod
