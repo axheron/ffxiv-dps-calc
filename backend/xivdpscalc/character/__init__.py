@@ -75,8 +75,8 @@ class Character:
 
         # modify mainstat according to number of roles if with a team composition
         if comp is not None:
-            affirmative_action_bonus = 1 + 0.01 * comp.n_roles
-            new_mainstat_value = math.floor(self.character_stats[Stats.MAINSTAT].value * affirmative_action_bonus)
+            unique_role_bonus = 1 + 0.01 * comp.n_roles
+            new_mainstat_value = math.floor(self.character_stats[Stats.MAINSTAT].value * unique_role_bonus)
             mainstat = Stat(Stats.MAINSTAT, new_mainstat_value)
         else:
             mainstat = self.character_stats[Stats.MAINSTAT]
