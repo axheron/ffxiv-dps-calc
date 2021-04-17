@@ -7,38 +7,41 @@
   	{{dpsService.rotation.succor}} Succor,
   	{{dpsService.rotation.ressurection}} Ressurection per min
   </span>
-  <i class="edit-icon" nz-icon [nzType]="'edit'" (click)="editRotation()"></i>
+  <button class="edit-icon" (click)="editRotation()"
+      aria-label="Edit rotation">
+  	<i nz-icon [nzType]="'edit'"></i>
+  </button>
 </div>
 <nz-modal #editModal [(nzVisible)]="modalVisible"
     (nzOnCancel)="handleCancel()" (nzOnOk)="handleConfirm()">
   <ng-container *nzModalContent>
     <div class="option-edit-container">
-      <nz-input-number class="option-edit-input"
+      <input nz-input class="option-edit-input"
+          aria-label="Energy drains per minute"
           [(ngModel)]="editCache.energyDrain"
-          [nzStep]="1" [nzSize]="'small'">
-      </nz-input-number>
-      Energy Drain
+          type="number" nzSize="small" />
+      Energy Drains
     </div>
     <div class="option-edit-container">
-      <nz-input-number class="option-edit-input"
+      <input nz-input class="option-edit-input"
+          aria-label="Adloquiums per minute"
           [(ngModel)]="editCache.adloquium"
-          [nzStep]="1" [nzSize]="'small'">
-      </nz-input-number>
-      Adloquium	
+          type="number" nzSize="small" />
+      Adloquiums	
     </div>
     <div class="option-edit-container">
-      <nz-input-number class="option-edit-input"
+      <input nz-input class="option-edit-input"
+          aria-label="Succors per minute"
           [(ngModel)]="editCache.succor"
-          [nzStep]="1" [nzSize]="'small'">
-      </nz-input-number>
-      Succor
+          type="number" nzSize="small" />
+      Succors
     </div>
     <div class="option-edit-container">
-      <nz-input-number class="option-edit-input"
+      <input nz-input class="option-edit-input"
+          aria-label="Ressurections per minute"
           [(ngModel)]="editCache.ressurection"
-          [nzStep]="1" [nzSize]="'small'">
-      </nz-input-number>
-      Ressurection
+          type="number" nzSize="small" />
+      Ressurections
     </div>
   </ng-container>
 </nz-modal>
