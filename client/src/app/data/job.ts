@@ -1,107 +1,125 @@
 export interface Job {
+  id: string;
   name: string;
   path: string;
   buffs: string[];
 }
 
 const ASTROLOGIAN: Job = {
-  name: 'AST',
+  id: 'AST',
+  name: 'Astrologian',
   path: './assets/astrologian.png',
   buffs: ['DIVINATION'],
 };
 
 const BARD: Job = {
-  name: 'BRD',
+  id: 'BRD',
+  name: 'Bard',
   path: './assets/bard.png',
   buffs: ['BATTLE_VOICE'],
 };
 
 const BLACK_MAGE: Job = {
-  name: 'BLM',
+  id: 'BLM',
+  name: 'Black mage',
   path: './assets/blackmage.png',
   buffs: [],
 };
 
 const DANCER: Job = {
-  name: 'DNC',
+  id: 'DNC',
+  name: 'Dancer',
   path: './assets/dancer.png',
   buffs: ['TECHNICAL_FINISH'],
 };
 
 const DARK_KNIGHT: Job = {
-  name: 'DRK',
+  id: 'DRK',
+  name: 'Dark knight',
   path: './assets/darkknight.png',
   buffs: [],
 };
 
 const DRAGOON: Job = {
-  name: 'DRG',
+  id: 'DRG',
+  name: 'Dragonn',
   path: './assets/dragoon.png',
   buffs: ['BATTLE_LITANY'],
 };
 
 const GUNBREAKER: Job = {
-  name: 'GNB',
+  id: 'GNB',
+  name: 'Gunbreaker',
   path: './assets/gunbreaker.png',
   buffs: [],
 };
 
 const MACHINIST: Job = {
-  name: 'MCH',
+  id: 'MCH',
+  name: 'Machinist',
   path: './assets/machinist.png',
   buffs: [],
 };
 
 const MONK: Job = {
-  name: 'MNK',
+  id: 'MNK',
+  name: 'Monk',
   path: './assets/monk.png',
   buffs: ['BROTHERHOOD'],
 };
 
 const NINJA: Job = {
-  name: 'NIN',
+  id: 'NIN',
+  name: 'Ninja',
   path: './assets/ninja.png',
   buffs: ['TRICK_ATTACK'],
 };
 
 const PALADIN: Job = {
-  name: 'PLD',
+  id: 'PLD',
+  name: 'Paladin',
   path: './assets/paladin.png',
   buffs: [],
 };
 
 const RED_MAGE: Job = {
-  name: 'RDM',
+  id: 'RDM',
+  name: 'Red mage',
   path: './assets/redmage.png',
   buffs: ['EMBOLDEN'],
 };
 
 const SAMURAI: Job = {
-  name: 'SAM',
+  id: 'SAM',
+  name: 'Samurai',
   path: './assets/samurai.png',
   buffs: [],
 };
 
 const SCHOLAR: Job = {
-  name: 'SCH',
+  id: 'SCH',
+  name: 'Scholar',
   path: './assets/scholar.png',
   buffs: ['CHAIN_STRATAGEM'],
 };
 
 const SUMMONER: Job = {
-  name: 'SMN',
+  id: 'SMN',
+  name: 'Summoner',
   path: './assets/summoner.png',
   buffs: ['DEVOTION'],
 };
 
 const WARRIOR: Job = {
-  name: 'WAR',
+  id: 'WAR',
+  name: 'Warrior',
   path: './assets/warrior.png',
   buffs: [],
 };
 
 const WHITE_MAGE: Job = {
-  name: 'WHM',
+  id: 'WHM',
+  name: 'White mage',
   path: './assets/whitemage.png',
   buffs: [],
 };

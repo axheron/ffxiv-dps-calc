@@ -1,47 +1,53 @@
 export interface Buff {
+	id: string;
 	name: string;
 	path: string;
 }
 
 export const buffs = new Map<string, Buff>([
 	['BATTLE_LITANY', {
-		name: 'BATTLE_LITANY',
+		id: 'BATTLE_LITANY',
+		name: 'Battle litany',
 		path: './assets/battle_litany.png',
 	}],
 	['BATTLE_VOICE', {
-		name: 'BATTLE_VOICE',
+		id: 'BATTLE_VOICE',
+		name: 'Battle voice',
 		path: './assets/battle_voice.png',
 	}],
 	['BROTHERHOOD', {
-		name: 'BROTHERHOOD',
+		id: 'BROTHERHOOD',
+		name: 'Brotherhood',
 		path: './assets/brotherhood.png',
 	}],
 	['CHAIN_STRATAGEM', {
-		name: 'CHAIN_STRATAGEM',
+		id: 'CHAIN_STRATAGEM',
+		name: 'Chain stratagem',
 		path: './assets/chain_stratagem.png',
 	}],
-	['BROTHERHOOD', {
-		name: 'BROTHERHOOD',
-		path: './assets/brotherhood.png',
-	}],
 	['DEVOTION', {
-		name: 'DEVOTION',
+		id: 'DEVOTION',
+		name: 'Devotion',
 		path: './assets/devotion.png',
 	}],
 	['DIVINATION', {
-		name: 'DIVINATION',
+		id: 'DIVINATION',
+		name: 'Divination',
 		path: './assets/divination.png',
 	}],
 	['EMBOLDEN', {
-		name: 'EMBOLDEN',
+		id: 'EMBOLDEN',
+		name: 'Embolden',
 		path: './assets/embolden.png',
 	}],
 	['TECHNICAL_FINISH', {
-		name: 'TECHNICAL_FINISH',
+		id: 'TECHNICAL_FINISH',
+		name: 'Technical finish',
 		path: './assets/technical_finish.png',
 	}],
 	['TRICK_ATTACK', {
-		name: 'TRICK_ATTACK',
+		id: 'TRICK_ATTACK',
+		name: 'Trick attack',
 		path: './assets/trick_attack.png',
 	}],
 ]);
