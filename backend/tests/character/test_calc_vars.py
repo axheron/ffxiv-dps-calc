@@ -11,10 +11,10 @@ class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
-        the_shitters_i_raid_with = Comp(
+        test_comp = Comp(
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.WHM, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertAlmostEqual(20381.368540000003, test_char.calc_damage(200, the_shitters_i_raid_with), places=3)
+        self.assertAlmostEqual(20381.368, test_char.calc_damage(200, test_comp), places=3)
 
     def test_applies_comp_penalty(self):
         """ 3 roles, no raid buffs, should be lower than the number in test_baseline """
@@ -22,9 +22,9 @@ class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
         # 3 roles, who even needs raid buffs
-        the_shitters_i_raid_with = Comp({Jobs.PLD, Jobs.WHM, Jobs.SAM})
+        test_comp = Comp({Jobs.PLD, Jobs.WHM, Jobs.SAM})
         # have to manually provide pps for testing for now
-        self.assertAlmostEqual(19855.659200000002, test_char.calc_damage(200, the_shitters_i_raid_with), places=3)
+        self.assertAlmostEqual(19855.659, test_char.calc_damage(200, test_comp), places=3)
 
     def test_applies_crit_dh_raid_bonuses(self):
         """ 5 roles, sch and brd for raid buffs, should be higher than test_baseline """
@@ -32,10 +32,10 @@ class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
         # DNC not included to isolate confounding variable (tech step)
-        the_shitters_i_raid_with = Comp(
+        test_comp = Comp(
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.SAM, Jobs.BRD, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertAlmostEqual(20685.98776726701, test_char.calc_damage(200, the_shitters_i_raid_with), places=3)
+        self.assertAlmostEqual(20685.987, test_char.calc_damage(200, test_comp), places=3)
 
     def test_gcd(self):
         """ Test gcd is applying speed correctly """
@@ -63,27 +63,27 @@ class TestCalcVars(unittest.TestCase): #pylint: disable=missing-class-docstring
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
-        the_shitters_i_raid_with = Comp(
+        test_comp = Comp(
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.AST, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertAlmostEqual(20534.228804050006, test_char.calc_damage(200, the_shitters_i_raid_with), places=3)
+        self.assertAlmostEqual(20534.228, test_char.calc_damage(200, test_comp), places=3)
 
     def test_multiple_raidbuff(self):
         """ Test multiple raid buffs are applying damage correctly """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
-        the_shitters_i_raid_with = Comp(
+        test_comp = Comp(
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.AST, Jobs.NIN, Jobs.SAM, Jobs.MCH, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertAlmostEqual(20790.90666410063, test_char.calc_damage(200, the_shitters_i_raid_with), places=3)
+        self.assertAlmostEqual(20790.906, test_char.calc_damage(200, test_comp), places=3)
 
     def test_embolden_has_no_effect(self):
         """ Test embolden isn't mistakenly applying damage """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
-        the_shitters_i_raid_with = Comp(
+        test_comp = Comp(
             {Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.WHM, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.RDM})
         # have to manually provide pps for testing for now
-        self.assertAlmostEqual(20381.368540000003, test_char.calc_damage(200, the_shitters_i_raid_with), places=3)
+        self.assertAlmostEqual(20381.368, test_char.calc_damage(200, test_comp), places=3)

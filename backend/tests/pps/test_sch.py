@@ -13,7 +13,7 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
         mypps = SchPps()
-        self.assertAlmostEqual(24326.1264, mypps.total_potency_spreadsheet_port(test_char, 0.12, 4, 0), places=4)
+        self.assertAlmostEqual(24326.126, mypps.total_potency_spreadsheet_port(test_char, 0.12, 4, 0), places=3)
 
     def test_cycle(self):
         """ Test the spreadsheet port for cycle length """
@@ -29,5 +29,5 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
         mypps = SchPps()
-        self.assertAlmostEqual(508.0952931652587,
+        self.assertAlmostEqual(508.0952,
                          mypps.get_mp_per_min(test_char, caster_tax=0.1, succ=0, adlo=0, energy_drain=4, rez=0), places=3)
