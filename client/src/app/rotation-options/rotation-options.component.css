@@ -7,7 +7,9 @@
 }
 
 .edit-icon {
-	padding-left: 4px;
+	background: inherit;
+	border: none;
+	margin-left: 4px;
 }
 
 .option-edit-container {
@@ -17,4 +19,5 @@
 
 .option-edit-input {
 	margin-right: 4px;
+	width: 100px;
 }
