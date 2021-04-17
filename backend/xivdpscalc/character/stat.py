@@ -81,7 +81,7 @@ class ProbabalisticStat(Stat):
     p_factor: something
     p_scalar: something else
     """
-    def __init__(self, stat, value, precision = 1000):
+    def __init__(self, stat: Stats, value: int, precision = 1000):
         """
         :param stat: from Stats enum.
         :param value: the current value of the stat.

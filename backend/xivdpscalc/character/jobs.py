@@ -36,10 +36,10 @@ class Buffs(Enum):
 
     # todo: should probably add standard, personal tank buffs
 
-    def __init__(self, multiplier, duration, cd):
+    def __init__(self, multiplier: float, duration: int, cooldown: int):
         self.multiplier = multiplier
         self.duration = duration
-        self.cooldown = cd
+        self.cooldown = cooldown
 
     @classmethod
     def crit_buffs(cls):
@@ -70,7 +70,17 @@ class Buffs(Enum):
         return self.multiplier * self.duration / self.cooldown
 
 class Jobs(Enum):
-    """ Job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/ """
+    """
+    Contains job related info.
+
+    job_mod: The bonus given to the main stat.
+    role: The Role of the job
+    raidbuff: A list of all raidbuffs that the job has
+
+    job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
+    note: tanks use STR for damage
+    """
+
     SCH = (115, Roles.HEALER, [Buffs.CHAIN])
     AST = (115, Roles.HEALER, [Buffs.DIV])
     WHM = (115, Roles.HEALER, [])
@@ -89,7 +99,7 @@ class Jobs(Enum):
     BLM = (115, Roles.CASTER, [])
     RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
 
-    def __init__(self, job_mod, role, raidbuff):
+    def __init__(self, job_mod: int, role: Roles, raidbuff: list[Buffs]):
         self.job_mod = job_mod
         self.role = role
         self.raidbuff = raidbuff
@@ -125,7 +135,8 @@ class Jobs(Enum):
 
 class Comp:  #pylint: disable=too-few-public-methods
     """ Representation of a comp, basically a collection of Jobs """
-    def __init__(self, jobs):
+
+    def __init__(self, jobs: list[Jobs]):
         self.jobs = jobs
-        self.raidbuffs = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
-        self.n_roles = len({job.role for job in jobs})
+        self.raidbuffs: set[Buffs] = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
+        self.n_roles: int = len({job.role for job in jobs})
