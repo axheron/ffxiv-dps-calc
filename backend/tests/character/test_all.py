@@ -15,4 +15,4 @@ class TestEndToEnd(unittest.TestCase):  #pylint: disable=missing-class-docstring
         test_comp = \
             Comp({Jobs.PLD, Jobs.WAR, Jobs.SCH, Jobs.WHM, Jobs.SAM, Jobs.SAM, Jobs.MCH, Jobs.BLM})
         # have to manually provide pps for testing for now
-        self.assertEqual(14238.04118, my_character.calc_damage(139.71, test_comp))
+        self.assertAlmostEqual(14238.0411, my_character.calc_damage(139.71, test_comp), places=3)
