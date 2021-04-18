@@ -3,6 +3,7 @@
 import math
 from typing import Optional
 from dataclasses import dataclass
+
 from xivdpscalc.character.stat import Stat, Stats, ProbabalisticStat
 from xivdpscalc.character.jobs import Roles, Buffs, Comp, Jobs
 
@@ -31,6 +32,7 @@ class Character:
         """
         self.job = job
         self.wd = stat_spread.wd
+        # TODO: separate probablistic stats from regular stats
         self.character_stats = {
             Stats.MAINSTAT: Stat(Stats.MAINSTAT, stat_spread.mainstat),
             Stats.DET: Stat(Stats.DET, stat_spread.det),
@@ -62,9 +64,8 @@ class Character:
         """
         return 200 + self.character_stats[Stats.PIE].get_multiplier()
 
-    # todo: break this up neatly
-    def calc_damage(self, potency_per_second: float, comp: Comp, is_dot: bool = False,
-                    crit_rate: Optional[float] = None, dh_rate: Optional[float] = None) -> float:  #pylint: disable=too-many-arguments, too-many-locals
+    def calc_non_probablistic_damage(self, potency_per_second: float, comp: Optional[Comp],
+                                     is_dot: bool = False) -> float:
         """
         Calculates the damage from non probablistic stats.
         :param potency_per_second: From potency calculated on expected rotation
@@ -74,7 +75,7 @@ class Character:
         """
 
         # modify mainstat according to number of roles if with a team composition
-        if comp is not None:
+        if comp:
             unique_role_bonus = 1 + 0.01 * comp.n_roles
             new_mainstat_value = math.floor(self.character_stats[Stats.MAINSTAT].value * unique_role_bonus)
             mainstat = Stat(Stats.MAINSTAT, new_mainstat_value)
@@ -93,8 +94,9 @@ class Character:
 
         return np_damage
 
-    def calc_probablistic_damage(self, np_damage: float, comp: Comp = None, crit_rate: float = None,
-                                 dh_rate: float = None) -> float:
+    def calc_probablistic_damage(self, np_damage: float, comp: Optional[Comp] = None,
+                                 crit_rate: Optional[float] = None,
+                                 dh_rate: Optional[float] = None) -> float:
         """
         Calculates the damage from probablistic stats.
         :param np_damage: from nonprobablistic damage calculation
@@ -136,7 +138,7 @@ class Character:
         return p_damage
 
     # todo: break this up neatly
-    def calc_damage(self, potency_per_second: float, comp: Comp = None,  # pylint: disable=too-many-arguments
+    def calc_damage(self, potency_per_second: float, comp: Optional[Comp] = None,  # pylint: disable=too-many-arguments
                     is_dot: bool = False, crit_rate: float = None, dh_rate: float = None) -> float:
         """
         Calculates the estimated DPS based on the team composition and current character stats
