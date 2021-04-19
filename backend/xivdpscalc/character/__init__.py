@@ -41,6 +41,9 @@ class Character:
             Stats.TEN: Stat(Stats.TEN, stat_spread.ten),
             Stats.PIE: Stat(Stats.PIE, stat_spread.pie),
         }
+        self.gcd = self.get_gcd()
+        self.dot_bonus = self.get_dot_scalar()
+        self.mp_regen_per_tick = self.calc_piety()
 
     def get_gcd(self) -> float:
         """

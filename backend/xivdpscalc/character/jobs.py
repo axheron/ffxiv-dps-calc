@@ -6,12 +6,15 @@ import itertools
 
 class Roles(Enum):
     """ Roles enum """
-    TANK = auto()
-    HEALER = auto()
-    MELEE = auto()
-    RANGED = auto()
-    CASTER = auto()
+    TANK = (auto(), 1)
+    HEALER = (auto(), 1.3)
+    MELEE = (auto(), 1)
+    RANGED = (auto(), 1.2)
+    CASTER = (auto(), 1.3)
 
+    def __init__(self, enum_id, trait_bonus: float):
+        self.enum_id = enum_id
+        self.trait_bonus = trait_bonus
 
 class Buffs(Enum):
     """
