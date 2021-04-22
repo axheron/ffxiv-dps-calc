@@ -1,15 +1,21 @@
 """Model for saving gearsets in the database"""
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.schema import Column
+from sqlalchemy.types import JSON, String, Text, Boolean
+from uuid import uuid4
+
 from xivdpscalc import db
+from xivdpscalc.models.tags import HasTags
 
 
-class Gearset(db.Model):
+class Gearset(db.Model, HasTags):
     __tablename__ = 'gearsets'
 
-    id = db.Column(db.Integer, primary_key=True) # TODO: swap to uuid per discussion
-    name = db.Column(db.String(64))
-    description = db.Column(db.Text())
-    etro_id = db.Column(db.String(36)) # TODO: implement uuid type
-    stats = db.Column(db.JSON()) # TODO: This basically shoehorns us into postgres
-    estimates = db.Column(db.JSON())
-    sim_version = db.Column(db.String(9)) # TODO: think about this
-    recommended = db.Column(db.Boolean())
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    name = Column(String(64))
+    description = Column(Text())
+    etro_id = Column(UUID(as_uuid=True))
+    stats = Column(JSON)
+    estimates = Column(JSON)
+    sim_version = Column(String(9)) # TODO: think about this
+    recommended = Column(Boolean)
