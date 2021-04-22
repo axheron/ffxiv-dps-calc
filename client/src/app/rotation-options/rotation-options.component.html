@@ -5,43 +5,44 @@
   	{{dpsService.rotation.energyDrain}} Energy Drain,
   	{{dpsService.rotation.adloquium}} Adloquium,
   	{{dpsService.rotation.succor}} Succor,
-  	{{dpsService.rotation.ressurection}} Ressurection per min
+  	{{dpsService.rotation.resurection}} Ressurection per min
   </span>
   <button class="edit-icon" (click)="editRotation()"
       aria-label="Edit rotation">
   	<i nz-icon [nzType]="'edit'"></i>
   </button>
 </div>
-<nz-modal #editModal [(nzVisible)]="modalVisible"
+<nz-modal #editModal [(nzVisible)]="modalVisible" [nzWidth]="300"
     (nzOnCancel)="handleCancel()" (nzOnOk)="handleConfirm()">
   <ng-container *nzModalContent>
     <div class="option-edit-container">
-      <input nz-input class="option-edit-input"
-          aria-label="Energy drains per minute"
+      <nz-input-number class="option-edit-input"
           [(ngModel)]="editCache.energyDrain"
-          type="number" nzSize="small" />
+          [nzMin]="0" [nzMax]="4" [nzStep]="1"
+          nzSize="small">
+      </nz-input-number>
       Energy Drains
     </div>
     <div class="option-edit-container">
-      <input nz-input class="option-edit-input"
-          aria-label="Adloquiums per minute"
+      <nz-input-number class="option-edit-input"
           [(ngModel)]="editCache.adloquium"
-          type="number" nzSize="small" />
+          [nzMin]="0" [nzStep]="1" nzSize="small">
+       </nz-input-number>
       Adloquiums	
     </div>
     <div class="option-edit-container">
-      <input nz-input class="option-edit-input"
-          aria-label="Succors per minute"
+      <nz-input-number class="option-edit-input"
           [(ngModel)]="editCache.succor"
-          type="number" nzSize="small" />
+          [nzMin]="0" [nzStep]="1" nzSize="small">
+       </nz-input-number>
       Succors
     </div>
     <div class="option-edit-container">
-      <input nz-input class="option-edit-input"
-          aria-label="Ressurections per minute"
-          [(ngModel)]="editCache.ressurection"
-          type="number" nzSize="small" />
-      Ressurections
+      <nz-input-number class="option-edit-input"
+          [(ngModel)]="editCache.resurection"
+          [nzMin]="0" [nzStep]="1" nzSize="small">
+      </nz-input-number>
+      Resurections
     </div>
   </ng-container>
 </nz-modal>

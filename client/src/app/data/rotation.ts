@@ -2,7 +2,7 @@ export interface ScholarRotation {
   energyDrain: number;
   adloquium: number;
   succor: number;
-  ressurection: number;
+  resurection: number;
 }
 
 export function defaultScholarRotation(): ScholarRotation {
@@ -10,6 +10,6 @@ export function defaultScholarRotation(): ScholarRotation {
     energyDrain: 4,
     adloquium: 0,
     succor: 0,
-    ressurection: 0,
+    resurection: 0,
   }
 }
