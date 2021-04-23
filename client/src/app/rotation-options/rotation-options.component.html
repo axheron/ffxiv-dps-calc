@@ -5,7 +5,7 @@
   	{{dpsService.rotation.energyDrain}} Energy Drain,
   	{{dpsService.rotation.adloquium}} Adloquium,
   	{{dpsService.rotation.succor}} Succor,
-  	{{dpsService.rotation.resurection}} Ressurection per min
+  	{{dpsService.rotation.raise}} Raise per min
   </span>
   <button class="edit-icon" (click)="editRotation()"
       aria-label="Edit rotation">
@@ -39,10 +39,10 @@
     </div>
     <div class="option-edit-container">
       <nz-input-number class="option-edit-input"
-          [(ngModel)]="editCache.resurection"
+          [(ngModel)]="editCache.raise"
           [nzMin]="0" [nzStep]="1" nzSize="small">
       </nz-input-number>
-      Resurections
+      Raises
     </div>
   </ng-container>
 </nz-modal>
