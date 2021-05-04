@@ -1,9 +1,10 @@
 """ Representation of a single character and its stat spread """
 
 import math
+from typing import Optional
 from dataclasses import dataclass
 from xivdpscalc.character.stat import Stat, Stats, ProbabalisticStat
-from xivdpscalc.character.jobs import Roles, Buffs
+from xivdpscalc.character.jobs import Roles, Buffs, Comp, Jobs
 
 @dataclass
 class CharacterStatSpread: #pylint: disable=too-many-instance-attributes
@@ -23,33 +24,33 @@ class Character:
     """
     The main class where damage is calculated. Initialized by providing a CharacterStatSpread.
     """
-    def __init__(self, job, stat_spread):
+    def __init__(self, job: Jobs, stat_spread: CharacterStatSpread):
         self.job = job
         self.wd = stat_spread.wd
         self.stats = {}
         self.stats[Stats.MAINSTAT] = Stat(Stats.MAINSTAT, stat_spread.mainstat)
         self.stats[Stats.DET] = Stat(Stats.DET, stat_spread.det)
         self.stats[Stats.CRIT] = ProbabalisticStat(Stats.CRIT, stat_spread.crit)
-        self.stats[Stats.DH] =  ProbabalisticStat(Stats.DH, stat_spread.dh)
+        self.stats[Stats.DH] = ProbabalisticStat(Stats.DH, stat_spread.dh)
         self.stats[Stats.SPEED] = Stat(Stats.SPEED, stat_spread.speed)
         self.stats[Stats.TEN] = Stat(Stats.TEN, stat_spread.ten)
         self.stats[Stats.PIE] = Stat(Stats.PIE, stat_spread.pie)
 
-    def get_gcd(self):
+    def get_gcd(self) -> float:
         """
         Returns the character's gcd given its skill or spell speed
         :returns: the gcd in seconds
         """
         return math.floor(0.25 * (1000 - self.stats[Stats.SPEED].get_multiplier())) / 100
 
-    def get_dot_scalar(self):
+    def get_dot_scalar(self) -> float:
         """
         Returns the character's dot damage bonus, given its skill or spell speed
         :returns: the modified dot multiplier
         """
         return  1 + (self.stats[Stats.SPEED].get_multiplier() / 1000)
 
-    def calc_piety(self):
+    def calc_piety(self) -> float:
         """
         Returns the character's mp regen resulting from the piety stat
         :returns: The character's mp regen per tick (3 seconds)
@@ -57,7 +58,8 @@ class Character:
         return 200 + self.stats[Stats.PIE].get_multiplier()
 
     # todo: break this up neatly
-    def calc_damage(self, potency, comp, is_dot=False, crit_rate=None, dh_rate=None):  #pylint: disable=too-many-arguments, too-many-locals
+    def calc_damage(self, potency: float, comp: Comp, is_dot: bool = False,
+                    crit_rate: Optional[float] = None, dh_rate: Optional[float] = None) -> float:  #pylint: disable=too-many-arguments, too-many-locals
         """
         Calculates the estimated DPS based on the team composition and current character stats
         :param potency: Potency calculated on expected rotation

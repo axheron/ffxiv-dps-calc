@@ -1,0 +1,48 @@
+<div class="rotation-text"
+     *ngIf="dpsService.selfJob === jobConsts.SCHOLAR.name">
+  <span class="rotation-tag">Rotation: </span>
+  <span>
+  	{{dpsService.rotation.energyDrain}} Energy Drain,
+  	{{dpsService.rotation.adloquium}} Adloquium,
+  	{{dpsService.rotation.succor}} Succor,
+  	{{dpsService.rotation.raise}} Raise per min
+  </span>
+  <button class="edit-icon" (click)="editRotation()"
+      aria-label="Edit rotation">
+  	<i nz-icon [nzType]="'edit'"></i>
+  </button>
+</div>
+<nz-modal #editModal [(nzVisible)]="modalVisible" [nzWidth]="300"
+    (nzOnCancel)="handleCancel()" (nzOnOk)="handleConfirm()">
+  <ng-container *nzModalContent>
+    <div class="option-edit-container">
+      <nz-input-number class="option-edit-input"
+          [(ngModel)]="editCache.energyDrain"
+          [nzMin]="0" [nzMax]="4" [nzStep]="1"
+          nzSize="small">
+      </nz-input-number>
+      Energy Drains
+    </div>
+    <div class="option-edit-container">
+      <nz-input-number class="option-edit-input"
+          [(ngModel)]="editCache.adloquium"
+          [nzMin]="0" [nzStep]="1" nzSize="small">
+       </nz-input-number>
+      Adloquiums	
+    </div>
+    <div class="option-edit-container">
+      <nz-input-number class="option-edit-input"
+          [(ngModel)]="editCache.succor"
+          [nzMin]="0" [nzStep]="1" nzSize="small">
+       </nz-input-number>
+      Succors
+    </div>
+    <div class="option-edit-container">
+      <nz-input-number class="option-edit-input"
+          [(ngModel)]="editCache.raise"
+          [nzMin]="0" [nzStep]="1" nzSize="small">
+      </nz-input-number>
+      Raises
+    </div>
+  </ng-container>
+</nz-modal>

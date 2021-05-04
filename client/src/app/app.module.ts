@@ -6,6 +6,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzInputModule } from "ng-zorro-antd/input";
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
@@ -22,6 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PartySelectComponent } from './party-select/party-select.component';
 import { GearsetListComponent } from './gearset-list/gearset-list.component';
+import { RotationOptionsComponent } from './rotation-options/rotation-options.component';
 
 registerLocaleData(en);
 
@@ -29,7 +31,8 @@ registerLocaleData(en);
   declarations: [
     AppComponent,
     PartySelectComponent,
-    GearsetListComponent
+    GearsetListComponent,
+    RotationOptionsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -42,6 +45,7 @@ registerLocaleData(en);
     NzButtonModule,
     NzIconModule,
     NzInputModule,
+    NzInputNumberModule,
     NzLayoutModule,
     NzModalModule,
     NzPopconfirmModule,

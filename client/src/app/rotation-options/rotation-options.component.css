@@ -1,0 +1,24 @@
+.rotation-text {
+	margin-bottom: 8px;
+	font-size: 16px;
+}
+
+.rotation-tag {
+	font-weight: 800;
+}
+
+.edit-icon {
+	background: inherit;
+	border: none;
+	margin-left: 4px;
+}
+
+.option-edit-container {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.option-edit-input {
+	margin-right: 4px;
+	width: 100px;
+}
