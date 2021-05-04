@@ -43,68 +43,57 @@
         <td class="num-col">{{data.mp}}</td>
         <td class="num-col">{{data.dps}}</td>
         <td class="action-col">
-          <button (click)="startEdit(data.id)" class="gearset-table-button">
-            <a>Edit</a>
-          </button>
+        	<a (click)="startEdit(data.id)">Edit</a>
         </td>
       </ng-container>
       <ng-template #editTemplate>
         <td class="name-col">
           <input class="name-edit-input" type="text" nz-input
-              aria-label="Gearset name"
-        	    [(ngModel)]="editCache[data.id].data.name" />
+        	  [(ngModel)]="editCache[data.id].data.name" />
           <input type="text" nz-input
-              aria-label="Etro id"
-              [(ngModel)]="editCache[data.id].data.etroId" />
+            [(ngModel)]="editCache[data.id].data.etroId" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Weapon damage"
               [(ngModel)]="editCache[data.id].data.weaponDamage" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Main stat"
               [(ngModel)]="editCache[data.id].data.mainStat" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Direct hit"
               [(ngModel)]="editCache[data.id].data.dh" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Crit"
               [(ngModel)]="editCache[data.id].data.crit" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Determination"
               [(ngModel)]="editCache[data.id].data.det" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Spell speed"
               [(ngModel)]="editCache[data.id].data.speed" />
         </td>
         <td class="num-col">
           <input type="number" nz-input
-              aria-label="Piety"
               [(ngModel)]="editCache[data.id].data.pie" />
         </td>
         <td class="num-col">
           {{data.gcd}}
         </td>
-        <td class="num-col">{{data.mp}}</td>
+        <td class="num-col">{{data.mp}}
+        </td>
         <td class="num-col">{{data.dps}}</td>
         <td class="action-col">
-          <button (click)="saveEdit(data.id)" class="gearset-table-button save">
-            <a>Save</a>
-          </button>
+          <a (click)="saveEdit(data.id)" class="save">Save</a>
           <br>
-          <button (click)="cancelEdit(data.id)" class="gearset-table-button">
-            <a>Cancel</a>
-          </button>
+          <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?"
+              (nzOnConfirm)="cancelEdit(data.id)">
+            Cancel
+          </a>
         </td>
       </ng-template>
     </tr>

@@ -1,125 +1,107 @@
 export interface Job {
-  id: string;
   name: string;
   path: string;
   buffs: string[];
 }
 
-const ASTROLOGIAN: Job = {
-  id: 'AST',
-  name: 'Astrologian',
+export const ASTROLOGIAN: Job = {
+  name: 'AST',
   path: './assets/astrologian.png',
   buffs: ['DIVINATION'],
 };
 
-const BARD: Job = {
-  id: 'BRD',
-  name: 'Bard',
+export const BARD: Job = {
+  name: 'BRD',
   path: './assets/bard.png',
   buffs: ['BATTLE_VOICE'],
 };
 
-const BLACK_MAGE: Job = {
-  id: 'BLM',
-  name: 'Black mage',
+export const BLACK_MAGE: Job = {
+  name: 'BLM',
   path: './assets/blackmage.png',
   buffs: [],
 };
 
-const DANCER: Job = {
-  id: 'DNC',
-  name: 'Dancer',
+export const DANCER: Job = {
+  name: 'DNC',
   path: './assets/dancer.png',
   buffs: ['TECHNICAL_FINISH'],
 };
 
-const DARK_KNIGHT: Job = {
-  id: 'DRK',
-  name: 'Dark knight',
+export const DARK_KNIGHT: Job = {
+  name: 'DRK',
   path: './assets/darkknight.png',
   buffs: [],
 };
 
-const DRAGOON: Job = {
-  id: 'DRG',
-  name: 'Dragonn',
+export const DRAGOON: Job = {
+  name: 'DRG',
   path: './assets/dragoon.png',
   buffs: ['BATTLE_LITANY'],
 };
 
-const GUNBREAKER: Job = {
-  id: 'GNB',
-  name: 'Gunbreaker',
+export const GUNBREAKER: Job = {
+  name: 'GNB',
   path: './assets/gunbreaker.png',
   buffs: [],
 };
 
-const MACHINIST: Job = {
-  id: 'MCH',
-  name: 'Machinist',
+export const MACHINIST: Job = {
+  name: 'MCH',
   path: './assets/machinist.png',
   buffs: [],
 };
 
-const MONK: Job = {
-  id: 'MNK',
-  name: 'Monk',
+export const MONK: Job = {
+  name: 'MNK',
   path: './assets/monk.png',
   buffs: ['BROTHERHOOD'],
 };
 
-const NINJA: Job = {
-  id: 'NIN',
-  name: 'Ninja',
+export const NINJA: Job = {
+  name: 'NIN',
   path: './assets/ninja.png',
   buffs: ['TRICK_ATTACK'],
 };
 
-const PALADIN: Job = {
-  id: 'PLD',
-  name: 'Paladin',
+export const PALADIN: Job = {
+  name: 'PLD',
   path: './assets/paladin.png',
   buffs: [],
 };
 
-const RED_MAGE: Job = {
-  id: 'RDM',
-  name: 'Red mage',
+export const RED_MAGE: Job = {
+  name: 'RDM',
   path: './assets/redmage.png',
   buffs: ['EMBOLDEN'],
 };
 
-const SAMURAI: Job = {
-  id: 'SAM',
-  name: 'Samurai',
+export const SAMURAI: Job = {
+  name: 'SAM',
   path: './assets/samurai.png',
   buffs: [],
 };
 
-const SCHOLAR: Job = {
-  id: 'SCH',
-  name: 'Scholar',
+export const SCHOLAR: Job = {
+  name: 'SCH',
   path: './assets/scholar.png',
   buffs: ['CHAIN_STRATAGEM'],
 };
 
-const SUMMONER: Job = {
-  id: 'SMN',
-  name: 'Summoner',
+export const SUMMONER: Job = {
+  name: 'SMN',
   path: './assets/summoner.png',
   buffs: ['DEVOTION'],
 };
 
-const WARRIOR: Job = {
-  id: 'WAR',
-  name: 'Warrior',
+export const WARRIOR: Job = {
+  name: 'WAR',
   path: './assets/warrior.png',
   buffs: [],
 };
 
-const WHITE_MAGE: Job = {
-  id: 'WHM',
-  name: 'White mage',
+export const WHITE_MAGE: Job = {
+  name: 'WHM',
   path: './assets/whitemage.png',
   buffs: [],
 };
