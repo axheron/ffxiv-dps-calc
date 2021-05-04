@@ -6,17 +6,13 @@
 }
 
 .self-icon {
-	background: inherit;
-	border: none;
-	cursor: pointer;
 	margin-right: 48px;
+	cursor: pointer;
 }
 
 .party-member-icon {
-	background: inherit;
-	border: none;
-	cursor: pointer;
 	margin-right: 8px;
+	cursor: pointer;
 }
 
 .buffs-container {
