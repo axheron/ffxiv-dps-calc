@@ -29,3 +29,12 @@
 .name-edit-input {
 	margin-bottom: 8px;
 }
+
+.gearset-table-button {
+	background: inherit;
+	border: none;
+}
+
+.gearset-table-button.save {
+	margin-bottom: 24px;
+}
