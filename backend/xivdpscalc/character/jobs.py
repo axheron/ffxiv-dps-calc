@@ -1,6 +1,7 @@
 """ Representation of static information at the class level """
 
 from enum import Enum, auto
+from dataclasses import dataclass
 import itertools
 
 class Roles(Enum):
@@ -13,7 +14,9 @@ class Roles(Enum):
 
 
 class Buffs(Enum):
-    """ Buffs enum representing (magnitude, duration, cooldown) in seconds """
+    """
+    List of all buffs in the game. Each buff has three parameters: magnitude, duration, cooldown, in seconds.
+    """
     # aoe
     CHAIN = (0.1, 15, 120)
     DIV = (0.06, 15, 120)  # 3 seal div
@@ -36,10 +39,10 @@ class Buffs(Enum):
 
     # todo: should probably add standard, personal tank buffs
 
-    def __init__(self, multiplier: float, duration: int, cooldown: int):
+    def __init__(self, multiplier: float, duration_sec: int, cooldown_sec: int):
         self.multiplier = multiplier
-        self.duration = duration
-        self.cooldown = cooldown
+        self.duration_sec = duration_sec
+        self.cooldown_sec = cooldown_sec
 
     @classmethod
     def crit_buffs(cls):
@@ -52,22 +55,22 @@ class Buffs(Enum):
         return {cls.BV, cls.BARD_DH, cls.DEVILMENT}
 
     @classmethod
-    def raid_buffs(cls):
+    def damage_buffs(cls):
         """ Lists damage buffs """
         return {cls.DIV, cls.TRICK, cls.BROTHERHOOD, cls.BARD_DMG, cls.TECH, cls.DEVOTION, cls.EMBOLDEN}
 
     def avg_buff_effect(self, job):
         """ Calculates the average impact of buffs considering its uptime and magnitude """
-        total = 0
-        if self.name == 'EMBOLDEN':  #pylint: disable=comparison-with-callable
+        if self.name == 'EMBOLDEN':   # pylint: disable=comparison-with-callable
             if job == Jobs.RDM or job.role in {Roles.TANK, Roles.MELEE, Roles.RANGED}:
                 decay_interval = 4
                 decay_rate = 0.2
-                for i in range(self.duration / decay_interval):
-                    total += self.multiplier * (1 - decay_rate * i) * decay_interval / self.cooldown
-                return total
+                decay_ticks = self.duration_sec // decay_interval
+                intervals = (self.multiplier * (1 - decay_rate * tick) * decay_interval / self.cooldown_sec
+                             for tick in range(decay_ticks))
+                return sum(intervals)
             return 0 # Sucks to not have Embolden apply, I guess
-        return self.multiplier * self.duration / self.cooldown
+        return self.multiplier * self.duration_sec / self.cooldown_sec
 
 class Jobs(Enum):
     """
@@ -80,14 +83,13 @@ class Jobs(Enum):
     job modifiers from https://www.akhmorning.com/allagan-studies/modifiers/
     note: tanks use STR for damage
     """
-
     SCH = (115, Roles.HEALER, [Buffs.CHAIN])
     AST = (115, Roles.HEALER, [Buffs.DIV])
     WHM = (115, Roles.HEALER, [])
-    PLD = (110, Roles.TANK, [])
-    WAR = (110, Roles.TANK, [])
-    DRK = (110, Roles.TANK, [])
-    GNB = (110, Roles.TANK, [])
+    PLD = (100, Roles.TANK, [])
+    WAR = (105, Roles.TANK, [])
+    DRK = (105, Roles.TANK, [])
+    GNB = (100, Roles.TANK, [])
     NIN = (110, Roles.MELEE, [Buffs.TRICK])
     DRG = (115, Roles.MELEE, [Buffs.LITANY])
     MNK = (110, Roles.MELEE, [Buffs.BROTHERHOOD])
@@ -99,10 +101,10 @@ class Jobs(Enum):
     BLM = (115, Roles.CASTER, [])
     RDM = (115, Roles.CASTER, [Buffs.EMBOLDEN])
 
-    def __init__(self, job_mod: int, role: Roles, raidbuff: list[Buffs]):
+    def __init__(self, job_mod: int, role: Roles, raidbuffs: list[Buffs]):
         self.job_mod = job_mod
         self.role = role
-        self.raidbuff = raidbuff
+        self.raidbuffs = raidbuffs
 
     @staticmethod
     def create_job(name: str):
@@ -132,11 +134,25 @@ class Jobs(Enum):
 
         return job_string_to_enum[name]
 
+@dataclass(init=False)
+class Comp:
+    """
+    The party composition.
 
-class Comp:  #pylint: disable=too-few-public-methods
-    """ Representation of a comp, basically a collection of Jobs """
+    jobs: A list of all jobs in the party (may contain duplicates).
+    raidbuffs: A set of unique raidbuffs in the party.
+    n_roles: A number (1-5) indicating how many unique roles are in the party.
+    """
 
     def __init__(self, jobs: list[Jobs]):
-        self.jobs = jobs
-        self.raidbuffs: set[Buffs] = set(itertools.chain.from_iterable([job.raidbuff for job in jobs]))
+        """
+        :param jobs: A list of Jobs in the party composition
+
+        jobs: A list of all jobs in the party (may contain duplicates).
+        raidbuffs: A set of unique raidbuffs in the party.
+        n_roles: A number (1-5) indicating how many unique roles are in the party.
+        """
+
+        self.jobs: list[Jobs] = jobs
+        self.raidbuffs: set[Buffs] = set(itertools.chain.from_iterable([job.raidbuffs for job in jobs]))
         self.n_roles: int = len({job.role for job in jobs})
