@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { NtkmeButtonModule } from '@ctrl/ngx-github-buttons';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from "ng-zorro-antd/icon";
@@ -24,6 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PartySelectComponent } from './party-select/party-select.component';
 import { GearsetListComponent } from './gearset-list/gearset-list.component';
 import { RotationOptionsComponent } from './rotation-options/rotation-options.component';
+import { NoticeComponent } from './notice/notice.component';
 
 registerLocaleData(en);
 
@@ -32,7 +34,8 @@ registerLocaleData(en);
     AppComponent,
     PartySelectComponent,
     GearsetListComponent,
-    RotationOptionsComponent
+    RotationOptionsComponent,
+    NoticeComponent
   ],
   imports: [
     AppRoutingModule,
@@ -41,6 +44,7 @@ registerLocaleData(en);
     FormsModule,
     HttpClientModule,
     NtkmeButtonModule,
+    NzAlertModule,
     NzAvatarModule,
     NzButtonModule,
     NzIconModule,
