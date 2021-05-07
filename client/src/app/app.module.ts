@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NtkmeButtonModule } from '@ctrl/ngx-github-buttons';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzInputModule } from "ng-zorro-antd/input";
@@ -46,6 +47,7 @@ registerLocaleData(en);
     NtkmeButtonModule,
     NzAlertModule,
     NzAvatarModule,
+    NzBadgeModule,
     NzButtonModule,
     NzIconModule,
     NzInputModule,
