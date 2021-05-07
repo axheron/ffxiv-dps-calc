@@ -4,9 +4,9 @@ let's stop using google sheets for gearsets like goddamn animals
 
 ## hi i'm from the balance, where the hell are my gearsets???
 
-site is not ready for the public yet. please look forward to it.
+if you play scholar, head over to https://ffxiv-dps-calc.uc.r.appspot.com/
 
-in the meantime, check your job's resources channel for the google sheets.
+if you don't play scholar, then LUL. please look forward to it.
 
 ## contributors
 
@@ -14,6 +14,7 @@ in the meantime, check your job's resources channel for the google sheets.
 * Rhiow Silrah (Gilgamesh)
 * Accel Allen (Famfrit)
 * joooooooooe
+* nono
 * HI MAYBE YOUR NAME HERE? potato 3059 on discord
 
 ## getting started
