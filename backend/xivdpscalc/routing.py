@@ -67,18 +67,17 @@ def update_stats():
     except KeyError:
         # Rotation data was not present in request, use defaults
         energy_drain_per_min, adloquium_per_min, raise_per_min, succor_per_min = 4, 0, 0, 0
-    filler_casts_per_min = adloquium_per_min + raise_per_min + succor_per_min
 
     my_sch_pps = SchPps()
-    potency = my_sch_pps.get_pps(player, num_ed_per_min=energy_drain_per_min, num_filler_casts=filler_casts_per_min)
+    potency = my_sch_pps.get_pps(player,
+                                 num_ed_per_min=energy_drain_per_min,
+                                 num_filler_casts=adloquium_per_min + raise_per_min + succor_per_min)
     try:
         comp_jobs = [Jobs.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
         return "A job was not supported in that team comp."
 
-    my_comp = Comp(comp_jobs)
-
-    dps = round(player.calc_damage(potency, my_comp), 2)
+    dps = round(player.calc_damage(potency, Comp(comp_jobs)), 2)
     gcd = player.get_gcd()
     mp = round(my_sch_pps.get_mp_per_min(player,
                                          succ=succor_per_min,
