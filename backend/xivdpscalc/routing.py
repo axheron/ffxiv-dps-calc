@@ -22,7 +22,12 @@ def update_stats():
                 'ten': int
                 'pie': int}
             'job': string
-            'comp': Array}
+            'comp': Array
+            'rotation': Object
+                {'adloquium': int
+                 'energyDrain': int
+                 'raise': int
+                 'succor': int}}
     output: {'dps': float,
              'gcd': float,
              'mp': float}
@@ -52,8 +57,20 @@ def update_stats():
             pie = player_data['pie']
         )
     )
+
+    try:
+        rotation_data = data['rotation']
+        energy_drain_per_min = rotation_data.get('energyDrain', 4)
+        adloquium_per_min = rotation_data.get('adloquium', 0)
+        raise_per_min = rotation_data.get('raise', 0)
+        succor_per_min = rotation_data.get('succor', 0)
+    except KeyError:
+        # Rotation data was not present in request, use defaults
+        energy_drain_per_min, adloquium_per_min, raise_per_min, succor_per_min = 4, 0, 0, 0
+    filler_casts_per_min = adloquium_per_min + raise_per_min + succor_per_min
+
     my_sch_pps = SchPps()
-    potency = my_sch_pps.get_pps(player)
+    potency = my_sch_pps.get_pps(player, num_ed_per_min=energy_drain_per_min, num_filler_casts=filler_casts_per_min)
     try:
         comp_jobs = [Jobs.create_job(comp_job)[0] for comp_job in data['comp']]
     except KeyError:
@@ -63,12 +80,17 @@ def update_stats():
 
     dps = round(player.calc_damage(potency, my_comp), 2)
     gcd = player.get_gcd()
-    mp = round(my_sch_pps.get_mp_per_min(player), 2)
+    mp = round(my_sch_pps.get_mp_per_min(player,
+                                         succ=succor_per_min,
+                                         adlo=adloquium_per_min,
+                                         energy_drain=energy_drain_per_min,
+                                         rez=raise_per_min), 2)
     return jsonify({"dps": dps,
                     "gcd": gcd,
                     "mp": mp})
 
 
+# TODO: pull out repeated code and update it to match update_stats()
 @app.route('/calc_damage/etro', methods=["POST"])
 def etro_main():
     """Calculates damage, given a gearsetID from Etro. Should check database to see if gearset exist first.
