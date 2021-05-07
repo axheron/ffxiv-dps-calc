@@ -25,49 +25,26 @@
 		src="{{buffs.get(buff)!.path}}"/>
   </ng-container>
 </div>
+<ng-template #iconTemplate>
+  <i nz-icon nzType="stop" class="ant-scroll-number-custom-component" style="color: #f5222d;"></i>
+</ng-template>
 <nz-modal #jobPickerModal [(nzVisible)]="jobPickerVisible" [nzFooter]="null"
     (nzOnCancel)="closeJobPicker()" [nzAutofocus]="null"
     [nzTitle]="'Select a job'">
   <ng-container *nzModalContent>
-  	<div class="role-container">
-  	  <div class="role-name">Tank</div>
-  	  <button *ngFor="let job of jobConsts.TANK_JOBS;"
-  	      type="button" class="party-member-icon" (click)="pickJob(job.id)"
-  	      [attr.aria-label]="job.name">
-	  	<nz-avatar [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
-	  </button>
-  	</div>
-  	<div class="role-container">
-  	  <div class="role-name">Healer</div>
-  	  <button *ngFor="let job of jobConsts.HEALER_JOBS;"
-  	      type="button" class="party-member-icon" (click)="pickJob(job.id)"
-  	      [attr.aria-label]="job.name">
-	  	<nz-avatar [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
-	  </button>
-  	</div>
-  	<div class="role-container">
-  	  <div class="role-name">Melee</div>
-  	  <button *ngFor="let job of jobConsts.MELEE_JOBS;"
-  	      type="button" class="party-member-icon" (click)="pickJob(job.id)"
-  	      [attr.aria-label]="job.name">
-	  	<nz-avatar [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
-	  </button>
-  	</div>
-  	<div class="role-container">
-  	  <div class="role-name">Ranged</div>
-  	  <button *ngFor="let job of jobConsts.RANGED_JOBS;"
-  	      type="button" class="party-member-icon" (click)="pickJob(job.id)"
-  	      [attr.aria-label]="job.name">
-	  	<nz-avatar [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
-	  </button>
-  	</div>
-  	<div class="role-container">
-  	  <div class="role-name">Caster</div>
-  	  <button *ngFor="let job of jobConsts.CASTER_JOBS;"
-  	      type="button" class="party-member-icon" (click)="pickJob(job.id)"
-  	      [attr.aria-label]="job.name">
-	  	<nz-avatar [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
-	  </button>
-  	</div>
+  	<ng-container *ngFor="let role of jobConsts.ROLES">
+      <div class="role-container">
+        <div class="role-name">{{role.name}}</div>
+        <button *ngFor="let job of role.jobs;"
+            type="button" class="party-member-icon" (click)="pickJob(job.id)"
+            [disabled]="hideUnimplementedJobs && !jobConsts.IMPLEMENTED_JOBS.includes(job)"
+            [attr.aria-label]="job.name">
+        <nz-badge *ngIf="hideUnimplementedJobs && !jobConsts.IMPLEMENTED_JOBS.includes(job)" [nzCount]="iconTemplate">
+          <nz-avatar [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
+        </nz-badge>
+        <nz-avatar *ngIf="!hideUnimplementedJobs || jobConsts.IMPLEMENTED_JOBS.includes(job)" [nzSize]="64" nzSrc="{{job.path}}"></nz-avatar>
+        </button>
+      </div>
+    </ng-container>
   </ng-container>
 </nz-modal>

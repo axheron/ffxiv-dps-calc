@@ -144,18 +144,41 @@ export const JOBS = new Map<string, Job>([
   ['WHM', WHITE_MAGE],
 ]);
 
-export const TANK_JOBS = [DARK_KNIGHT, GUNBREAKER, PALADIN, WARRIOR];
+export const IMPLEMENTED_JOBS = [SCHOLAR];
 
-export const HEALER_JOBS = [ASTROLOGIAN, SCHOLAR, WHITE_MAGE];
+export interface Role {
+  name: string;
+  jobs: Job[];
+};
 
-export const MELEE_JOBS = [DRAGOON, MONK, NINJA, SAMURAI];
+export const TANK: Role = {
+  name: 'Tank',
+  jobs: [DARK_KNIGHT, GUNBREAKER, PALADIN, WARRIOR],
+};
 
-export const RANGED_JOBS = [BARD, DANCER, MACHINIST];
+export const HEALER: Role = {
+  name: 'Healer',
+  jobs: [ASTROLOGIAN, SCHOLAR, WHITE_MAGE],
+};
 
-export const CASTER_JOBS = [BLACK_MAGE, RED_MAGE, SUMMONER];
+export const MELEE: Role = {
+  name: 'Melee',
+  jobs:  [DRAGOON, MONK, NINJA, SAMURAI],
+}
 
-export const DPS_JOBS = [
-  ...MELEE_JOBS,
-  ...RANGED_JOBS,
-  ...CASTER_JOBS
-];
+export const RANGED: Role = {
+  name: 'Ranged',
+  jobs: [BARD, DANCER, MACHINIST],
+};
+
+export const CASTER: Role = {
+  name: 'Caster',
+  jobs: [BLACK_MAGE, RED_MAGE, SUMMONER],
+};
+
+export const DPS: Role = {
+  name: 'DPS',
+  jobs: [...MELEE.jobs, ...RANGED.jobs, ...CASTER.jobs],
+}
+
+export const ROLES = [TANK, HEALER, MELEE, RANGED, CASTER];

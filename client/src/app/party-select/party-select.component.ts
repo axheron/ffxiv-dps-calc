@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { take } from 'rxjs/operators';
 
@@ -20,6 +22,7 @@ export class PartySelectComponent implements OnInit {
   @ViewChild('jobPickerModal') jobPickerModalRef!: NzModalRef;
 
   jobPickerVisible = false;
+  hideUnimplementedJobs = false;
 
   constructor(public dpsService: DpsService) { }
 
@@ -27,7 +30,7 @@ export class PartySelectComponent implements OnInit {
   }
 
   changeSelf(): void {
-  	console.log("Hello");
+    this.hideUnimplementedJobs = true;
     this.jobPickerVisible = true;
     this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
         (jobChosen: string) => {
@@ -39,6 +42,7 @@ export class PartySelectComponent implements OnInit {
   }
 
   changeParty(index: number): void {
+    this.hideUnimplementedJobs = false;
     this.jobPickerVisible = true;
         this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
           (jobChosen: string) => {
