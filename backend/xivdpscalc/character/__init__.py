@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from xivdpscalc.character.stat import Stat, Stats, ProbabalisticStat
 from xivdpscalc.character.jobs import Roles, Buffs, Comp, Jobs
+from xivdpscalc.types import CastTime
 
 @dataclass
 class CharacterStatSpread:  # pylint: disable=too-many-instance-attributes
@@ -48,6 +49,13 @@ class Character:
         :returns: the gcd in seconds
         """
         return math.floor(0.25 * (1000 - self.character_stats[Stats.SPEED].get_multiplier())) / 100
+
+    def get_cast_time(self, base_cast_time) -> float:
+        """
+        Returns the character's gcd given its skill or spell speed
+        :returns: the gcd in seconds
+        """
+        return base_cast_time * (1000 - self.character_stats[Stats.SPEED].get_multiplier()) // 10 / 100
 
     def get_dot_scalar(self) -> float:
         """

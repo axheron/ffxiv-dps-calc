@@ -2,7 +2,8 @@
 
 import unittest
 
-from xivdpscalc.pps.sch import SchPps
+from xivdpscalc.pps.sch import SchPps, SchAction
+from xivdpscalc.pps.sample_sch_rotation import FixedSchRotation
 from xivdpscalc.character.jobs import Jobs
 from xivdpscalc.character import Character, CharacterStatSpread
 
@@ -31,3 +32,16 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
         mypps = SchPps()
         self.assertAlmostEqual(508.0952,
                          mypps.get_mp_per_min(test_char, caster_tax=0.1, succ=0, adlo=0, energy_drain=4, rez=0), places=3)
+        
+    def test_variable_time_sim_allows_weaves(self):
+        """ Ensure the time variable sim allows weaving after instant casts """
+        my_stat_spread = CharacterStatSpread(
+            wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
+        test_char = Character(Jobs.SCH, my_stat_spread)
+        mypps = SchPps()
+        # If the sim properly supports weaving, this should be 4 full gcds
+        fixed_rotation = [SchAction.BIOLYSIS, SchAction.AETHERFLOW, SchAction.ENERGYDRAIN, SchAction.BROIL3, 
+                          SchAction.RUIN2, SchAction.ENERGYDRAIN, SchAction.SWIFTCAST, SchAction.BROIL3, SchAction.ENERGYDRAIN]
+        # 3 ED, 2 B3, 1 R2
+        self.assertEqual(1080, mypps.get_total_potency_variable_time(
+            test_char.get_gcd() * 4, test_char, FixedSchRotation(fixed_rotation, SchAction.BROIL3), 0.1))
