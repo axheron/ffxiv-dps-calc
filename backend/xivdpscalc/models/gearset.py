@@ -1,7 +1,7 @@
 """Model for saving gearsets in the database"""
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
-from sqlalchemy.types import JSON, String, Text, Boolean
+from sqlalchemy.types import JSON, String, Text, Boolean, Integer
 from uuid import uuid4
 
 from xivdpscalc import db
@@ -17,5 +17,5 @@ class Gearset(db.Model, HasTags):
     etro_id = Column(UUID(as_uuid=True))
     stats = Column(JSON)
     estimates = Column(JSON)
-    sim_version = Column(String(9)) # TODO: think about this
+    sim_version = Column(Integer)
     recommended = Column(Boolean)

@@ -5,9 +5,9 @@ from sqlalchemy.schema import Column, Table
 from sqlalchemy.types import Integer, String
 
 from xivdpscalc import db
+from xivdpscalc.models.types import HexColor
 
 TAG_NAME_MAX_LENGTH = 64
-HEX_COLOR_LENGTH = 7 # #0086BF is 7 characters long
 
 
 class Tag(db.Model):
@@ -15,7 +15,7 @@ class Tag(db.Model):
 
   id = Column(Integer, primary_key=True)
   name = Column(String(TAG_NAME_MAX_LENGTH))
-  color = Column(String(HEX_COLOR_LENGTH)) # hex coloring in the UI
+  color = Column(HexColor)
 
 
 class HasTags:
