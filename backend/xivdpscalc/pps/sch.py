@@ -5,9 +5,24 @@ import math
 from collections import defaultdict
 from xivdpscalc.character import Character
 from xivdpscalc.pps import HealerPps
-from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource
+from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource,\
+    SchSimNotice
 from xivdpscalc.types import ElapsedTime
 from xivdpscalc.pps.rotation import SchRotation
+from _collections import defaultdict
+
+SchSimTimeline = defaultdict(SchAction, list())
+
+class SchSimResults:
+    def __init__(self, timeline: SchSimTimeline, notices: set(SchSimNotice)):
+        self.timeline = timeline
+        self.notices = notices
+        
+    def get_non_dot_potency(self):
+        total = 0
+        for action in SchAction:
+            total += len(self.timeline[action]) * action.potency
+        return total
 
 class SchPps(HealerPps):
     """ Sch specific implementation of pps and mpps calculations.
@@ -17,7 +32,7 @@ class SchPps(HealerPps):
     bio_potency = 70
     ed_potency = 100
 
-    def get_total_potency_variable_time(self, sim_length: ElapsedTime, character_stats: Character, rotation: SchRotation, caster_tax: float = 0.1, ping: float = 0) -> float: # pylint: disable=too-many-arguments, too-many-locals
+    def get_total_potency_variable_time(self, sim_length: ElapsedTime, character_stats: Character, rotation: SchRotation, caster_tax: float = 0.1, ping: float = 0) -> SchSimResults: # pylint: disable=too-many-arguments, too-many-locals
         """
         Get the total potency in sim_length seconds
         rotation is a SchRotation object
@@ -30,7 +45,8 @@ class SchPps(HealerPps):
         """
         animation_lock = 0.64 + ping
 
-        total_potency = 0
+        timeline: SchSimTimeline = defaultdict(lambda: [])
+        notices: set(SchSimNotice) = set()
         current_time: ElapsedTime = 0
 
         short_gcd = character_stats.get_gcd()
@@ -52,11 +68,11 @@ class SchPps(HealerPps):
                 active_effects[SchEffect.SWIFTCAST] = 0
                 cast_time = 0
 
-            if current_time + cast_time <= sim_length:
-                total_potency += selected_action.potency
-
             current_time = max(current_time, next_active[selected_action])
             next_active[selected_action] = current_time + selected_action.cooldown
+            
+            if current_time + cast_time <= sim_length:
+                timeline[selected_action].append(current_time)
 
             if selected_action.is_gcd:
                 for action in SchAction:
@@ -72,12 +88,14 @@ class SchPps(HealerPps):
                 resources[SchResource.AETHERFLOW] = 3
             elif selected_action == SchAction.ENERGYDRAIN:
                 resources[SchResource.AETHERFLOW] -= 1
+                if resources[SchResource.AETHERFLOW] < 0:
+                    notices.add(SchSimNotice.SCH_SIM_AETHERFLOW_OVERSPENDING)
             elif selected_action == SchAction.SWIFTCAST:
                 active_effects[SchEffect.SWIFTCAST] = current_time + 10
             elif selected_action == SchAction.BIOLYSIS:
                 active_effects[SchEffect.BIOLYSIS] = current_time + 30
 
-        return total_potency
+        return SchSimResults(timeline, notices)
 
     def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
         """

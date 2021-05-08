@@ -40,3 +40,9 @@ class SchResource(Enum):
     """
     AETHERFLOW = auto()
     MP = auto()
+
+class SchSimNotice(Enum):
+    """
+    Enum representing possible problems or errors that occurred during simulation
+    """
+    SCH_SIM_AETHERFLOW_OVERSPENDING = auto()
