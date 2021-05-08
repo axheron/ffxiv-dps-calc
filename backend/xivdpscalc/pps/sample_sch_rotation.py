@@ -61,7 +61,6 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
                 SchAction.SWIFTCAST: True}
             
             earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - 0.75
-            # if we can afford it and avoid clipping, ED
             for action in ogcd_constraints:
                 if cooldowns[action] <= earliest_nonclip_cast_time and ogcd_constraints[action]:
                     selected_action = action
