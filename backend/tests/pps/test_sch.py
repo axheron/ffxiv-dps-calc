@@ -3,7 +3,8 @@
 import unittest
 
 from xivdpscalc.pps.sch import SchPps, SchAction
-from xivdpscalc.pps.sample_sch_rotation import FixedSchRotation
+from xivdpscalc.pps.sample_sch_rotation import FixedSchRotation,\
+    SampleSchRotation
 from xivdpscalc.character.jobs import Jobs
 from xivdpscalc.character import Character, CharacterStatSpread
 from xivdpscalc.pps.sch_action import SchSimNotice
@@ -54,9 +55,26 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
         mypps = SchPps()
-        # If the sim properly supports weaving, this should be 4 full gcds
+        # Burn an aetherflow we don't have
         fixed_rotation = [SchAction.ENERGYDRAIN]
         sim_result = mypps.get_total_potency_variable_time(
             1, test_char, FixedSchRotation(fixed_rotation, SchAction.BROIL3), 0.1)
         # 3 ED, 2 B3, 1 R2
         self.assertIn(SchSimNotice.SCH_SIM_AETHERFLOW_OVERSPENDING, sim_result.notices)
+        
+    def test_sample_sch_rotation_correct_casts(self):
+        """ Ensure the time variable sim allows weaving after instant casts """
+        my_stat_spread = CharacterStatSpread(
+            wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
+        test_char = Character(Jobs.SCH, my_stat_spread)
+        mypps = SchPps()
+        # in 2 minutes on a 4th gcd chain opener, youd have: 2 AF, 9 ED, 1 CS, 1 SC, 1 Diss, 4 bio, 3 R2, 42 B3
+        sim_result = mypps.get_total_potency_variable_time(120, test_char, SampleSchRotation(), 0.1)
+        self.assertEqual(len(sim_result.timeline[SchAction.AETHERFLOW]), 2)
+        self.assertEqual(len(sim_result.timeline[SchAction.ENERGYDRAIN]), 9)
+        self.assertEqual(len(sim_result.timeline[SchAction.CHAINSTRATAGEM]), 1)
+        self.assertEqual(len(sim_result.timeline[SchAction.SWIFTCAST]), 2)
+        self.assertEqual(len(sim_result.timeline[SchAction.DISSIPATION]), 1)
+        self.assertEqual(len(sim_result.timeline[SchAction.BIOLYSIS]), 4)
+        self.assertEqual(len(sim_result.timeline[SchAction.RUIN2]), 3)
+        self.assertEqual(len(sim_result.timeline[SchAction.BROIL3]), 42)

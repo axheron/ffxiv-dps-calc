@@ -65,11 +65,10 @@ class SchPps(HealerPps):
             cast_time = character_stats.get_cast_time(selected_action.cast_time)
 
             if active_effects[SchEffect.SWIFTCAST] > current_time and cast_time > 0:
-                active_effects[SchEffect.SWIFTCAST] = 0
+                active_effects[SchEffect.SWIFTCAST] = -1
                 cast_time = 0
 
             current_time = max(current_time, next_active[selected_action])
-            next_active[selected_action] = current_time + selected_action.cooldown
             
             if current_time + cast_time <= sim_length:
                 timeline[selected_action].append(current_time)
@@ -79,7 +78,9 @@ class SchPps(HealerPps):
                     if action.is_gcd:
                         next_active[action] = current_time + short_gcd
                 # For Sch specifically, this is invariably equal to short_gcd, but sonic break exists
-                next_active[selected_action] = character_stats.get_cast_time(selected_action.cooldown)
+                next_active[selected_action] = current_time + character_stats.get_cast_time(selected_action.cooldown)
+            else:
+                next_active[selected_action] = current_time + selected_action.cooldown
 
             current_time += \
                 max(cast_time + caster_tax, animation_lock)

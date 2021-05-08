@@ -11,7 +11,7 @@ class SchAction(Enum):
     RUIN2 = (1, 200, 0, True, 2.5)
     AETHERFLOW = (2, 0, 0, False, 60)
     ENERGYDRAIN = (3, 100, 0, False, 3)
-    BIOLYSIS = (4, 0, 0, True, 0)
+    BIOLYSIS = (4, 0, 0, True, 2.5)
     DISSIPATION = (5, 0, 0, False, 180)
     SWIFTCAST = (6, 0, 0, False, 60)
     CHAINSTRATAGEM = (7, 0, 0, False, 120)
