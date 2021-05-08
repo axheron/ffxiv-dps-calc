@@ -50,7 +50,7 @@ class Character:
         """
         return math.floor(0.25 * (1000 - self.character_stats[Stats.SPEED].get_multiplier())) / 100
 
-    def get_cast_time(self, base_cast_time: CastTime) -> float:
+    def get_cast_time(self, base_cast_time: CastTime) -> CastTime:
         """
         Returns the character's gcd given its skill or spell speed
         :returns: the gcd in seconds
