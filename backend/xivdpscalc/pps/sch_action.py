@@ -16,7 +16,7 @@ class SchAction(Enum):
     SWIFTCAST = (6, 0, 0, False, 60)
     CHAINSTRATAGEM = (7, 0, 0, False, 120)
 
-    def __init__(self, index: int, potency: int, cast_time: CastTime, is_gcd: bool, cooldown: ElapsedTime):
+    def __init__(self, index: int, potency: int, cast_time: CastTime, is_gcd: bool, cooldown: ElapsedTime): # pylint: disable=too-many-arguments
         self.index = index
         self.potency = potency
         self.cast_time = cast_time
@@ -29,7 +29,7 @@ class SchEffect(Enum):
     """
     BIOLYSIS = (True, 70)
     SWIFTCAST = (False, 0)
-    
+
     def __init__(self, is_dot: bool, potency: int):
         self.is_dot = is_dot
         self.potency = potency
