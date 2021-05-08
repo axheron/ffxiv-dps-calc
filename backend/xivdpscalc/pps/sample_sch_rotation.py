@@ -48,7 +48,7 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
         if self.index < len(self.rotation):
             self.index += 1
             selected_action = self.rotation[self.index - 1]
-        elif cooldowns[SchAction.BROIL3] >= 0.66:
+        elif cooldowns[SchAction.BROIL3] >= 0.75:
             # this is a weaving window
             # the highest cooldown we can have without clipping assuming anim lock of 0.75 seconds
             
@@ -60,7 +60,7 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
                 SchAction.DISSIPATION: resources[SchResource.AETHERFLOW] <= 0,
                 SchAction.SWIFTCAST: True}
             
-            earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - 0.66
+            earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - 0.75
             # if we can afford it and avoid clipping, ED
             for action in ogcd_constraints:
                 if cooldowns[action] <= earliest_nonclip_cast_time and ogcd_constraints[action]:

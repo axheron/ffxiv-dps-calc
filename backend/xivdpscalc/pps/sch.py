@@ -56,23 +56,28 @@ class SchPps(HealerPps):
         resources: defaultdict[SchResource, int] = defaultdict(lambda: 0)
 
         while current_time <= sim_length:
+            # get the selected action
             selected_action = rotation.get_action(current_time,
                                                   {key: next_active[key] - current_time for key in SchAction},
                                                   {key: active_effects[key] - current_time for key in active_effects},
                                                   resources)
 
-
+            # find the actual cast time of the selected action
             cast_time = character_stats.get_cast_time(selected_action.cast_time)
 
+            # if swiftcast is up and this is a casted spell, eat swiftcast and reduce the cast time to 0
             if active_effects[SchEffect.SWIFTCAST] > current_time and cast_time > 0:
                 active_effects[SchEffect.SWIFTCAST] = -1
                 cast_time = 0
 
+            # advance the time to when the action is actually available
             current_time = max(current_time, next_active[selected_action])
             
+            # clip the cast if the sim ends before then
             if current_time + cast_time <= sim_length:
                 timeline[selected_action].append(current_time)
 
+            # apply cooldowns
             if selected_action.is_gcd:
                 for action in SchAction:
                     if action.is_gcd:
@@ -82,9 +87,11 @@ class SchPps(HealerPps):
             else:
                 next_active[selected_action] = current_time + selected_action.cooldown
 
+            # advance time based on cast time or animation lock as needed
             current_time += \
                 max(cast_time + caster_tax, animation_lock)
 
+            # apply resource and effect timers as needed
             if selected_action in [SchAction.AETHERFLOW, SchAction.DISSIPATION]:
                 resources[SchResource.AETHERFLOW] = 3
             elif selected_action == SchAction.ENERGYDRAIN:
