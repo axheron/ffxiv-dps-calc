@@ -3,8 +3,7 @@
 import unittest
 
 from xivdpscalc.pps.sch import SchPps, SchAction
-from xivdpscalc.pps.sample_sch_rotation import FixedSchRotation,\
-    SampleSchRotation
+from xivdpscalc.pps.sample_sch_rotation import FixedSchRotation, SampleSchRotation
 from xivdpscalc.character.jobs import Jobs
 from xivdpscalc.character import Character, CharacterStatSpread
 from xivdpscalc.pps.sch_action import SchSimNotice

@@ -10,7 +10,7 @@ class SchRotation(metaclass=ABCMeta):
 
     @abstractmethod
     def get_action(self, current_time: ElapsedTime, cooldowns: dict[SchAction, float],
-                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int]) -> SchAction:
+                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], ping: ElapsedTime) -> SchAction:
         """
         Calculates the estimated DPS based on the team composition and current character stats
         :param current_time: The time that has passed since the beginning of the simulation

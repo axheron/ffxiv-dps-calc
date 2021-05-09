@@ -32,7 +32,7 @@ class SchPps(HealerPps):
     bio_potency = 70
     ed_potency = 100
 
-    def get_total_potency_variable_time(self, sim_length: ElapsedTime, character_stats: Character, rotation: SchRotation, caster_tax: float = 0.1, ping: float = 0) -> SchSimResults: # pylint: disable=too-many-arguments, too-many-locals
+    def get_total_potency_variable_time(self, sim_length: ElapsedTime, character_stats: Character, rotation: SchRotation, caster_tax: float = 0.1, ping: ElapsedTime = 0) -> SchSimResults: # pylint: disable=too-many-arguments, too-many-locals
         """
         Get the total potency in sim_length seconds
         rotation is a SchRotation object
@@ -43,6 +43,7 @@ class SchPps(HealerPps):
             If an action with an active cooldown is selected, the time jumps forward to the cooldown's expiry
             This simulator does not enforce resource requirements - ED can be used even with no aetherflow
         """
+        # approximate animation lock is on average 600 ms + average 40 ms server latency + ping
         animation_lock = 0.64 + ping
 
         timeline: SchSimTimeline = defaultdict(lambda: [])
@@ -62,7 +63,7 @@ class SchPps(HealerPps):
                                                   {key: active_effects[key] - current_time for key in active_effects},
                                                   resources)
 
-            # find the actual cast time of the selected action
+            # find the actual cast time of the selected action (not including caster tax)
             cast_time = character_stats.get_cast_time(selected_action.cast_time)
 
             # if swiftcast is up and this is a casted spell, eat swiftcast and reduce the cast time to 0

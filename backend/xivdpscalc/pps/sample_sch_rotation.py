@@ -3,6 +3,7 @@
 from xivdpscalc.pps.rotation import SchRotation
 from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource
 from xivdpscalc.types import ElapsedTime
+from _collections import OrderedDict
 
 class FixedSchRotation(SchRotation): #pylint: disable=too-few-public-methods
     """
@@ -15,7 +16,7 @@ class FixedSchRotation(SchRotation): #pylint: disable=too-few-public-methods
         self.default_action = default_action
 
     def get_action(self, current_time: ElapsedTime, cooldowns: dict[SchAction, float],
-                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int]) -> SchAction:
+                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], ping: ElapsedTime = 0) -> SchAction:
         """
         Returns a SchAction based on the fixed rotation
         """
@@ -39,35 +40,39 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
         self.index = 0
 
     def get_action(self, current_time: ElapsedTime, cooldowns: dict[SchAction, float],
-                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int]) -> SchAction:
+                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], ping: ElapsedTime = 0) -> SchAction:
         """
         Returns a SchAction based on an arbitrary set of rules.
         """
+        animation_lock = 0.64 + ping
         # broil by default
         selected_action = SchAction.BROIL3
         if self.index < len(self.rotation):
             self.index += 1
             selected_action = self.rotation[self.index - 1]
-        elif cooldowns[SchAction.BROIL3] >= 0.75:
+        elif cooldowns[SchAction.BROIL3] >= animation_lock:
             # this is a weaving window
-            # the highest cooldown we can have without clipping assuming anim lock of 0.75 seconds
+            # the highest cooldown we can have without clipping
             
             # an dict of each ogcd with its usage constraint, ordered by priority
-            ogcd_constraints = {
-                SchAction.ENERGYDRAIN: resources[SchResource.AETHERFLOW] > 0, 
-                SchAction.CHAINSTRATAGEM: True,
-                SchAction.AETHERFLOW: resources[SchResource.AETHERFLOW] <= 0,
-                SchAction.DISSIPATION: resources[SchResource.AETHERFLOW] <= 0,
-                SchAction.SWIFTCAST: True}
+            ogcd_constraints = OrderedDict()
             
-            earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - 0.75
-            for action in ogcd_constraints:
-                if cooldowns[action] <= earliest_nonclip_cast_time and ogcd_constraints[action]:
+            ogcd_constraints[SchAction.CHAINSTRATAGEM] = True
+            ogcd_constraints[SchAction.ENERGYDRAIN] = resources[SchResource.AETHERFLOW] > 0
+            ogcd_constraints[SchAction.AETHERFLOW] =  resources[SchResource.AETHERFLOW] <= 0
+            ogcd_constraints[SchAction.DISSIPATION] = resources[SchResource.AETHERFLOW] <= 0
+            ogcd_constraints[SchAction.SWIFTCAST] = True
+            
+            earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - animation_lock
+            for action, constraint in ogcd_constraints.items():
+                if cooldowns[action] <= earliest_nonclip_cast_time and constraint:
                     selected_action = action
                     break;
         # if bio needs refreshing
         elif remaining_effect_durations[SchEffect.BIOLYSIS] <= 0:
             selected_action = SchAction.BIOLYSIS
+        elif remaining_effect_durations[SchEffect.SWIFTCAST] >= 0:
+            selected_action = SchAction.BROIL3
         # if chain stratagem, dissipation, or aetherflow are about to come up, but bio is still up, open a weaving window with r2
         elif cooldowns[SchAction.CHAINSTRATAGEM] < 1.5 or \
             ((cooldowns[SchAction.DISSIPATION] < 1.5) and resources[SchResource.AETHERFLOW] <= 1):
