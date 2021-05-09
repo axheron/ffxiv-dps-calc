@@ -61,13 +61,12 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
             ogcd_constraints[SchAction.DISSIPATION] = resources[SchResource.AETHERFLOW] <= 0
             ogcd_constraints[SchAction.SWIFTCAST] = True
 
-            
             # the highest cooldown we can have without clipping
             earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - animation_lock
             for action, constraint in ogcd_constraints.items():
                 if cooldowns[action] <= earliest_nonclip_cast_time and constraint:
                     selected_action = action
-                    break;
+                    break
         # if bio needs refreshing
         elif remaining_effect_durations[SchEffect.BIOLYSIS] <= 0:
             selected_action = SchAction.BIOLYSIS

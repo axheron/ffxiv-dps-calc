@@ -12,11 +12,13 @@ from xivdpscalc.pps.rotation import SchRotation
 SchSimTimeline = defaultdict(SchAction, list())
 
 class SchSimResults:
+    """ Value class representing results of a dps simulation """
     def __init__(self, timeline: SchSimTimeline, notices: set(SchSimNotice)):
         self.timeline = timeline
         self.notices = notices
 
     def get_non_dot_potency(self):
+        """ Aggregate results to find total non-dot potency """
         total = 0
         for action in SchAction:
             total += len(self.timeline[action]) * action.potency
