@@ -17,6 +17,8 @@ if you don't play scholar, then LUL. please look forward to it.
 * nono
 * HI MAYBE YOUR NAME HERE? potato 3059 on discord
 
+damage formulas from [allagan studies](https://docs.google.com/document/d/1OpfKYmf31FpES3IHOrl3H8phU4Np8FChH4B4lP1ZE08/edit?usp=sharing)
+
 ## getting started
 
 Download repo.
