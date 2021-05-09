@@ -1,9 +1,9 @@
 """ Sample implementations of scholar rotations """
 
+from collections import OrderedDict
 from xivdpscalc.pps.rotation import SchRotation
 from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource
 from xivdpscalc.types import ElapsedTime
-from _collections import OrderedDict
 
 class FixedSchRotation(SchRotation): #pylint: disable=too-few-public-methods
     """
@@ -52,17 +52,17 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
             selected_action = self.rotation[self.index - 1]
         elif cooldowns[SchAction.BROIL3] >= animation_lock:
             # this is a weaving window
-            # the highest cooldown we can have without clipping
-            
             # an dict of each ogcd with its usage constraint, ordered by priority
             ogcd_constraints = OrderedDict()
-            
+
             ogcd_constraints[SchAction.CHAINSTRATAGEM] = True
             ogcd_constraints[SchAction.ENERGYDRAIN] = resources[SchResource.AETHERFLOW] > 0
             ogcd_constraints[SchAction.AETHERFLOW] =  resources[SchResource.AETHERFLOW] <= 0
             ogcd_constraints[SchAction.DISSIPATION] = resources[SchResource.AETHERFLOW] <= 0
             ogcd_constraints[SchAction.SWIFTCAST] = True
+
             
+            # the highest cooldown we can have without clipping
             earliest_nonclip_cast_time = cooldowns[SchAction.BROIL3] - animation_lock
             for action, constraint in ogcd_constraints.items():
                 if cooldowns[action] <= earliest_nonclip_cast_time and constraint:
@@ -82,5 +82,5 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
             resources[SchResource.AETHERFLOW] > 1 and \
             cooldowns[SchAction.ENERGYDRAIN] <= 0:
             selected_action = SchAction.RUIN2
-        
+
         return selected_action

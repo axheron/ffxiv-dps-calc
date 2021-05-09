@@ -5,11 +5,9 @@ import math
 from collections import defaultdict
 from xivdpscalc.character import Character
 from xivdpscalc.pps import HealerPps
-from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource,\
-    SchSimNotice
+from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource, SchSimNotice
 from xivdpscalc.types import ElapsedTime
 from xivdpscalc.pps.rotation import SchRotation
-from _collections import defaultdict
 
 SchSimTimeline = defaultdict(SchAction, list())
 
@@ -17,7 +15,7 @@ class SchSimResults:
     def __init__(self, timeline: SchSimTimeline, notices: set(SchSimNotice)):
         self.timeline = timeline
         self.notices = notices
-        
+
     def get_non_dot_potency(self):
         total = 0
         for action in SchAction:
@@ -73,7 +71,7 @@ class SchPps(HealerPps):
 
             # advance the time to when the action is actually available
             current_time = max(current_time, next_active[selected_action])
-            
+
             # clip the cast if the sim ends before then
             if current_time + cast_time <= sim_length:
                 timeline[selected_action].append(current_time)
