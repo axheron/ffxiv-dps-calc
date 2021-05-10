@@ -31,9 +31,9 @@ export class PartySelectComponent implements OnInit {
   }
 
   changeSelf(): void {
+    this.selectableRoles = jobConsts.ROLES;
     this.hideUnimplementedJobs = true;
     this.jobPickerVisible = true;
-    this.selectableRoles = jobConsts.ROLES;
     this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
         (jobChosen: string) => {
           if (jobChosen) {
@@ -44,11 +44,13 @@ export class PartySelectComponent implements OnInit {
   }
 
   changeParty(index: number): void {
+    const selfJob = jobConsts.JOBS.get(this.dpsService.selfJob);
+    if (selfJob === undefined) {
+      throw 'Unknown player job';
+    }
+    this.selectableRoles = this.getAvailableRoles(selfJob, index);
     this.hideUnimplementedJobs = false;
     this.jobPickerVisible = true;
-    this.selectableRoles = this.getAvailableRoles(
-        jobConsts.JOBS.get(this.dpsService.selfJob) || jobConsts.SCHOLAR,
-        index);
     this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
       (jobChosen: string) => {
         if (jobChosen) {
@@ -61,29 +63,11 @@ export class PartySelectComponent implements OnInit {
   private getAvailableRoles(selfJob: jobConsts.Job, index: number):
       jobConsts.Role[] {
     if (jobConsts.TANK.jobs.includes(selfJob)) {
-      if (index === 0) {
-        return [jobConsts.TANK];
-      } else if (index === 1 || index === 2) {
-        return [jobConsts.HEALER];
-      } else {
-        return jobConsts.DPS_ROLES;
-      }
+      return jobConsts.PLAYER_TANK_COMP[index];
     } else if (jobConsts.HEALER.jobs.includes(selfJob)) {
-      if (index === 0 || index === 1) {
-        return [jobConsts.TANK];
-      } else if (index === 2) {
-        return [jobConsts.HEALER];
-      } else {
-        return jobConsts.DPS_ROLES;
-      }
+      return jobConsts.PLAYER_HEALER_COMP[index];
     } else {
-      if (index === 0 || index === 1) {
-        return [jobConsts.TANK];
-      } else if (index === 2 || index === 3) {
-        return [jobConsts.HEALER];
-      } else {
-        return jobConsts.DPS_ROLES;
-      }
+      return jobConsts.PLAYER_DPS_COMP[index];
     }
   }
 
