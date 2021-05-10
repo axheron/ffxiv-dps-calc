@@ -3,7 +3,7 @@ Fixes #xxx
 
 <!-- Add an x in each box (or click it on the pull request UI) to mark an item -->
 ## Pull request checklist
-- [ ] I have read the `CONTRIBUTING.md` document.
+- [ ] I have read the `contributing.md` document.
 - [ ] This PR addresses an existing GitHub issue and I have added the issue number above. (If an issue does not exist, file one first.)
 - [ ] I have updated the documentation accordingly.
 - [ ] There are no linter errors or typecheck errors involving code files that I changed.
