@@ -1,14 +1,14 @@
 <div class="party-select-container" role="group">
   <button type="button" (click)="changeSelf()" class="self-icon"
         [attr.aria-label]="'Player: ' + jobConsts.JOBS.get(dpsService.selfJob)!.name">
-	  <nz-avatar [nzSize]="64"
+	  <nz-avatar [nzSize]="56"
 	      nzSrc="{{jobConsts.JOBS.get(dpsService.selfJob)!.path}}">
 	  </nz-avatar>
   </button>
   <button *ngFor="let member of dpsService.party; index as i;"
         type="button" (click)="changeParty(i)" class="party-member-icon"
         [attr.aria-label]="'Party: ' + jobConsts.JOBS.get(member)!.name">
-      <nz-avatar [nzSize]="64"
+      <nz-avatar [nzSize]="56"
           nzSrc="{{jobConsts.JOBS.get(member)!.path}}">
 	  </nz-avatar>
   </button>
@@ -32,7 +32,7 @@
     (nzOnCancel)="closeJobPicker()" [nzAutofocus]="null"
     [nzTitle]="'Select a job'">
   <ng-container *nzModalContent>
-  	<ng-container *ngFor="let role of jobConsts.ROLES">
+  	<ng-container *ngFor="let role of selectableRoles">
       <div class="role-container">
         <div class="role-name">{{role.name}}</div>
         <button *ngFor="let job of role.jobs;"

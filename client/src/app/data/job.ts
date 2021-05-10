@@ -181,4 +181,6 @@ export const DPS: Role = {
   jobs: [...MELEE.jobs, ...RANGED.jobs, ...CASTER.jobs],
 }
 
+export const DPS_ROLES = [MELEE, RANGED, CASTER];
+
 export const ROLES = [TANK, HEALER, MELEE, RANGED, CASTER];
