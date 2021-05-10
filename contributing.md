@@ -34,7 +34,8 @@ In order to keep a manageable volume of pull requests, we only accept pull reque
 If you are new to this project and would like a minor issue addressed, please file a GitHub issue and we'll handle it. Thanks!
 
 ## Coding Style
-* Use a coding style consistent with the existing codebase. 
+* Use a coding style consistent with the existing codebase, as defined by the linter.
+* Types must be annotated and code must pass `mypy` checks.
 * Use spaces, not tabs for indentation.
 * Function, variable, and module names (etc.) must be descriptive and informative.
 * All code must be documented and tested.
