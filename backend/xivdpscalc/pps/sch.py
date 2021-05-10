@@ -9,7 +9,7 @@ from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource, SchSimN
 from xivdpscalc.types import ElapsedTime
 from xivdpscalc.pps.rotation import SchRotation
 
-SchSimTimeline = defaultdict(SchAction, list())
+SchSimTimeline = dict[SchAction, list]
 
 class SchSimResults:
     """ Value class representing results of a dps simulation """
