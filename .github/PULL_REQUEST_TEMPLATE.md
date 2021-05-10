@@ -1,6 +1,7 @@
 <!-- If your PR does not fix an issue, delete the word `fixes` below to link the issue without closing it -->
 Fixes #xxx
 
+<!-- Add an x in each box (or click it on the pull request UI) to mark an item -->
 ## Pull request checklist
 - [ ] I have read the `CONTRIBUTING.md` document.
 - [ ] This PR addresses an existing GitHub issue and I have added the issue number above. (If an issue does not exist, file one first.)
