@@ -87,7 +87,7 @@ class SchPps(HealerPps):
                 next_active[selected_action] = current_time + character_stats.get_cast_time(selected_action.cooldown)
             else:
                 next_active[selected_action] = current_time + selected_action.cooldown
-                
+
             # apply resource and effect timers as needed
             if selected_action in [SchAction.AETHERFLOW, SchAction.DISSIPATION]:
                 resources[SchResource.AETHERFLOW] = 3
