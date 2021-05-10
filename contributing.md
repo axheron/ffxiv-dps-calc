@@ -29,9 +29,9 @@ All pull requests must be approved by the code owner before being merged to `mai
 An additional person may be delegated to review your code prior to this.
 
 ### Minor Changes
-In order to keep a manageable volume of pull requests, we only accept pull requests addressing minor changes (documentation fixes, typo fixes, small cosmetic tweaks, etc.) from regular contributors.
+In order to keep a manageable volume of pull requests, we only accept pull requests addressing minor changes (documentation fixes, typo fixes, small cosmetic tweaks, etc.) from existing contributors.
 
-If you are a non-regular and would like a minor issue addressed, please file a GitHub issue and we'll handle it. Thanks!
+If you are new to this project and would like a minor issue addressed, please file a GitHub issue and we'll handle it. Thanks!
 
 ## Coding Style
 * Use a coding style consistent with the existing codebase. 
