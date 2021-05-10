@@ -13,7 +13,7 @@ SchSimTimeline = dict[SchAction, list]
 
 class SchSimResults:
     """ Value class representing results of a dps simulation """
-    def __init__(self, timeline: SchSimTimeline, notices: set(SchSimNotice)):
+    def __init__(self, timeline: SchSimTimeline, notices: set[SchSimNotice]):
         self.timeline = timeline
         self.notices = notices
 
@@ -47,7 +47,7 @@ class SchPps(HealerPps):
         animation_lock = 0.64 + ping
 
         timeline: SchSimTimeline = defaultdict(lambda: [])
-        notices: set(SchSimNotice) = set()
+        notices: set[SchSimNotice] = set()
         current_time: ElapsedTime = 0
 
         short_gcd = character_stats.get_gcd()
