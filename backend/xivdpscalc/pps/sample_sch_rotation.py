@@ -16,7 +16,7 @@ class FixedSchRotation(SchRotation): #pylint: disable=too-few-public-methods
         self.default_action = default_action
 
     def get_action(self, current_time: ElapsedTime, cooldowns: dict[SchAction, float],
-                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], ping: ElapsedTime = 0) -> SchAction:
+                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], gcd: ElapsedTime, ping: ElapsedTime = 0) -> SchAction:
         """
         Returns a SchAction based on the fixed rotation
         """
@@ -40,7 +40,7 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
         self.index = 0
 
     def get_action(self, current_time: ElapsedTime, cooldowns: dict[SchAction, float],
-                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], ping: ElapsedTime = 0) -> SchAction:
+                   remaining_effect_durations: dict[SchEffect, float], resources: dict[SchResource, int], gcd: ElapsedTime, ping: ElapsedTime = 0) -> SchAction:
         """
         Returns a SchAction based on an arbitrary set of rules.
         """
@@ -67,8 +67,10 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
                 if cooldowns[action] <= earliest_nonclip_cast_time and constraint:
                     selected_action = action
                     break
-        # if bio needs refreshing
-        elif remaining_effect_durations[SchEffect.BIOLYSIS] <= 0:
+        # if bio fell off
+        elif remaining_effect_durations[SchEffect.BIOLYSIS] <= 0 or \
+            remaining_effect_durations[SchEffect.BIOLYSIS] < gcd and \
+            (cooldowns[SchAction.AETHERFLOW] > 2 * gcd or cooldowns[SchAction.AETHERFLOW] < gcd - animation_lock) :
             selected_action = SchAction.BIOLYSIS
         elif remaining_effect_durations[SchEffect.SWIFTCAST] >= 0:
             selected_action = SchAction.BROIL3

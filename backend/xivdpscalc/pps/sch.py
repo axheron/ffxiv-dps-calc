@@ -61,7 +61,7 @@ class SchPps(HealerPps):
             selected_action = rotation.get_action(current_time,
                                                   {key: next_active[key] - current_time for key in SchAction},
                                                   {key: active_effects[key] - current_time for key in active_effects},
-                                                  resources)
+                                                  resources, short_gcd, ping)
 
             # find the actual cast time of the selected action (not including caster tax)
             cast_time = character_stats.get_cast_time(selected_action.cast_time)
@@ -87,11 +87,7 @@ class SchPps(HealerPps):
                 next_active[selected_action] = current_time + character_stats.get_cast_time(selected_action.cooldown)
             else:
                 next_active[selected_action] = current_time + selected_action.cooldown
-
-            # advance time based on cast time or animation lock as needed
-            current_time += \
-                max(cast_time + caster_tax, animation_lock)
-
+                
             # apply resource and effect timers as needed
             if selected_action in [SchAction.AETHERFLOW, SchAction.DISSIPATION]:
                 resources[SchResource.AETHERFLOW] = 3
@@ -103,6 +99,10 @@ class SchPps(HealerPps):
                 active_effects[SchEffect.SWIFTCAST] = current_time + 10
             elif selected_action == SchAction.BIOLYSIS:
                 active_effects[SchEffect.BIOLYSIS] = current_time + 30
+
+            # advance time based on cast time or animation lock as needed
+            current_time += \
+                max(cast_time + caster_tax, animation_lock)
 
         return SchSimResults(timeline, notices)
 

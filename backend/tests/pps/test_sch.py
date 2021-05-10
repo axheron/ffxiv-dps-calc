@@ -61,12 +61,16 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
         # 3 ED, 2 B3, 1 R2
         self.assertIn(SchSimNotice.SCH_SIM_AETHERFLOW_OVERSPENDING, sim_result.notices)
         
-    def test_sample_sch_rotation_correct_casts(self):
+    def test_sample_sch_rotation_correct_casts_232gcd(self):
         """ Ensure the time variable sim allows weaving after instant casts """
         my_stat_spread = CharacterStatSpread(
             wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=2139, ten=380, pie=340)
         test_char = Character(Jobs.SCH, my_stat_spread)
         mypps = SchPps()
+        
+        # assert this is the expected gcd
+        self.assertAlmostEqual(2.32, test_char.get_gcd(), places=2)
+        
         # in 2 minutes on a 4th gcd chain opener, youd have: 2 AF, 9 ED, 1 CS, 1 SC, 1 Diss, 4 bio, 3 R2, 42 B3
         sim_result = mypps.get_total_potency_variable_time(120, test_char, SampleSchRotation(), 0.1)
         self.assertEqual(len(sim_result.timeline[SchAction.AETHERFLOW]), 2)
@@ -77,3 +81,54 @@ class TestSchCalc(unittest.TestCase):  #pylint: disable=missing-class-docstring
         self.assertEqual(len(sim_result.timeline[SchAction.BIOLYSIS]), 4)
         self.assertEqual(len(sim_result.timeline[SchAction.RUIN2]), 3)
         self.assertEqual(len(sim_result.timeline[SchAction.BROIL3]), 42)
+        
+        # assert expected bio timings
+        self.assertListEqual([round(x, 2) for x in sim_result.timeline[SchAction.BIOLYSIS]], [0, 28.54, 59.90, 88.84])
+        
+    def test_sample_sch_rotation_correct_casts_241gcd(self):
+        """ Ensure the time variable sim allows weaving after instant casts on a comfier gcd """
+        my_stat_spread = CharacterStatSpread(
+            wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=1223, ten=380, pie=340)
+        test_char = Character(Jobs.SCH, my_stat_spread)
+        mypps = SchPps()
+        # in 2 minutes on a 4th gcd chain opener, youd have: 2 AF, 9 ED, 1 CS, 1 SC, 1 Diss, 4 bio, 3 R2, 41 B3
+        sim_result = mypps.get_total_potency_variable_time(120, test_char, SampleSchRotation(), 0.1)
+        
+        # assert this is the expected gcd
+        self.assertAlmostEqual(2.41, test_char.get_gcd(), places=2)
+        
+        self.assertEqual(len(sim_result.timeline[SchAction.AETHERFLOW]), 2)
+        self.assertEqual(len(sim_result.timeline[SchAction.ENERGYDRAIN]), 9)
+        self.assertEqual(len(sim_result.timeline[SchAction.CHAINSTRATAGEM]), 1)
+        self.assertEqual(len(sim_result.timeline[SchAction.SWIFTCAST]), 2)
+        self.assertEqual(len(sim_result.timeline[SchAction.DISSIPATION]), 1)
+        self.assertEqual(len(sim_result.timeline[SchAction.BIOLYSIS]), 5)
+        self.assertEqual(len(sim_result.timeline[SchAction.RUIN2]), 3)
+        self.assertEqual(len(sim_result.timeline[SchAction.BROIL3]), 41)
+        
+        # assert expected bio timings
+        self.assertListEqual([round(x, 2) for x in sim_result.timeline[SchAction.BIOLYSIS]], [0, 29.62, 59.64, 89.66, 119.58])
+        
+    def test_sample_sch_rotation_correct_casts_237gcd(self):
+        """ Ensure the time variable sim allows weaving after instant casts on a cursed gcd """
+        my_stat_spread = CharacterStatSpread(
+            wd=180, mainstat=5577, det=2272, crit=3802, dh=1100, speed=1674, ten=380, pie=340)
+        test_char = Character(Jobs.SCH, my_stat_spread)
+        mypps = SchPps()
+        # in 2 minutes on a 4th gcd chain opener, youd have: 2 AF, 9 ED, 1 CS, 1 SC, 1 Diss, 4 bio, 3 R2, 42 B3
+        sim_result = mypps.get_total_potency_variable_time(120, test_char, SampleSchRotation(), 0.1)
+        
+        # assert this is the expected gcd
+        self.assertAlmostEqual(2.37, test_char.get_gcd(), places=2)
+        
+        self.assertEqual(len(sim_result.timeline[SchAction.AETHERFLOW]), 2)
+        self.assertEqual(len(sim_result.timeline[SchAction.ENERGYDRAIN]), 9)
+        self.assertEqual(len(sim_result.timeline[SchAction.CHAINSTRATAGEM]), 1)
+        self.assertEqual(len(sim_result.timeline[SchAction.SWIFTCAST]), 2)
+        self.assertEqual(len(sim_result.timeline[SchAction.DISSIPATION]), 1)
+        self.assertEqual(len(sim_result.timeline[SchAction.BIOLYSIS]), 4)
+        self.assertEqual(len(sim_result.timeline[SchAction.RUIN2]), 3)
+        self.assertEqual(len(sim_result.timeline[SchAction.BROIL3]), 41)
+        
+        # assert expected bio timings
+        self.assertListEqual([round(x, 2) for x in sim_result.timeline[SchAction.BIOLYSIS]], [0, 29.14, 61.15, 90.69])
