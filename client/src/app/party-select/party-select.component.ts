@@ -23,6 +23,7 @@ export class PartySelectComponent implements OnInit {
 
   jobPickerVisible = false;
   hideUnimplementedJobs = false;
+  selectableRoles = jobConsts.ROLES;
 
   constructor(public dpsService: DpsService) { }
 
@@ -30,6 +31,7 @@ export class PartySelectComponent implements OnInit {
   }
 
   changeSelf(): void {
+    this.selectableRoles = jobConsts.ROLES;
     this.hideUnimplementedJobs = true;
     this.jobPickerVisible = true;
     this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
@@ -42,15 +44,31 @@ export class PartySelectComponent implements OnInit {
   }
 
   changeParty(index: number): void {
+    const selfJob = jobConsts.JOBS.get(this.dpsService.selfJob);
+    if (selfJob === undefined) {
+      throw 'Unknown player job';
+    }
+    this.selectableRoles = this.getAvailableRoles(selfJob, index);
     this.hideUnimplementedJobs = false;
     this.jobPickerVisible = true;
-        this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
-          (jobChosen: string) => {
-            if (jobChosen) {
-              this.dpsService.party[index] = jobChosen;
-              this.dpsService.updateAllStats();
-            }
-          });
+    this.jobPickerModalRef.afterClose.pipe(take(1)).subscribe(
+      (jobChosen: string) => {
+        if (jobChosen) {
+          this.dpsService.party[index] = jobChosen;
+          this.dpsService.updateAllStats();
+        }
+      });
+  }
+
+  private getAvailableRoles(selfJob: jobConsts.Job, index: number):
+      jobConsts.Role[] {
+    if (jobConsts.TANK.jobs.includes(selfJob)) {
+      return jobConsts.PLAYER_TANK_COMP[index];
+    } else if (jobConsts.HEALER.jobs.includes(selfJob)) {
+      return jobConsts.PLAYER_HEALER_COMP[index];
+    } else {
+      return jobConsts.PLAYER_DPS_COMP[index];
+    }
   }
 
   pickJob(job: string): void {
