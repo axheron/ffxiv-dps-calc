@@ -4,7 +4,7 @@ let's stop using google sheets for gearsets like goddamn animals
 
 ## hi i'm from the balance, where the hell are my gearsets???
 
-if you play scholar, head over to https://ffxiv-dps-calc.uc.r.appspot.com/
+if you play scholar, head over to https://dpscalc.xivresources.com/
 
 if you don't play scholar, then LUL. please look forward to it.
 
