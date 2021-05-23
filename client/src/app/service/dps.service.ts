@@ -130,7 +130,7 @@ export class DpsService {
   }
 
   updateStats(index: number): void {
-    const statsUrl = 'https://ffxiv-dps-calc-backend.uc.r.appspot.com/update_stats';
+    const statsUrl = 'https://dpscalc.xivresources.com/api/update_stats';
     const headers = new HttpHeaders({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',

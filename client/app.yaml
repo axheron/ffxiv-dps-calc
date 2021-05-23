@@ -1,7 +1,0 @@
-runtime: python39
-handlers:
-- url: /
-  static_files: dist/client/index.html
-  upload: dist/client/index.html
-- url: /
-  static_dir: dist/client
