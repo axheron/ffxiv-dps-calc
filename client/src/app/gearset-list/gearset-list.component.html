@@ -41,7 +41,7 @@
         <td class="num-col">{{data.pie}}</td>
         <td class="num-col">{{data.gcd}}</td>
         <td class="num-col">{{data.mp}}</td>
-        <td class="num-col">{{data.dps}}</td>
+        <td class="num-col">{{data.dps | floor}}</td>
         <td class="action-col">
           <button (click)="startEdit(data.id)" class="gearset-table-button">
             <a>Edit</a>
@@ -96,7 +96,7 @@
           {{data.gcd}}
         </td>
         <td class="num-col">{{data.mp}}</td>
-        <td class="num-col">{{data.dps}}</td>
+        <td class="num-col">{{data.dps | floor}}</td>
         <td class="action-col">
           <button (click)="saveEdit(data.id)" class="gearset-table-button save">
             <a>Save</a>
