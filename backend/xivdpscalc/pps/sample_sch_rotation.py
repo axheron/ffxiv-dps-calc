@@ -67,7 +67,7 @@ class SampleSchRotation(SchRotation): #pylint: disable=too-few-public-methods
                 if cooldowns[action] <= earliest_nonclip_cast_time and constraint:
                     selected_action = action
                     break
-        # if bio fell off
+        # if bio fell off, but needs to be delayed to keep it in sync with aetherflow's cd
         elif remaining_effect_durations[SchEffect.BIOLYSIS] <= 0 or \
             remaining_effect_durations[SchEffect.BIOLYSIS] < gcd and \
             (cooldowns[SchAction.AETHERFLOW] > 2 * gcd or cooldowns[SchAction.AETHERFLOW] < gcd - animation_lock) :

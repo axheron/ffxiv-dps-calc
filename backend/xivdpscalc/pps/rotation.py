@@ -19,3 +19,4 @@ class SchRotation(metaclass=ABCMeta):
         :param resources: Resource counts, such as MP or Aetherflow
         :returns: the action to be used
         """
+        pass

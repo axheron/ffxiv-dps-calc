@@ -8,14 +8,15 @@ from xivdpscalc.pps import HealerPps
 from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource, SchSimNotice
 from xivdpscalc.types import ElapsedTime
 from xivdpscalc.pps.rotation import SchRotation
+from dataclasses import dataclass
 
 SchSimTimeline = dict[SchAction, list]
 
+@dataclass
 class SchSimResults:
     """ Value class representing results of a dps simulation """
-    def __init__(self, timeline: SchSimTimeline, notices: set[SchSimNotice]):
-        self.timeline = timeline
-        self.notices = notices
+    timeline: SchSimTimeline
+    notices: set[SchSimNotice]
 
     def get_non_dot_potency(self):
         """ Aggregate results to find total non-dot potency """
@@ -101,10 +102,9 @@ class SchPps(HealerPps):
                 active_effects[SchEffect.BIOLYSIS] = current_time + 30
 
             # advance time based on cast time or animation lock as needed
-            current_time += \
-                max(cast_time + caster_tax, animation_lock)
+            current_time += max(cast_time + caster_tax, animation_lock)
 
-        return SchSimResults(timeline, notices)
+        return SchSimResults(timeline = timeline, notices = notices)
 
     def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
         """
