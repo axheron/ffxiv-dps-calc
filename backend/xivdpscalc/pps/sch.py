@@ -2,7 +2,28 @@
 
 import math
 
+from collections import defaultdict
+from dataclasses import dataclass
+from xivdpscalc.character import Character
 from xivdpscalc.pps import HealerPps
+from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource, SchSimNotice
+from xivdpscalc.types import ElapsedTime
+from xivdpscalc.pps.rotation import SchRotation
+
+SchSimTimeline = dict[SchAction, list]
+
+@dataclass
+class SchSimResults:
+    """ Value class representing results of a dps simulation """
+    timeline: SchSimTimeline
+    notices: set[SchSimNotice]
+
+    def get_non_dot_potency(self):
+        """ Aggregate results to find total non-dot potency """
+        total = 0
+        for action in SchAction:
+            total += len(self.timeline[action]) * action.potency
+        return total
 
 class SchPps(HealerPps):
     """ Sch specific implementation of pps and mpps calculations.
@@ -11,6 +32,79 @@ class SchPps(HealerPps):
     b3_potency = 290
     bio_potency = 70
     ed_potency = 100
+
+    def get_total_potency_variable_time(self, sim_length: ElapsedTime, character_stats: Character, rotation: SchRotation, caster_tax: float = 0.1, ping: ElapsedTime = 0) -> SchSimResults: # pylint: disable=too-many-arguments, too-many-locals
+        """
+        Get the total potency in sim_length seconds
+        rotation is a SchRotation object
+        todo: support dot damage calculation (will be implemented in a separate method
+        todo: how long is animation lock actually?  Hard coded here for 0.75, have no idea if that's true
+        There are some nuances to how this works:
+            At present, this sim does not calculate dot damage
+            If an action with an active cooldown is selected, the time jumps forward to the cooldown's expiry
+            This simulator does not enforce resource requirements - ED can be used even with no aetherflow
+        """
+        # approximate animation lock is on average 600 ms + average 40 ms server latency + ping
+        animation_lock = 0.64 + ping
+
+        timeline: SchSimTimeline = defaultdict(lambda: [])
+        notices: set[SchSimNotice] = set()
+        current_time: ElapsedTime = 0
+
+        short_gcd = character_stats.get_gcd()
+
+        next_active: defaultdict[SchAction, ElapsedTime] = defaultdict(lambda: 0)
+        active_effects: defaultdict[SchEffect, ElapsedTime] = defaultdict(lambda: -1)
+        resources: defaultdict[SchResource, int] = defaultdict(lambda: 0)
+
+        while current_time <= sim_length:
+            # get the selected action
+            selected_action = rotation.get_action(current_time,
+                                                  {key: next_active[key] - current_time for key in SchAction},
+                                                  {key: active_effects[key] - current_time for key in active_effects},
+                                                  resources, short_gcd, ping)
+
+            # find the actual cast time of the selected action (not including caster tax)
+            cast_time = character_stats.get_cast_time(selected_action.cast_time)
+
+            # if swiftcast is up and this is a casted spell, eat swiftcast and reduce the cast time to 0
+            if active_effects[SchEffect.SWIFTCAST] > current_time and cast_time > 0:
+                active_effects[SchEffect.SWIFTCAST] = -1
+                cast_time = 0
+
+            # advance the time to when the action is actually available
+            current_time = max(current_time, next_active[selected_action])
+
+            # clip the cast if the sim ends before then
+            if current_time + cast_time <= sim_length:
+                timeline[selected_action].append(current_time)
+
+            # apply cooldowns
+            if selected_action.is_gcd:
+                for action in SchAction:
+                    if action.is_gcd:
+                        next_active[action] = current_time + short_gcd
+                # For Sch specifically, this is invariably equal to short_gcd, but sonic break exists
+                next_active[selected_action] = current_time + character_stats.get_cast_time(selected_action.cooldown)
+            else:
+                next_active[selected_action] = current_time + selected_action.cooldown
+
+            # apply resource and effect timers as needed
+            if selected_action in [SchAction.AETHERFLOW, SchAction.DISSIPATION]:
+                resources[SchResource.AETHERFLOW] = 3
+            elif selected_action == SchAction.ENERGYDRAIN:
+                resources[SchResource.AETHERFLOW] -= 1
+                if resources[SchResource.AETHERFLOW] < 0:
+                    notices.add(SchSimNotice.SCH_SIM_AETHERFLOW_OVERSPENDING)
+            elif selected_action == SchAction.SWIFTCAST:
+                active_effects[SchEffect.SWIFTCAST] = current_time + 10
+            elif selected_action == SchAction.BIOLYSIS:
+                active_effects[SchEffect.BIOLYSIS] = current_time + 30
+
+            # advance time based on cast time or animation lock as needed
+            current_time += max(cast_time + caster_tax, animation_lock)
+
+        return SchSimResults(timeline = timeline, notices = notices)
 
     def get_pps(self, character_stats, caster_tax=0.1, num_ed_per_min=4, num_filler_casts=0):
         """
