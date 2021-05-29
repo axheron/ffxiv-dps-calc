@@ -3,12 +3,12 @@
 import math
 
 from collections import defaultdict
+from dataclasses import dataclass
 from xivdpscalc.character import Character
 from xivdpscalc.pps import HealerPps
 from xivdpscalc.pps.sch_action import SchAction, SchEffect, SchResource, SchSimNotice
 from xivdpscalc.types import ElapsedTime
 from xivdpscalc.pps.rotation import SchRotation
-from dataclasses import dataclass
 
 SchSimTimeline = dict[SchAction, list]
 
