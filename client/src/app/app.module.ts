@@ -28,6 +28,8 @@ import { GearsetListComponent } from './gearset-list/gearset-list.component';
 import { RotationOptionsComponent } from './rotation-options/rotation-options.component';
 import { NoticeComponent } from './notice/notice.component';
 
+import { FloorPipe } from './pipes/floor.pipe';
+
 registerLocaleData(en);
 
 @NgModule({
@@ -36,7 +38,8 @@ registerLocaleData(en);
     PartySelectComponent,
     GearsetListComponent,
     RotationOptionsComponent,
-    NoticeComponent
+    NoticeComponent,
+    FloorPipe,
   ],
   imports: [
     AppRoutingModule,
